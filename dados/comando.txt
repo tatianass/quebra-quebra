@@ -1,0 +1,1 @@
+acba:~/workspace $ cat codigos.txt | xargs -i wget "http://www.senado.gov.br/transparencia/rh/servidores/remuneracao.asp?fcodigo={}&fvinculo=&mes=01/05/2017" --load-cookies=cookies.txt 
