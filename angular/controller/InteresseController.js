@@ -22,21 +22,21 @@
                 id: 1,
                 nome: "Dobrando a meta?",
                 img: "assets/img/perguntas/2.png",
-                texto: "No Brasil, os deputados federais ocupam um dos cargos publicos federais de mais alto salario no pais. Esses salarios sao comumente questionados pela populacao devido o trabalho desenvolvido por eles, que deixam a desejar pela qualidade. Alem desse alto salario, observamos que os deputados tem recebido taxas adicionais elevadas, comparando-se a um salário extra! Nesta nossa análise, buscamos destacar quem são esses indivíduos que tem recebido remuneracoes adicionais elevadas.",
+                texto: "No Brasil, os deputados federais ocupam um dos cargos públicos federais de mais alto salário no pais. Esses salários são comumente questionados pela populacao devido o trabalho desenvolvido por eles, que deixam a desejar pela qualidade. Alem desse alto salário, observamos que os deputados tem recebido taxas adicionais elevadas, comparando-se a um salário extra! Nesta nossa análise, buscamos destacar quem são esses indivíduos que tem recebido remunerações adicionais elevadas.",
                 texto2: "",
                 grafico: "view/dobrando.html"
             }, {
                 id: 2,
                 nome: "Cargos ostentação?",
                 img: "assets/img/perguntas/3.png",
-                texto: "",
+                texto: “Os dados obtidos para a câmara dos deputados apresentam folhas de pagamento para alem dos deputados federais, o que incluem os analistas e técnicos do legislativo. O gráfico apresentado nessa pagina, permite ao usuário visualizar as despesas com as folhas de pagamento desses funcionários.“,
                 texto2: "",
                 grafico: "view/cargos-ostentacao.html"
             }, {
                 id: 3,
                 nome: "E a mesada?",
                 img: "assets/img/perguntas/4.png",
-                texto: "",
+                texto: “Com os dados das folhas de pagamento dos servidores da câmara, podemos visualizar os valores recebidos ao longo do tempo, procurando monitorar possíveis anomalias nos salários públicos.”,
                 texto2: "",
                 grafico: "view/mesada.html"
             }]
