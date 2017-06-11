@@ -15,6 +15,8 @@ O diretório __php__ contém os seguintes arquivos:
 
 Para executar os scripts acima, basta executá-los em um servidor web (local ou remoto) com suporte a PHP.
 
+No diretório __senado__, foi iniciada a implementação de scripts para a listagem das folhas de pagamento de todos os servidores do Senado Federal.
+
 ## Website
 A branch _ph-pages_ contém os arquivos responsáveis pela criação do site.
 Para exevutar o mesmo localmente basta:
