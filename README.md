@@ -14,3 +14,14 @@ O diretório __php__ contém os seguintes arquivos:
   - **Exemplo:** dep-links.php?periodoFolha=201704&nome=NOME-DO-DEPUTADO
 
 Para executar os scripts acima, basta executá-los em um servidor web (local ou remoto) com suporte a PHP.
+
+## Website
+A branch _ph-pages_ contém os arquivos responsáveis pela criação do site.
+Para exevutar o mesmo localmente basta:
+
+1. Clone o repositório com:
+```
+git clone https://github.com/tatianass/quebra-quebra.git
+```
+2. Abra o arquivo index.html em seu navegador.
+
