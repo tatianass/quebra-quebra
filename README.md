@@ -3,6 +3,14 @@ Os orçamentos da Câmara dos Deputados e do Senado, juntos, para 2017 totalizam
 
 Nesse sentido, este projeto não só obteve as informações de remuneração de todos os servidores da câmara de deputados (2016/2017) e senado (2017) como também realizou várias análises e visualizações dessas informações para ajudar o cidadão a melhor entendê-las.
 
+# Como executar o projeto?
+# Site:
+1º: Clone o repositório com:
+'''
+git clone https://github.com/tatianass/quebra-quebra.git
+'''
+2º: Abra o arquivo index.html em seu navegador.
+
 # Tutorial para dados do Senado
 Segue os passos utilizados para o download dos dados do site do senado.leg.gov:
 1º: Adicionar a extensão de baixar cookies no Mozilla:
