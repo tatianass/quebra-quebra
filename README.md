@@ -73,8 +73,8 @@ Segue os passos utilizados para o download dos dados do site do senado.leg.gov:
 
 ## Tutorial para carregar as analises do Tableau
 
-As nossas analises de dados foram feitas no software de vizualizacao de dados chamado Tableau. Abaixo os passos para abrir e fazer uso dessas analises:
+As nossas análises de dados foram feitas no software de vizualização de dados chamado Tableau. Abaixo os passos para abrir e fazer uso dessas análises:
 
-1. Se ainda nao tiver, baixe a ultima versao do Tableau Public (versao free do Tableau) em: https://public.tableau.com/en-us/s/download. 
-2. Apos isso, baixe o workbook (arquivo com todas as analises que fizemos) da pasta workbook tableau.
+1. Se ainda não tiver, baixe a última versao do Tableau Public (versão free do Tableau) em: https://public.tableau.com/en-us/s/download. 
+2. Após isso, baixe o workbook (arquivo com todas as analises que fizemos) da pasta workbook tableau.
 3. Finalmente, inicie o Tableau e abra o arquivo baixado no passo anterior.
