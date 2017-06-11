@@ -78,3 +78,7 @@ As nossas análises de dados foram feitas no software de vizualização de dados
 1. Se ainda não tiver, baixe a última versao do Tableau Public (versão free do Tableau) em: https://public.tableau.com/en-us/s/download. 
 2. Após isso, baixe o workbook (arquivo com todas as análises que fizemos) da pasta workbook tableau.
 3. Finalmente, inicie o Tableau e abra o arquivo baixado no passo anterior.
+
+## Scripts em R
+
+Esses códigos analisam as remunerações dos deputados federais do Brasil. Os dados foram coletados por meio de uma interface (R-MySQL), permitindo observar alguns salários com remuneracao adicional elevadas. Para executar esses códigos e necessário instalar os pacotes dependentes (listados na parte superior “library”) por meio do comando install.package. Dessa maneira, e possível gerar os gráficos exibidos nas paginas html do site.
