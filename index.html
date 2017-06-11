@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-ng-app="app">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta nome="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <title>Quebra-Quebra</title>
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/responsee.css">
+    <link rel="stylesheet" href="assets/css/icons.css">
+    <!-- Include the Angular JS library -->
+    <script type="text/javascript" src="assets/js/angular.min.js"></script>
+    <script type="text/javascript" src="assets/js/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="assets/js/angular-color-this.min.js"></script>
+    <!-- Angular Module -->
+    <script type="text/javascript" src="angular/model/app.js"></script>
+    <!-- Angular Controller -->
+    <script type="text/javascript" src="angular/controller/InteresseController.js"></script>
+    <script type="text/javascript" src="angular/controller/EquipeController.js"></script>
+    <!-- Angular Directive -->
+    <script type="text/javascript" src="angular/directive/footer.js"></script>
+    <!-- CUSTOM STYLE -->
+    <link rel="stylesheet" href="assets/css/template-style.css">
+    <link href='assets/css/font.css' rel='stylesheet' type='text/css'>
+    <script src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/template-scripts.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="size-1140">
+    <!-- TOP NAV WITH LOGO -->
+    <header>
+        <nav>
+            <div class="line">
+                <div class="s-12 l-2">
+                    <a href="index.html"><img class="logo" src="assets/img/logo.png"></img>
+                    </a>
+                </div>
+                <div class="top-nav s-12 l-10">
+                    <h2 class="nav-text" style="color: #eaac16">Menu</h2>
+                    <ul class="right">
+                        <li><a href="#interesses">Interesses</a></li>
+                        <li><a href="#about-us">Sobre</a></li>
+                        <li><a href="#equipe">Equipe</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <section>
+        <div id="carousel">
+            <div id="owl-demo" class="owl-carousel owl-theme">
+                <div class="item">
+                    <img src="assets/img/bg.png" alt="">
+                </div>
+            </div>
+        </div>
+        <div id="interesses" data-ng-controller="InteresseController as interesseCtrl">
+            <div class="line">
+                <div class="margin">
+                    <div class="s-12 m-6 l-3" data-ng-repeat="pergunta in interesseCtrl.perguntas track by $index">
+                        <a href="" data-ng-click="interesseCtrl.setPerguntas(pergunta)">
+                            <div class="box" color-this="background-color" data-color="pergunta.nome">
+                                <p data-shadow='dang!'>{{pergunta.nome}}</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ABOUT US -->
+        <div id="about-us">
+            <article class="s-12 m-12 l-6">
+                <h2>Sobre</h2>
+                <p>dadjkakdjladjlakdjlaskdjlsdk.</p>
+                <div class="about-us-icons">
+                    <i class="icon-user_female"></i> <i class="icon-hourglass"></i> <i class="icon-eye"></i>
+                </div>
+            </article>
+            <div class="s-12 m-12 l-6">
+                <img src="assets/img/logo.png" alt="">
+            </div>
+        </div>
+        <!-- Equipe -->
+        <div id="equipe" data-ng-controller="EquipeController as equipeCtrl">
+            <div class="line">
+                <div class="margin">
+                    <div class="s-12 m-6 l-3" data-ng-repeat="membro in equipeCtrl.equipe track by $index">
+                        <img data-ng-src="{{membro.img}}">
+                        <p data-shadow='dang!'>{{membro.nome}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FOOTER -->
+        <div footer></div>
+        <script type="text/javascript" src="assets/js/responsee.js"></script>
+</body>
+
+</html>

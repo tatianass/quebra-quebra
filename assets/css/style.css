@@ -1,0 +1,87 @@
+#interesses {
+    background-color: #00ccff;
+    margin: 0;
+}
+
+#interesses {
+    background: none repeat scroll 0 0 rgba(0, 204, 255, 0.5);
+}
+
+#interesses .btn {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border: 0px;
+    font-family: Arial;
+    color: #0A1B30;
+    font-size: 14px;
+    background: #22A4D5;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#interesses .btn:hover {
+    background: rgba(34, 164, 213, 0.7);
+    text-decoration: none;
+    color: #fff;
+}
+
+.box {
+    margin: 5% auto 5% auto;
+    width: 270px;
+    height: 150px;
+    background-color: #22A4D5;
+    color: #0A1B30;
+}
+
+@import url(http://fonts.googleapis.com/css?family=Righteous);
+.box p {
+    margin: 5% auto 5% auto;
+    text-align: center;
+    color: white;
+    font-family: 'Righteous', serif;
+    font-size: 2em;
+    text-shadow: .03em .03em 0 hsla(230, 40%, 50%, 1);
+    word-wrap: break-word;
+}
+
+.box p:hover {
+    color: #00ccff;
+    transition: all 0.5s ease-in;
+}
+
+#equipe {
+    background: none repeat scroll 0 0 rgba(0, 204, 255, 0.5);
+    text-align: center;
+    text-indent: justify;
+}
+
+#grafico {
+    background: none repeat scroll 0 0 white;
+    clear: both;
+}
+
+#grafico:after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    line-height: 0;
+    visibility: hidden;
+}
+
+#grafico h1,
+h2,
+h3,
+h4,
+h5 {
+    text-align: center;
+}
+
+.right {
+    float: right;
+}
+
+.tittle {
+    margin: 2% auto 2% auto;
+}
