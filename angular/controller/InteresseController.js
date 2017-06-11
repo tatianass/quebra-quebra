@@ -29,14 +29,14 @@
                 id: 2,
                 nome: "Cargos ostentação?",
                 img: "assets/img/perguntas/3.png",
-                texto: “Os dados obtidos para a câmara dos deputados apresentam folhas de pagamento para alem dos deputados federais, o que incluem os analistas e técnicos do legislativo. O gráfico apresentado nessa pagina, permite ao usuário visualizar as despesas com as folhas de pagamento desses funcionários.“,
+                texto: "Os dados obtidos para a câmara dos deputados apresentam folhas de pagamento para alem dos deputados federais, o que incluem os analistas e técnicos do legislativo. O gráfico apresentado nessa pagina, permite ao usuário visualizar as despesas com as folhas de pagamento desses funcionários.",
                 texto2: "",
                 grafico: "view/cargos-ostentacao.html"
             }, {
                 id: 3,
                 nome: "E a mesada?",
                 img: "assets/img/perguntas/4.png",
-                texto: “Com os dados das folhas de pagamento dos servidores da câmara, podemos visualizar os valores recebidos ao longo do tempo, procurando monitorar possíveis anomalias nos salários públicos.”,
+                texto: "Com os dados das folhas de pagamento dos servidores da câmara, podemos visualizar os valores recebidos ao longo do tempo, procurando monitorar possíveis anomalias nos salários públicos.",
                 texto2: "",
                 grafico: "view/mesada.html"
             }]
