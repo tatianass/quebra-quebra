@@ -82,3 +82,8 @@ As nossas análises de dados foram feitas no software de vizualização de dados
 ## Scripts em R
 
 Esses códigos analisam as remunerações dos deputados federais do Brasil. Os dados foram coletados por meio de uma interface (R-MySQL), permitindo observar alguns salários com remuneracao adicional elevadas. Para executar esses códigos e necessário instalar os pacotes dependentes (listados na parte superior “library”) por meio do comando install.package. Dessa maneira, e possível gerar os gráficos exibidos nas paginas html do site.
+
+## Links de exemplos 
+
+- https://public.tableau.com/profile/leandro.balby.marinho#!/vizhome/Quebra-Quebra/Painel1
+- https://public.tableau.com/profile/leandro.balby.marinho#!/vizhome/Quebra-Quebra/Planilha3
