@@ -6,7 +6,7 @@ Nesse sentido, este projeto não só obteve as informações de remuneração de
 
 ## Scripts PHP
 
-Este diretório contém os seguintes arquivos:
+O diretório __php__ contém os seguintes arquivos:
 
 - **deputados.json** - JSON com o perfil de todos os deputados, resultado da conversão de um arquivo de XML disponível no [site da Câmara dos Deputados](http://www.camara.leg.br/SitCamaraWS/Deputados.asmx/ObterDeputados).
 - **dep-nomes-encode.php** - Retorna os nomes de todos os deputados a partir do arquivo __deputados.json__.
