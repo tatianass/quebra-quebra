@@ -535,7 +535,7 @@ a.tab-label.active-btn {
     font-size: 0.85em;
 }
 
-#contact {
+#equipe {
     background: none repeat scroll 0 0 #fff;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
     padding: 6em 2em;
@@ -543,8 +543,8 @@ a.tab-label.active-btn {
     z-index: 2;
 }
 
-#contact input,
-#contact textarea {
+#equipe input,
+#equipe textarea {
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
     border-radius: 3px;
 }
@@ -554,11 +554,11 @@ form.customform button.color-btn {
     margin-top: 0;
 }
 
-#contact h2 {
+#equipe h2 {
     margin: 0 0 1.25em;
 }
 
-#contact h3 {
+#equipe h3 {
     color: #0e3911;
     font-size: 1em;
     font-weight: 700;
@@ -566,17 +566,17 @@ form.customform button.color-btn {
     text-transform: uppercase;
 }
 
-#contact p {
+#equipe p {
     font-size: 0.85em;
     font-style: normal;
     line-height: 2em;
 }
 
-#contact p strong {
+#equipe p strong {
     font-weight: 700;
 }
 
-#contact i {
+#equipe i {
     background: #e0e0e0 none repeat scroll 0 0;
     border-radius: 30px;
     color: #fff;

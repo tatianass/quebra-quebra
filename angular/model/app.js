@@ -1,1 +1,1 @@
-var app = angular.module("app", ['ngSanitize', 'ngColorThis']);
+var app = angular.module("app", []);

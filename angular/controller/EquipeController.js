@@ -11,11 +11,12 @@
             self.perguntasList = [];
             self.perguntaSelected = false;
             self.equipe = [
-                { id: "1", nome: "Fagner Lima", img: "assets/img/1.jpg" },
-                { id: "2", nome: "Ítalo Oliveira", img: "assets/img/1.jpg" },
-                { id: "3", nome: "Jesus Mercado", img: "assets/img/1.jpg" },
-                { id: "4", nome: "Leandro Balby", img: "assets/img/1.jpg" },
-                { id: "5", nome: "Tatiana", img: "assets/img/1.jpg" }
+                { id: "1", nome: "Fagner Lima", img: "assets/img/perguntas/cabin.png" },
+                { id: "5", nome: "Gil Branco", img: "assets/img/perguntas/cabin.png" },
+                { id: "2", nome: "Ítalo Oliveira", img: "assets/img/perguntas/cabin.png" },
+                { id: "3", nome: "Jesus Mercado", img: "assets/img/perguntas/cabin.png" },
+                { id: "4", nome: "Leandro Balby", img: "assets/img/perguntas/cabin.png" },
+                { id: "5", nome: "Tatiana", img: "assets/img/perguntas/cabin.png" }
             ]
         }
     ]);
