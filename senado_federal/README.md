@@ -3,7 +3,7 @@ Segue os passos utilizados para o download dos dados do site do senado.leg.gov:
 1º: Adicionar a extensão de baixar cookies no Mozilla:
 https://addons.mozilla.org/pt-BR/firefox/addon/export-cookies/?src=api
 
-2º: Entrar no site: http://www.senado.gov.br/transparencia/rh/servidores/
+2º: Entrar no site: http://www.senado.gov.br/transparencia/rh/servidores/nova_consulta.asp
 
 3º: Selecionar um servidor qualquer
 
