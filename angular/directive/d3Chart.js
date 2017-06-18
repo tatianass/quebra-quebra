@@ -26,9 +26,11 @@
                         height = svg.attr("height") - margin.top - margin.bottom,
                         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                    var svgLegenda = d3.select("#legend")
+                    var svgLegenda = d3.select("#legenda")
                         .append("svg")
-                        .attr('class', 'legend');
+                        .attr('class', 'legenda')
+                        .attr("width", wl * 5)
+                        .attr("height", hl * 5);
 
                     //formatando linguagem das datas
                     var locale = dataPTBR();
@@ -50,7 +52,7 @@
                         y = d3.scaleLinear().range([height, 0]),
                         z = d3.scaleOrdinal(d3.schemeCategory10);
 
-                    //desenha a linha baseado nos dados
+                    //add a linha baseado nos dados
                     var line = d3.line()
                         .curve(d3.curveBasis)
                         .x(function(d) {
@@ -85,14 +87,18 @@
                         // remover itens do grafico antigo
                         svg.selectAll(".funcionario").remove();
                         svg.selectAll(".axis").remove();
-                        svgLegenda.selectAll(".legend").remove();
+                        svgLegenda.selectAll(".legenda").remove();
                         svgLegenda.selectAll("g").remove();
 
-
+                        /**
+                         * Carrega os dados.
+                         * 
+                         * @param {String} dados - path para os dados.
+                         */
                         d3.tsv(dados, type, function(error, data) {
                             if (error) throw error;
 
-                            //transformando para json
+                            //transformando dados para json
                             var funcionarios = data.columns.slice(1).map(function(id) {
                                 return {
                                     id: id,
@@ -102,77 +108,11 @@
                                 };
                             });
 
-                            /**
-                             * Retorna a escala do eixo x.
-                             * 
-                             * @param {Object} d - dados.
-                             * 
-                             * @return {Date} data a ser usada no eixo x.
-                             */
-                            x.domain(d3.extent(data, function(d) {
-                                return d.date;
-                            }));
+                            carregaCoordenadas(funcionarios, data);
 
-                            /**
-                             * Retorna a escala do eixo x.
-                             * 
-                             * @param {f} f - dados do funcionario.
-                             * 
-                             * @return {Float} valor da remuneracao.
-                             */
-                            y.domain([
-                                d3.min(funcionarios, function(f) {
-                                    return d3.min(f.values, function(d) {
-                                        return d.remuneracao;
-                                    });
-                                }),
-                                d3.max(funcionarios, function(f) {
-                                    return d3.max(f.values, function(d) {
-                                        return d.remuneracao;
-                                    });
-                                })
-                            ]);
+                            addEixos();
 
-                            /**
-                             * Retorna a escala do eixo z.
-                             * 
-                             * @param {f} f - dados do funcionario.
-                             * 
-                             * @return {Number} valor da remuneracao.
-                             */
-                            z.domain(funcionarios.map(function(f) {
-                                return f.id;
-                            }));
-
-                            //desenhando eixo x
-                            g.append("g")
-                                .attr("class", "axis axis--x")
-                                .attr("transform", "translate(0," + height + ")")
-                                .call(d3.axisBottom(x)
-                                    .tickFormat(multiFormat));
-
-                            //desenhando eixo y
-                            g.append("g")
-                                .attr("class", "axis axis--y")
-                                .attr("transform", "translate(" + width + ",0)")
-                                .call(d3.axisRight(y));
-
-                            // add the X gridlines
-                            g.append("g")
-                                .attr("class", "grid")
-                                .attr("transform", "translate(0," + height + ")")
-                                .call(cria_grade_x()
-                                    .tickSize(-height)
-                                    .tickFormat("")
-                                );
-
-                            // add the Y gridlines
-                            g.append("g")
-                                .attr("class", "grid")
-                                .call(cria_grade_y()
-                                    .tickSize(-width)
-                                    .tickFormat("")
-                                );
+                            addGrids();
 
                             //adicionando os dados do funcionario
                             var funcionario = g.selectAll(".funcionario")
@@ -181,141 +121,19 @@
                                 .append("g")
                                 .attr("class", "funcionario");
 
-                            funcionario.append("path")
-                                .attr("class", "line")
-                                .attr("d", function(d) {
-                                    return line(d.values);
-                                })
-                                .style("stroke", function(d) {
-                                    return z(d.id);
-                                })
-                                .style("stroke-width", "1px")
-                                .style("opacity", "0.19");
+                            addLinhas(funcionario);
 
-                            svgLegenda.attr("width", wl * 5)
-                                .attr("height", hl * 5);
-
-                            var legend = svgLegenda.append("g")
+                            //criando legenda
+                            var legenda = svgLegenda.append("g")
                                 .attr('transform', 'translate(-20,30)');
 
-                            legend.selectAll('rect')
-                                .data(funcionarios)
-                                .enter()
-                                .append("rect")
-                                .attr("x", 30)
-                                .attr("y", function(d, i) {
-                                    return (i - 1) * 30;
-                                })
-                                .attr("width", 20)
-                                .attr("height", 20)
-                                .style("fill", function(d) {
-                                    return z(d.id);
-                                })
-                                .on("click", function(d) {
-                                    d.active = !d.active;
-                                    d3.select(this).style("opacity", function(d) {
-                                        if (d3.select(this).style("opacity") === "0.4") {
-                                            return "1";
-                                        } else {
-                                            return "0.4";
-                                        }
-                                    })
-                                });
+                            addRectLegenda(legenda, funcionarios);
 
-                            legend.selectAll('text')
-                                .data(funcionarios)
-                                .enter()
-                                .append("text")
-                                .attr("x", 60)
-                                .attr("width", 20)
-                                .attr("height", 20)
-                                .attr("y", function(d, i) {
-                                    return (i - 1) * 30 + 15;
-                                })
-                                .text(function(d) {
-                                    return d.id;
-                                });
+                            addTextoLegenda(legenda, funcionarios);
 
 
                             //adicionando tooltip do mouse     
-                            g.append("g")
-                                .attr("class", "mouse-over-effects");
-
-                            g.append("path") // linha que vai seguir mouse
-                                .attr("class", "mouse-line")
-                                .style("stroke", "black")
-                                .style("stroke-width", "1px")
-                                .style("opacity", "0");
-
-                            var lines = document.getElementsByClassName('line');
-
-                            var mousePerLine = funcionario
-                                .append("g")
-                                .attr("class", "mouse-per-line");
-
-                            mousePerLine.append("circle")
-                                .attr("r", 7)
-                                .style("stroke", function(d) {
-                                    return z(d.id);
-                                })
-                                .style("fill", "none")
-                                .style("stroke-width", "1.4px")
-                                .style("opacity", "0");
-
-                            mousePerLine.append("text")
-                                .attr("transform", "translate(10,3)");
-
-                            g.append('svg:rect') // adiciona uma reação aos movimentos do mouse
-                                .attr('width', width)
-                                .attr('height', height)
-                                .attr('fill', 'none')
-                                .attr('pointer-events', 'all')
-                                .on('mouseout', function() { // on mouse out esconde linhas, circulos e texto
-                                    d3.select(".mouse-line")
-                                        .style("opacity", "0");
-                                    d3.selectAll(".mouse-per-line circle")
-                                        .style("opacity", "0");
-                                    d3.selectAll(".mouse-per-line text")
-                                        .style("opacity", "0");
-                                    d3.selectAll(".mouse-per-line text")
-                                        .style("opacity", "0");
-                                    d3.selectAll(".line")
-                                        .style("opacity", "0.19");
-                                })
-                                .on('mouseover', function() { // on mouse in mostra linha, circulos e texto
-                                    d3.select(".mouse-line")
-                                        .style("opacity", "1");
-                                    d3.selectAll(".mouse-per-line circle")
-                                        .style("opacity", "1");
-                                    d3.selectAll(".mouse-per-line text")
-                                        .style("opacity", "1");
-                                    d3.selectAll(".line")
-                                        .style("opacity", "0.6");
-                                })
-                                .on('mousemove', function() { // mouse moving over canvas
-                                    var mouse = d3.mouse(this);
-
-                                    d3.selectAll(".mouse-per-line")
-                                        .attr("transform", function(d, i) {
-
-                                            var xDate = x.invert(mouse[0]),
-                                                bisect = d3.bisector(function(d) {
-                                                    return d.date;
-                                                }).left;
-                                            var idx = bisect(d.values, xDate);
-
-                                            d3.select(this).select('text')
-                                                .text(y.invert(y(d.values[idx].remuneracao)).toFixed(2));
-
-                                            d3.select(".mouse-line")
-                                                .attr("d", function() {
-                                                    var data = "M" + x(d.values[idx].date) + "," + height;
-                                                    data += " " + x(d.values[idx].date) + "," + 0;
-                                                    return data;
-                                                });
-                                            return "translate(" + x(d.values[idx].date) + "," + y(d.values[idx].remuneracao) + ")";
-                                        });
-                                });
+                            addTooltipMouse(funcionario);
                         });
                     };
 
@@ -364,6 +182,247 @@
                             "months": 'Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro'.split('_'),
                             "shortMonths": 'Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez'.split('_')
                         });
+                    };
+
+                    //Função que carrega as coordenadas do gráfico.
+                    function carregaCoordenadas(funcionarios, data) {
+                        /**
+                         * Retorna a escala do eixo x.
+                         * 
+                         * @param {Object} d - dados.
+                         * 
+                         * @return {Date} data a ser usada no eixo x.
+                         */
+                        x.domain(d3.extent(data, function(d) {
+                            return d.date;
+                        }));
+
+                        /**
+                         * Retorna a escala do eixo x.
+                         * 
+                         * @param {f} f - dados do funcionario.
+                         * 
+                         * @return {Float} valor da remuneracao.
+                         */
+                        y.domain([
+                            d3.min(funcionarios, function(f) {
+                                return d3.min(f.values, function(d) {
+                                    return d.remuneracao;
+                                });
+                            }),
+                            d3.max(funcionarios, function(f) {
+                                return d3.max(f.values, function(d) {
+                                    return d.remuneracao;
+                                });
+                            })
+                        ]);
+
+                        /**
+                         * Retorna a escala do eixo z.
+                         * 
+                         * @param {f} f - dados do funcionario.
+                         * 
+                         * @return {Number} valor da remuneracao.
+                         */
+                        z.domain(funcionarios.map(function(f) {
+                            return f.id;
+                        }));
+                    };
+
+                    //Função que add os eixos do gráfico.
+                    function addEixos() {
+                        //addndo eixo x
+                        g.append("g")
+                            .attr("class", "axis axis--x")
+                            .attr("transform", "translate(0," + height + ")")
+                            .call(d3.axisBottom(x)
+                                .tickFormat(multiFormat));
+
+                        //addndo eixo y
+                        g.append("g")
+                            .attr("class", "axis axis--y")
+                            .attr("transform", "translate(" + width + ",0)")
+                            .call(d3.axisRight(y));
+                    };
+
+                    //Função que add as grades do gráfico.
+                    function addGrids() {
+                        // add the X gridlines
+                        g.append("g")
+                            .attr("class", "grid")
+                            .attr("transform", "translate(0," + height + ")")
+                            .call(cria_grade_x()
+                                .tickSize(-height)
+                                .tickFormat("")
+                            );
+
+                        // add the Y gridlines
+                        g.append("g")
+                            .attr("class", "grid")
+                            .call(cria_grade_y()
+                                .tickSize(-width)
+                                .tickFormat("")
+                            );
+                    };
+
+                    //Desenha as linhas do gráfico.
+                    function addLinhas(funcionario) {
+                        funcionario.append("path")
+                            .attr("class", "line")
+                            .attr("d", function(d) {
+                                return line(d.values);
+                            })
+                            .style("stroke", function(d) {
+                                return z(d.id);
+                            })
+                            .style("stroke-width", "1px")
+                            .style("opacity", "0.19");
+                    };
+
+                    /**
+                     * Desenha os retângulos da legenda.
+                     * 
+                     * @param {Object} legenda - os dados da legenda.
+                     * @param {Object} funcionarios - os dados dos funcionarios.
+                     */
+                    function addRectLegenda(legenda, funcionarios) {
+                        legenda.selectAll('rect')
+                            .data(funcionarios)
+                            .enter()
+                            .append("rect")
+                            .attr("x", 30)
+                            .attr("y", function(d, i) {
+                                return (i - 1) * 30;
+                            })
+                            .attr("width", 20)
+                            .attr("height", 20)
+                            .style("fill", function(d) {
+                                return z(d.id);
+                            })
+                            .on("click", function(d) {
+                                d3.select(this).style("opacity", function(d) {
+                                    return checaOpacidadeLegenda(d3.select(this).style("opacity"));
+                                });
+                            });
+                    };
+
+                    /**
+                     * Retorna a opacidade se o retângulo for clicado.
+                     * 
+                     * @param {String} opacidade - 1 padrão e 0.4 desativado.
+                     * 
+                     * @return {String} opacidade - nova opacidade.
+                     */
+                    function checaOpacidadeLegenda(opacidade) {
+                        if (opacidade === "0.4") {
+                            opacidade = "1";
+                        } else {
+                            opacidade = "0.4";
+                        }
+
+                        return opacidade;
+                    };
+
+                    /**
+                     * Retorna a opacidade se o retângulo for clicado.
+                     * 
+                     * @param {String} opacidade - 1 padrão e 0.4 desativado.
+                     * 
+                     * @return {String} opacidade - nova opacidade.
+                     */
+                    function addTextoLegenda(legenda, funcionarios) {
+                        legenda.selectAll('text')
+                            .data(funcionarios)
+                            .enter()
+                            .append("text")
+                            .attr("x", 60)
+                            .attr("width", 20)
+                            .attr("height", 20)
+                            .attr("y", function(d, i) {
+                                return (i - 1) * 30 + 15;
+                            })
+                            .text(function(d) {
+                                return d.id;
+                            });
+                    };
+
+                    function addTooltipMouse(funcionario) {
+                        g.append("g")
+                            .attr("class", "mouse-over-effects");
+
+                        g.append("path") // linha que vai seguir mouse
+                            .attr("class", "mouse-line")
+                            .style("stroke", "black")
+                            .style("stroke-width", "1px")
+                            .style("opacity", "0");
+
+                        var mousePerLine = funcionario
+                            .append("g")
+                            .attr("class", "mouse-per-line");
+
+                        mousePerLine.append("circle")
+                            .attr("r", 7)
+                            .style("stroke", function(d) {
+                                return z(d.id);
+                            })
+                            .style("fill", "none")
+                            .style("stroke-width", "1.4px")
+                            .style("opacity", "0");
+
+                        mousePerLine.append("text")
+                            .attr("transform", "translate(10,3)");
+
+                        g.append('svg:rect') // adiciona uma reação aos movimentos do mouse
+                            .attr('width', width)
+                            .attr('height', height)
+                            .attr('fill', 'none')
+                            .attr('pointer-events', 'all')
+                            .on('mouseout', function() { // on mouse out esconde linhas, circulos e texto
+                                d3.select(".mouse-line")
+                                    .style("opacity", "0");
+                                d3.selectAll(".mouse-per-line circle")
+                                    .style("opacity", "0");
+                                d3.selectAll(".mouse-per-line text")
+                                    .style("opacity", "0");
+                                d3.selectAll(".mouse-per-line text")
+                                    .style("opacity", "0");
+                                d3.selectAll(".line")
+                                    .style("opacity", "0.19");
+                            })
+                            .on('mouseover', function() { // on mouse in mostra linha, circulos e texto
+                                d3.select(".mouse-line")
+                                    .style("opacity", "1");
+                                d3.selectAll(".mouse-per-line circle")
+                                    .style("opacity", "1");
+                                d3.selectAll(".mouse-per-line text")
+                                    .style("opacity", "1");
+                                d3.selectAll(".line")
+                                    .style("opacity", "0.6");
+                            })
+                            .on('mousemove', function() { // mouse moving over canvas
+                                var mouse = d3.mouse(this);
+
+                                d3.selectAll(".mouse-per-line")
+                                    .attr("transform", function(d, i) {
+
+                                        var xDate = x.invert(mouse[0]),
+                                            bisect = d3.bisector(function(d) {
+                                                return d.date;
+                                            }).left;
+                                        var idx = bisect(d.values, xDate);
+
+                                        d3.select(this).select('text')
+                                            .text(y.invert(y(d.values[idx].remuneracao)).toFixed(2));
+
+                                        d3.select(".mouse-line")
+                                            .attr("d", function() {
+                                                var data = "M" + x(d.values[idx].date) + "," + height;
+                                                data += " " + x(d.values[idx].date) + "," + 0;
+                                                return data;
+                                            });
+                                        return "translate(" + x(d.values[idx].date) + "," + y(d.values[idx].remuneracao) + ")";
+                                    });
+                            });
                     };
 
                     /**
