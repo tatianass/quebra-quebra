@@ -34,17 +34,20 @@
     color: orange;
 }
 
-.legend {
-    /* NEW */
-    font-size: 12px;
-    /* NEW */
+rect {
+    stroke-width: 2;
 }
 
+.title {
+    font: 13px sans-serif;
+}
 
-/* NEW */
+#legend {
+    overflow-y: auto;
+    height: 60px;
+    width: 300px;
+}
 
-rect {
-    /* NEW */
-    stroke-width: 2;
-    /* NEW */
+.chart {
+    float: left;
 }

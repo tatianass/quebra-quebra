@@ -9,20 +9,31 @@
                     dados: '='
                 },
                 link: function(scope, iElement, iAttrs) {
+
+                    var margin = { top: 20, right: 80, bottom: 30, left: 50 };
+                    var w = 1200;
+                    var h = 500;
+                    var wl = 30;
+                    var hl = 30;
                     //definindo tamanho do gráfico
-                    var svg = d3.select("svg")
+                    var svg = d3.select("#chart")
+                        .append("svg")
+                        .attr("width", w)
+                        .attr("height", h)
                         .attr("class", "graph-svg-component"),
                         margin = { top: 20, right: 80, bottom: 30, left: 50 },
                         width = svg.attr("width") - margin.left - margin.right,
                         height = svg.attr("height") - margin.top - margin.bottom,
                         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+                    var svgLegenda = d3.select("#legend")
+                        .append("svg")
+                        .attr('class', 'legend');
+
                     //formatando linguagem das datas
                     var locale = dataPTBR();
 
                     var color = d3.scaleOrdinal(d3.schemeCategory20b);
-                    var legendRectSize = 10; // NEW
-                    var legendSpacing = 4; // NEW
 
                     //formatando data
                     var formatMillisecond = locale.format(".%L"),
@@ -74,6 +85,8 @@
                         // remover itens do grafico antigo
                         svg.selectAll(".funcionario").remove();
                         svg.selectAll(".axis").remove();
+                        svgLegenda.selectAll(".legend").remove();
+                        svgLegenda.selectAll("g").remove();
 
 
                         d3.tsv(dados, type, function(error, data) {
@@ -179,34 +192,50 @@
                                 .style("stroke-width", "1px")
                                 .style("opacity", "0.19");
 
-                            var legend = svg.selectAll('.legend') // NEW
-                                .data(funcionarios) // NEW
-                                .enter() // NEW
-                                .append('g') // NEW
-                                .attr('class', 'legend') // NEW
-                                .attr('transform', function(d, i) {
-                                    var height = legendRectSize + legendSpacing;
-                                    var horz = 2 * (width / 2); // NEW
-                                    var vert = i * (height) + height; // NEW
-                                    return 'translate(' + horz + ',' + vert + ')'; // NEW
-                                }); // NEW
+                            svgLegenda.attr("width", wl * 5)
+                                .attr("height", hl * 5);
 
-                            legend.append('rect')
-                                .attr('width', legendRectSize) // NEW
-                                .attr('height', legendRectSize) // NEW
-                                .style('fill', function(d) {
-                                    return z(d.id);
-                                }) // NEW
-                                .style('stroke', function(d) {
-                                    return z(d.id);
-                                }); // NEW
+                            var legend = svgLegenda.append("g")
+                                .attr('transform', 'translate(-20,30)');
 
-                            legend.append('text') // NEW
-                                .attr('x', legendRectSize + legendSpacing) // NEW
-                                .attr('y', legendRectSize - legendSpacing) // NEW
+                            legend.selectAll('rect')
+                                .data(funcionarios)
+                                .enter()
+                                .append("rect")
+                                .attr("x", 30)
+                                .attr("y", function(d, i) {
+                                    return (i - 1) * 30;
+                                })
+                                .attr("width", 20)
+                                .attr("height", 20)
+                                .style("fill", function(d) {
+                                    return z(d.id);
+                                })
+                                .on("click", function(d) {
+                                    d.active = !d.active;
+                                    d3.select(this).style("opacity", function(d) {
+                                        if (d3.select(this).style("opacity") === "0.4") {
+                                            return "1";
+                                        } else {
+                                            return "0.4";
+                                        }
+                                    })
+                                });
+
+                            legend.selectAll('text')
+                                .data(funcionarios)
+                                .enter()
+                                .append("text")
+                                .attr("x", 60)
+                                .attr("width", 20)
+                                .attr("height", 20)
+                                .attr("y", function(d, i) {
+                                    return (i - 1) * 30 + 15;
+                                })
                                 .text(function(d) {
                                     return d.id;
-                                }); // NEW
+                                });
+
 
                             //adicionando tooltip do mouse     
                             g.append("g")
@@ -286,9 +315,6 @@
                                                 });
                                             return "translate(" + x(d.values[idx].date) + "," + y(d.values[idx].remuneracao) + ")";
                                         });
-                                })
-                                .on('click', function() {
-
                                 });
                         });
                     };

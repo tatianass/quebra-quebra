@@ -5,9 +5,6 @@
     <title></title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="assets/css/style.css">
-    <svg width="960" height="500"></svg>
-    <script src="assets/js/d3.min.js"></script>
-    <script src="assets/js/d3.legend.js"></script>
     <!-- AngularJS -->
     <script src="assets/js/angular.min.js"></script>
     <script src="assets/js/angular-locale_pt-br.js"></script>
@@ -23,8 +20,11 @@
 </head>
 
 <body data-ng-controller="d3Controller as d3Ctrl">
-    <button data-ng-click="d3Ctrl.setDados()">Mudar</button>
+    <div id="legend" class="legend"></div>
     <d3-chart dados="d3Ctrl.dados"></d3-chart>
+    <div id="chart" class="chart"></div>
+    <button data-ng-click="d3Ctrl.setDados()">Mudar</button>
+    <script src="assets/js/d3.min.js"></script>
 </body>
 
 </html>
