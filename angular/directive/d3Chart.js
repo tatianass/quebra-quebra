@@ -171,34 +171,15 @@
                                 })
                                 .style("stroke", function(d) {
                                     return z(d.id);
-                                });
+                                })
+                                .style("stroke-width", "1px")
+                                .style("opacity", "0.19");;
 
-                            var point = funcionario.append("g")
-                                .attr("class", "line-point");
-
-                            point.selectAll('circle')
-                                .data(function(d) {
-                                    return d.values
-                                })
-                                .enter().append('circle')
-                                .attr("cx", function(d) {
-                                    return x(d.date)
-                                })
-                                .attr("cy", function(d) {
-                                    return y(d.remuneracao)
-                                })
-                                .attr("r", 3.5)
-                                .style("fill", "white")
-                                .style("stroke", function(d) {
-                                    return z(this.parentNode.__data__.id);
-                                })
-                                /*.style("opacity", "0")*/
-                            ;
-
+                            //adicionando tooltip do mouse     
                             g.append("g")
                                 .attr("class", "mouse-over-effects");
 
-                            g.append("path") // this is the black vertical line to follow mouse
+                            g.append("path") // linha que vai seguir mouse
                                 .attr("class", "mouse-line")
                                 .style("stroke", "black")
                                 .style("stroke-width", "1px")
@@ -216,32 +197,38 @@
                                     return z(d.id);
                                 })
                                 .style("fill", "none")
-                                .style("stroke-width", "1px")
+                                .style("stroke-width", "1.4px")
                                 .style("opacity", "0");
 
                             mousePerLine.append("text")
                                 .attr("transform", "translate(10,3)");
 
-                            g.append('svg:rect') // append a rect to catch mouse movements on canvas
-                                .attr('width', width) // can't catch mouse events on a g element
+                            g.append('svg:rect') // adiciona uma reação aos movimentos do mouse
+                                .attr('width', width)
                                 .attr('height', height)
                                 .attr('fill', 'none')
                                 .attr('pointer-events', 'all')
-                                .on('mouseout', function() { // on mouse out hide line, circles and text
+                                .on('mouseout', function() { // on mouse out esconde linhas, circulos e texto
                                     d3.select(".mouse-line")
                                         .style("opacity", "0");
                                     d3.selectAll(".mouse-per-line circle")
                                         .style("opacity", "0");
                                     d3.selectAll(".mouse-per-line text")
                                         .style("opacity", "0");
+                                    d3.selectAll(".mouse-per-line text")
+                                        .style("opacity", "0");
+                                    d3.selectAll(".line")
+                                        .style("opacity", "0.19");
                                 })
-                                .on('mouseover', function() { // on mouse in show line, circles and text
+                                .on('mouseover', function() { // on mouse in mostra linha, circulos e texto
                                     d3.select(".mouse-line")
                                         .style("opacity", "1");
                                     d3.selectAll(".mouse-per-line circle")
                                         .style("opacity", "1");
                                     d3.selectAll(".mouse-per-line text")
                                         .style("opacity", "1");
+                                    d3.selectAll(".line")
+                                        .style("opacity", "0.6");
                                 })
                                 .on('mousemove', function() { // mouse moving over canvas
                                     var mouse = d3.mouse(this);
