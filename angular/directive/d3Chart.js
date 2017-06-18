@@ -10,7 +10,8 @@
                 },
                 link: function(scope, iElement, iAttrs) {
                     //definindo tamanho do gráfico
-                    var svg = d3.select("svg"),
+                    var svg = d3.select("svg")
+                        .attr("class", "graph-svg-component"),
                         margin = { top: 20, right: 80, bottom: 30, left: 50 },
                         width = svg.attr("width") - margin.left - margin.right,
                         height = svg.attr("height") - margin.top - margin.bottom,
@@ -136,13 +137,25 @@
                             //desenhando eixo y
                             g.append("g")
                                 .attr("class", "axis axis--y")
-                                .call(d3.axisLeft(y))
-                                .append("text")
-                                .attr("transform", "rotate(-90)")
-                                .attr("y", 6)
-                                .attr("dy", "0.71em")
-                                .attr("fill", "#000")
-                                .text("Remuneração, R$");
+                                .attr("transform", "translate(" + width + ",0)")
+                                .call(d3.axisRight(y));
+
+                            // add the X gridlines
+                            g.append("g")
+                                .attr("class", "grid")
+                                .attr("transform", "translate(0," + height + ")")
+                                .call(make_x_gridlines()
+                                    .tickSize(-height)
+                                    .tickFormat("")
+                                );
+
+                            // add the Y gridlines
+                            g.append("g")
+                                .attr("class", "grid")
+                                .call(make_y_gridlines()
+                                    .tickSize(-width)
+                                    .tickFormat("")
+                                );
 
                             //adicionando os dados do funcionario
                             var funcionario = g.selectAll(".funcionario")
@@ -231,6 +244,18 @@
                      */
                     function multiFormat(date) {
                         return (d3.timeSecond(date) < date ? formatMillisecond : d3.timeMinute(date) < date ? formatSecond : d3.timeHour(date) < date ? formatMinute : d3.timeDay(date) < date ? formatHour : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek) : d3.timeYear(date) < date ? formatMonth : formatYear)(date);
+                    };
+
+                    // gridlines in x axis function
+                    function make_x_gridlines() {
+                        return d3.axisBottom(x)
+                            .ticks(5)
+                    };
+
+                    // gridlines in y axis function
+                    function make_y_gridlines() {
+                        return d3.axisLeft(y)
+                            .ticks(5)
                     };
                 }
             };

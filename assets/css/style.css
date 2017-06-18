@@ -1,9 +1,28 @@
-.axis--x path {
-  display: none;
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2px;
 }
 
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
+.grid line {
+    stroke: #FBFBFB;
+    shape-rendering: crispEdges;
+}
+
+.grid path {
+    stroke-width: 0;
+}
+
+.axis--x path,
+.axis--y path {
+    display: none;
+}
+
+.axis--x line,
+.axis--y line {
+    stroke: none;
+}
+
+.graph-svg-component {
+    background-color: #F0F4F5;
 }
