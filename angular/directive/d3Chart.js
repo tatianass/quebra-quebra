@@ -109,9 +109,7 @@
                             });
 
                             carregaCoordenadas(funcionarios, data);
-
                             addEixos();
-
                             addGrids();
 
                             //adicionando os dados do funcionario
@@ -128,10 +126,7 @@
                                 .attr('transform', 'translate(-20,30)');
 
                             addRectLegenda(legenda, funcionarios);
-
                             addTextoLegenda(legenda, funcionarios);
-
-
                             //adicionando tooltip do mouse     
                             addTooltipMouse(funcionario);
                         });
@@ -324,11 +319,10 @@
                     };
 
                     /**
-                     * Retorna a opacidade se o retângulo for clicado.
+                     * Adciona legenda ao mapa.
                      * 
-                     * @param {String} opacidade - 1 padrão e 0.4 desativado.
-                     * 
-                     * @return {String} opacidade - nova opacidade.
+                     * @param {Object} legenda - informações da legenda.
+                     * @param {Object} funcionarios - dados dos funcionários.
                      */
                     function addTextoLegenda(legenda, funcionarios) {
                         legenda.selectAll('text')
@@ -346,6 +340,11 @@
                             });
                     };
 
+                    /**
+                     * Adiciona tooltip do mouse ao mapa.
+                     * 
+                     * @param {Object} funcionarios - dados dos funcionários.
+                     */
                     function addTooltipMouse(funcionario) {
                         g.append("g")
                             .attr("class", "mouse-over-effects");
@@ -360,6 +359,17 @@
                             .append("g")
                             .attr("class", "mouse-per-line");
 
+                        addCirculosTooltip(mousePerLine);
+                        addTextoTooltip(mousePerLine);
+                        addReacaoMouse();
+                    };
+
+                    /**
+                     * Adiciona circulos ao tooltip do mapa.
+                     * 
+                     * @param {Object} mousePerLine - informações do tooltip.
+                     */
+                    function addCirculosTooltip(mousePerLine) {
                         mousePerLine.append("circle")
                             .attr("r", 7)
                             .style("stroke", function(d) {
@@ -368,60 +378,92 @@
                             .style("fill", "none")
                             .style("stroke-width", "1.4px")
                             .style("opacity", "0");
+                    };
 
+                    /**
+                     * Adiciona texto ao tooltip do mapa.
+                     * 
+                     * @param {Object} mousePerLine - informações do tooltip.
+                     */
+                    function addTextoTooltip(mousePerLine) {
                         mousePerLine.append("text")
                             .attr("transform", "translate(10,3)");
+                    };
 
-                        g.append('svg:rect') // adiciona uma reação aos movimentos do mouse
+                    /**
+                     * Adiciona uma reação aos movimentos do mouse.
+                     */
+                    function addReacaoMouse() {
+                        var tooltipOpacidadeOut = "0";
+                        var tooltipOpacidadeOver = "1";
+                        var charOpacidadeOut = "0.19";
+                        var charOpacidadeOver = "0.6";
+
+                        g.append('svg:rect') // 
                             .attr('width', width)
                             .attr('height', height)
                             .attr('fill', 'none')
                             .attr('pointer-events', 'all')
                             .on('mouseout', function() { // on mouse out esconde linhas, circulos e texto
-                                d3.select(".mouse-line")
-                                    .style("opacity", "0");
-                                d3.selectAll(".mouse-per-line circle")
-                                    .style("opacity", "0");
-                                d3.selectAll(".mouse-per-line text")
-                                    .style("opacity", "0");
-                                d3.selectAll(".mouse-per-line text")
-                                    .style("opacity", "0");
-                                d3.selectAll(".line")
-                                    .style("opacity", "0.19");
+                                setOpacidadeTooltip(tooltipOpacidadeOut, charOpacidadeOut);
                             })
                             .on('mouseover', function() { // on mouse in mostra linha, circulos e texto
-                                d3.select(".mouse-line")
-                                    .style("opacity", "1");
-                                d3.selectAll(".mouse-per-line circle")
-                                    .style("opacity", "1");
-                                d3.selectAll(".mouse-per-line text")
-                                    .style("opacity", "1");
-                                d3.selectAll(".line")
-                                    .style("opacity", "0.6");
+                                setOpacidadeTooltip(tooltipOpacidadeOver, charOpacidadeOver);
                             })
                             .on('mousemove', function() { // mouse moving over canvas
-                                var mouse = d3.mouse(this);
+                                setMouseMove(d3.mouse(this));
+                            });
+                    };
 
-                                d3.selectAll(".mouse-per-line")
-                                    .attr("transform", function(d, i) {
+                    /**
+                     * Seta opacidade do tooltip e do mapa.
+                     * 
+                     * @param {Object} tooltip - informações do tooltip.
+                     * @param {Object} chart - informações do mapa.
+                     */
+                    function setOpacidadeTooltip(tooltip, chart) {
+                        d3.select(".mouse-line")
+                            .style("opacity", tooltip);
+                        d3.selectAll(".mouse-per-line circle")
+                            .style("opacity", tooltip);
+                        d3.selectAll(".mouse-per-line text")
+                            .style("opacity", tooltip);
+                        d3.selectAll(".mouse-per-line text")
+                            .style("opacity", tooltip);
+                        d3.selectAll(".line")
+                            .style("opacity", chart);
+                    };
 
-                                        var xDate = x.invert(mouse[0]),
-                                            bisect = d3.bisector(function(d) {
-                                                return d.date;
-                                            }).left;
-                                        var idx = bisect(d.values, xDate);
+                    /**
+                     * Seta o movimento do mouse no mapa.
+                     * 
+                     * @param {Object} mouse - informações do mouse.
+                     */
+                    function setMouseMove(mouse) {
+                        var mouse = mouse;
 
-                                        d3.select(this).select('text')
-                                            .text(y.invert(y(d.values[idx].remuneracao)).toFixed(2));
+                        d3.selectAll(".mouse-per-line")
+                            .attr("transform", function(d, i) {
 
-                                        d3.select(".mouse-line")
-                                            .attr("d", function() {
-                                                var data = "M" + x(d.values[idx].date) + "," + height;
-                                                data += " " + x(d.values[idx].date) + "," + 0;
-                                                return data;
-                                            });
-                                        return "translate(" + x(d.values[idx].date) + "," + y(d.values[idx].remuneracao) + ")";
+                                //encontra a posição do mouse no mapa em relação ao dado.
+                                var xDate = x.invert(mouse[0]),
+                                    bisect = d3.bisector(function(d) {
+                                        return d.date;
+                                    }).left;
+                                var idx = bisect(d.values, xDate);
+
+                                //seta a posição do texto
+                                d3.select(this).select('text')
+                                    .text(y.invert(y(d.values[idx].remuneracao)).toFixed(2));
+
+                                //seta a posição da linha
+                                d3.select(".mouse-line")
+                                    .attr("d", function() {
+                                        var data = "M" + x(d.values[idx].date) + "," + height;
+                                        data += " " + x(d.values[idx].date) + "," + 0;
+                                        return data;
                                     });
+                                return "translate(" + x(d.values[idx].date) + "," + y(d.values[idx].remuneracao) + ")";
                             });
                     };
 
