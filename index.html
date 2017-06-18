@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR" ng-app="app">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <svg width="960" height="500"></svg>
+    <script src="assets/js/d3.min.js"></script>
+    <!-- AngularJS -->
+    <script src="assets/js/angular.min.js"></script>
+    <script src="assets/js/angular-locale_pt-br.js"></script>
+    <!-- Model -->
+    <script type="text/javascript" src="angular/model/app.js"></script>
+    <script type="text/javascript" src="angular/constants.js"></script>
+    <!-- Service -->
+    <script type="text/javascript" src="angular/service/d3Service.js"></script>
+    <!-- Directive -->
+    <script type="text/javascript" src="angular/directive/d3Chart.js"></script>
+    <!-- Controller -->
+    <script type="text/javascript" src="angular/controller/d3Controller.js"></script>
+</head>
+
+<body data-ng-controller="d3Controller as d3Ctrl">
+    <button data-ng-click="d3Ctrl.setDados()">Mudar</button>
+    <d3-chart dados="d3Ctrl.dados"></d3-chart>
+</body>
+
+</html>
