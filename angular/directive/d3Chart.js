@@ -17,6 +17,8 @@
                         height = svg.attr("height") - margin.top - margin.bottom,
                         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+                    var color = d3.scaleOrdinal(d3.schemeCategory10);
+
                     //formatando linguagem das datas
                     var locale = dataPTBR();
 
@@ -144,7 +146,7 @@
                             g.append("g")
                                 .attr("class", "grid")
                                 .attr("transform", "translate(0," + height + ")")
-                                .call(make_x_gridlines()
+                                .call(cria_grade_x()
                                     .tickSize(-height)
                                     .tickFormat("")
                                 );
@@ -152,7 +154,7 @@
                             // add the Y gridlines
                             g.append("g")
                                 .attr("class", "grid")
-                                .call(make_y_gridlines()
+                                .call(cria_grade_y()
                                     .tickSize(-width)
                                     .tickFormat("")
                                 );
@@ -184,6 +186,107 @@
                                 .style("font", "10px sans-serif")
                                 .text(function(d) {
                                     return d.id;
+                                });
+
+                            var legend = svg.selectAll('g')
+                                .data(funcionarios)
+                                .enter()
+                                .append('g')
+                                .attr('class', 'legend');
+
+                            legend.append('rect')
+                                .attr('x', width - 20)
+                                .attr('y', function(d, i) {
+                                    return i * 20;
+                                })
+                                .attr('width', 10)
+                                .attr('height', 10)
+                                .style('fill', function(d) {
+                                    return color(d.id);
+                                });
+
+                            legend.append('text')
+                                .attr('x', width - 8)
+                                .attr('y', function(d, i) {
+                                    return (i * 20) + 9;
+                                })
+                                .text(function(d) {
+                                    return d.id;
+                                });
+
+                            var mouseG = svg.append("g")
+                                .attr("class", "mouse-over-effects");
+
+                            mouseG.append("path") // this is the black vertical line to follow mouse
+                                .attr("class", "mouse-line")
+                                .style("stroke", "black")
+                                .style("stroke-width", "1px")
+                                .style("opacity", "0");
+
+                            var lines = document.getElementsByClassName('line');
+
+                            var mousePerLine = mouseG.selectAll('.mouse-per-line')
+                                .data(funcionarios)
+                                .enter()
+                                .append("g")
+                                .attr("class", "mouse-per-line");
+
+                            mousePerLine.append("circle")
+                                .attr("r", 7)
+                                .style("stroke", function(d) {
+                                    return color(d.id);
+                                })
+                                .style("fill", "none")
+                                .style("stroke-width", "1px")
+                                .style("opacity", "0");
+
+                            mousePerLine.append("text")
+                                .attr("transform", "translate(10,3)");
+
+                            mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+                                .attr('width', width) // can't catch mouse events on a g element
+                                .attr('height', height)
+                                .attr('fill', 'none')
+                                .attr('pointer-events', 'all')
+                                .on('mouseout', function() { // on mouse out hide line, circles and text
+                                    d3.select(".mouse-line")
+                                        .style("opacity", "0");
+                                    d3.selectAll(".mouse-per-line circle")
+                                        .style("opacity", "0");
+                                    d3.selectAll(".mouse-per-line text")
+                                        .style("opacity", "0");
+                                })
+                                .on('mouseover', function() { // on mouse in show line, circles and text
+                                    d3.select(".mouse-line")
+                                        .style("opacity", "1");
+                                    d3.selectAll(".mouse-per-line circle")
+                                        .style("opacity", "1");
+                                    d3.selectAll(".mouse-per-line text")
+                                        .style("opacity", "1");
+                                })
+                                .on('mousemove', function() { // mouse moving over canvas
+                                    var mouse = d3.mouse(this);
+
+                                    d3.selectAll(".mouse-per-line")
+                                        .attr("transform", function(d, i) {
+
+                                            var xDate = x.invert(mouse[0]),
+                                                bisect = d3.bisector(function(d) {
+                                                    return d.date;
+                                                }).left;
+                                            var idx = bisect(d.values, xDate);
+
+                                            d3.select(this).select('text')
+                                                .text(y.invert(y(d.values[idx].remuneracao)).toFixed(2));
+
+                                            d3.select(".mouse-line")
+                                                .attr("d", function() {
+                                                    var data = "M" + x(d.values[idx].date) + "," + height;
+                                                    data += " " + x(d.values[idx].date) + "," + 0;
+                                                    return data;
+                                                });
+                                            return "translate(" + x(d.values[idx].date) + "," + y(d.values[idx].remuneracao) + ")";
+                                        });
                                 });
                         });
                     };
@@ -233,7 +336,7 @@
                             "months": 'Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro'.split('_'),
                             "shortMonths": 'Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez'.split('_')
                         });
-                    }
+                    };
 
                     /**
                      * Parser da data para o formato especificado.
@@ -246,14 +349,22 @@
                         return (d3.timeSecond(date) < date ? formatMillisecond : d3.timeMinute(date) < date ? formatSecond : d3.timeHour(date) < date ? formatMinute : d3.timeDay(date) < date ? formatHour : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek) : d3.timeYear(date) < date ? formatMonth : formatYear)(date);
                     };
 
-                    // gridlines in x axis function
-                    function make_x_gridlines() {
+                    /**
+                     * Faz a grade do eixo x.
+                     * 
+                     * @return {Object} propriedade de ticks.
+                     */
+                    function cria_grade_x() {
                         return d3.axisBottom(x)
                             .ticks(5)
                     };
 
-                    // gridlines in y axis function
-                    function make_y_gridlines() {
+                    /**
+                     * Faz a grade do eixo y.
+                     * 
+                     * @return {Object} propriedade de ticks.
+                     */
+                    function cria_grade_y() {
                         return d3.axisLeft(y)
                             .ticks(5)
                     };
