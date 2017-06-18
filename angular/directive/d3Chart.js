@@ -162,7 +162,8 @@
                             //adicionando os dados do funcionario
                             var funcionario = g.selectAll(".funcionario")
                                 .data(funcionarios)
-                                .enter().append("g")
+                                .enter()
+                                .append("g")
                                 .attr("class", "funcionario");
 
                             funcionario.append("path")
@@ -188,36 +189,10 @@
                                     return d.id;
                                 });
 
-                            var legend = svg.selectAll('g')
-                                .data(funcionarios)
-                                .enter()
-                                .append('g')
-                                .attr('class', 'legend');
-
-                            legend.append('rect')
-                                .attr('x', width - 20)
-                                .attr('y', function(d, i) {
-                                    return i * 20;
-                                })
-                                .attr('width', 10)
-                                .attr('height', 10)
-                                .style('fill', function(d) {
-                                    return color(d.id);
-                                });
-
-                            legend.append('text')
-                                .attr('x', width - 8)
-                                .attr('y', function(d, i) {
-                                    return (i * 20) + 9;
-                                })
-                                .text(function(d) {
-                                    return d.id;
-                                });
-
-                            var mouseG = svg.append("g")
+                            g.append("g")
                                 .attr("class", "mouse-over-effects");
 
-                            mouseG.append("path") // this is the black vertical line to follow mouse
+                            g.append("path") // this is the black vertical line to follow mouse
                                 .attr("class", "mouse-line")
                                 .style("stroke", "black")
                                 .style("stroke-width", "1px")
@@ -225,9 +200,7 @@
 
                             var lines = document.getElementsByClassName('line');
 
-                            var mousePerLine = mouseG.selectAll('.mouse-per-line')
-                                .data(funcionarios)
-                                .enter()
+                            var mousePerLine = funcionario
                                 .append("g")
                                 .attr("class", "mouse-per-line");
 
@@ -243,7 +216,7 @@
                             mousePerLine.append("text")
                                 .attr("transform", "translate(10,3)");
 
-                            mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+                            g.append('svg:rect') // append a rect to catch mouse movements on canvas
                                 .attr('width', width) // can't catch mouse events on a g element
                                 .attr('height', height)
                                 .attr('fill', 'none')
