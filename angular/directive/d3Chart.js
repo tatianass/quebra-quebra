@@ -17,8 +17,6 @@
                         height = svg.attr("height") - margin.top - margin.bottom,
                         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                    var color = d3.scaleOrdinal(d3.schemeCategory10);
-
                     //formatando linguagem das datas
                     var locale = dataPTBR();
 
@@ -175,19 +173,27 @@
                                     return z(d.id);
                                 });
 
-                            funcionario.append("text")
-                                .datum(function(d) {
-                                    return { id: d.id, value: d.values[d.values.length - 1] };
+                            var point = funcionario.append("g")
+                                .attr("class", "line-point");
+
+                            point.selectAll('circle')
+                                .data(function(d) {
+                                    return d.values
                                 })
-                                .attr("transform", function(d) {
-                                    return "translate(" + x(d.value.date) + "," + y(d.value.remuneracao) + ")";
+                                .enter().append('circle')
+                                .attr("cx", function(d) {
+                                    return x(d.date)
                                 })
-                                .attr("x", 3)
-                                .attr("dy", "0.35em")
-                                .style("font", "10px sans-serif")
-                                .text(function(d) {
-                                    return d.id;
-                                });
+                                .attr("cy", function(d) {
+                                    return y(d.remuneracao)
+                                })
+                                .attr("r", 3.5)
+                                .style("fill", "white")
+                                .style("stroke", function(d) {
+                                    return z(this.parentNode.__data__.id);
+                                })
+                                /*.style("opacity", "0")*/
+                            ;
 
                             g.append("g")
                                 .attr("class", "mouse-over-effects");
@@ -207,7 +213,7 @@
                             mousePerLine.append("circle")
                                 .attr("r", 7)
                                 .style("stroke", function(d) {
-                                    return color(d.id);
+                                    return z(d.id);
                                 })
                                 .style("fill", "none")
                                 .style("stroke-width", "1px")
@@ -260,6 +266,9 @@
                                                 });
                                             return "translate(" + x(d.values[idx].date) + "," + y(d.values[idx].remuneracao) + ")";
                                         });
+                                })
+                                .on('click', function() {
+
                                 });
                         });
                     };
