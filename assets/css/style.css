@@ -33,3 +33,18 @@
     opacity: 0.8;
     color: orange;
 }
+
+.legend {
+    /* NEW */
+    font-size: 12px;
+    /* NEW */
+}
+
+
+/* NEW */
+
+rect {
+    /* NEW */
+    stroke-width: 2;
+    /* NEW */
+}

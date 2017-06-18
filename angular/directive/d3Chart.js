@@ -20,6 +20,10 @@
                     //formatando linguagem das datas
                     var locale = dataPTBR();
 
+                    var color = d3.scaleOrdinal(d3.schemeCategory20b);
+                    var legendRectSize = 10; // NEW
+                    var legendSpacing = 4; // NEW
+
                     //formatando data
                     var formatMillisecond = locale.format(".%L"),
                         formatSecond = locale.format(":%S"),
@@ -173,7 +177,36 @@
                                     return z(d.id);
                                 })
                                 .style("stroke-width", "1px")
-                                .style("opacity", "0.19");;
+                                .style("opacity", "0.19");
+
+                            var legend = svg.selectAll('.legend') // NEW
+                                .data(funcionarios) // NEW
+                                .enter() // NEW
+                                .append('g') // NEW
+                                .attr('class', 'legend') // NEW
+                                .attr('transform', function(d, i) {
+                                    var height = legendRectSize + legendSpacing;
+                                    var horz = 2 * (width / 2); // NEW
+                                    var vert = i * (height) + height; // NEW
+                                    return 'translate(' + horz + ',' + vert + ')'; // NEW
+                                }); // NEW
+
+                            legend.append('rect')
+                                .attr('width', legendRectSize) // NEW
+                                .attr('height', legendRectSize) // NEW
+                                .style('fill', function(d) {
+                                    return z(d.id);
+                                }) // NEW
+                                .style('stroke', function(d) {
+                                    return z(d.id);
+                                }); // NEW
+
+                            legend.append('text') // NEW
+                                .attr('x', legendRectSize + legendSpacing) // NEW
+                                .attr('y', legendRectSize - legendSpacing) // NEW
+                                .text(function(d) {
+                                    return d.id;
+                                }); // NEW
 
                             //adicionando tooltip do mouse     
                             g.append("g")
