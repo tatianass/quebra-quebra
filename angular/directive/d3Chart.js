@@ -15,6 +15,9 @@
                     var h = 500;
                     var wl = 30;
                     var hl = 30;
+                    var charOpacidadeOut = "0.1";
+                    var charOpacidadeOver = "0.6";
+
                     //definindo tamanho do gráfico
                     var svg = d3.select("#chart")
                         .append("svg")
@@ -64,6 +67,11 @@
 
                     //parser do tempo
                     var parseTime = d3.timeParse("%Y%m%d");
+
+                    // Define the div for the tooltip
+                    var tooltip = d3.select("body").append("div")
+                        .attr("class", "tooltip")
+                        .style("opacity", 0);
 
                     /**
                      * Atualiza o gráfico quando os dados mudam.
@@ -127,8 +135,6 @@
 
                             addRectLegenda(legenda, funcionarios);
                             addTextoLegenda(legenda, funcionarios);
-                            //adicionando tooltip do mouse     
-                            addTooltipMouse(funcionario);
                         });
                     };
 
@@ -267,11 +273,43 @@
                             .attr("d", function(d) {
                                 return line(d.values);
                             })
+                            .attr("id", function(d) {
+                                return 'tag' + d.id.replace(/\s+/g, '');
+                            })
                             .style("stroke", function(d) {
                                 return z(d.id);
                             })
-                            .style("stroke-width", "1px")
-                            .style("opacity", "0.19");
+                            .style("stroke-width", "2px")
+                            .style("opacity", charOpacidadeOut)
+                            .on("mouseover", function(d) {
+                                checaChart(d);
+                                addLegendaChart(d, d3.mouse(this));
+                            })
+                            .on("mouseout", function(d) {
+                                checaChart(d);
+                                delLegendaChart();
+                            });
+                    };
+
+                    function addLegendaChart(d, mouse) {
+                        //encontra a posição do mouse no mapa em relação ao dado.
+                        var xDate = x.invert(mouse[0]),
+                            bisect = d3.bisector(function(d) {
+                                return d.date;
+                            }).left;
+                        var idx = bisect(d.values, xDate);
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html(d.id + "<br/> - <br/>" + formatMonth(d.values[idx].date) + "<br/>" + formatYear(d.values[idx].date))
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px");
+                    };
+
+                    function delLegendaChart() {
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
                     };
 
                     /**
@@ -294,11 +332,30 @@
                             .style("fill", function(d) {
                                 return z(d.id);
                             })
+                            .style("opacity", 0.4)
                             .on("click", function(d) {
                                 d3.select(this).style("opacity", function(d) {
                                     return checaOpacidadeLegenda(d3.select(this).style("opacity"));
                                 });
+                                checaChart(d);
                             });
+                    };
+
+                    /**
+                     * Ativa ou desativa a linha.
+                     * 
+                     * @param {Object} d - linha selecionada.
+                     */
+                    function checaChart(d) {
+                        // Determine if current line is visible 
+                        var active = d.active ? false : true,
+                            newOpacity = active ? charOpacidadeOver : charOpacidadeOut;
+                        // Hide or show the elements based on the ID
+                        d3.select("#tag" + d.id.replace(/\s+/g, ''))
+                            .transition().duration(100)
+                            .style("opacity", newOpacity);
+                        // Update whether or not the elements are active
+                        d.active = active;
                     };
 
                     /**
@@ -337,133 +394,6 @@
                             })
                             .text(function(d) {
                                 return d.id;
-                            });
-                    };
-
-                    /**
-                     * Adiciona tooltip do mouse ao mapa.
-                     * 
-                     * @param {Object} funcionarios - dados dos funcionários.
-                     */
-                    function addTooltipMouse(funcionario) {
-                        g.append("g")
-                            .attr("class", "mouse-over-effects");
-
-                        g.append("path") // linha que vai seguir mouse
-                            .attr("class", "mouse-line")
-                            .style("stroke", "black")
-                            .style("stroke-width", "1px")
-                            .style("opacity", "0");
-
-                        var mousePerLine = funcionario
-                            .append("g")
-                            .attr("class", "mouse-per-line");
-
-                        addCirculosTooltip(mousePerLine);
-                        addTextoTooltip(mousePerLine);
-                        addReacaoMouse();
-                    };
-
-                    /**
-                     * Adiciona circulos ao tooltip do mapa.
-                     * 
-                     * @param {Object} mousePerLine - informações do tooltip.
-                     */
-                    function addCirculosTooltip(mousePerLine) {
-                        mousePerLine.append("circle")
-                            .attr("r", 7)
-                            .style("stroke", function(d) {
-                                return z(d.id);
-                            })
-                            .style("fill", "none")
-                            .style("stroke-width", "1.4px")
-                            .style("opacity", "0");
-                    };
-
-                    /**
-                     * Adiciona texto ao tooltip do mapa.
-                     * 
-                     * @param {Object} mousePerLine - informações do tooltip.
-                     */
-                    function addTextoTooltip(mousePerLine) {
-                        mousePerLine.append("text")
-                            .attr("transform", "translate(10,3)");
-                    };
-
-                    /**
-                     * Adiciona uma reação aos movimentos do mouse.
-                     */
-                    function addReacaoMouse() {
-                        var tooltipOpacidadeOut = "0";
-                        var tooltipOpacidadeOver = "1";
-                        var charOpacidadeOut = "0.19";
-                        var charOpacidadeOver = "0.6";
-
-                        g.append('svg:rect') // 
-                            .attr('width', width)
-                            .attr('height', height)
-                            .attr('fill', 'none')
-                            .attr('pointer-events', 'all')
-                            .on('mouseout', function() { // on mouse out esconde linhas, circulos e texto
-                                setOpacidadeTooltip(tooltipOpacidadeOut, charOpacidadeOut);
-                            })
-                            .on('mouseover', function() { // on mouse in mostra linha, circulos e texto
-                                setOpacidadeTooltip(tooltipOpacidadeOver, charOpacidadeOver);
-                            })
-                            .on('mousemove', function() { // mouse moving over canvas
-                                setMouseMove(d3.mouse(this));
-                            });
-                    };
-
-                    /**
-                     * Seta opacidade do tooltip e do mapa.
-                     * 
-                     * @param {Object} tooltip - informações do tooltip.
-                     * @param {Object} chart - informações do mapa.
-                     */
-                    function setOpacidadeTooltip(tooltip, chart) {
-                        d3.select(".mouse-line")
-                            .style("opacity", tooltip);
-                        d3.selectAll(".mouse-per-line circle")
-                            .style("opacity", tooltip);
-                        d3.selectAll(".mouse-per-line text")
-                            .style("opacity", tooltip);
-                        d3.selectAll(".mouse-per-line text")
-                            .style("opacity", tooltip);
-                        d3.selectAll(".line")
-                            .style("opacity", chart);
-                    };
-
-                    /**
-                     * Seta o movimento do mouse no mapa.
-                     * 
-                     * @param {Object} mouse - informações do mouse.
-                     */
-                    function setMouseMove(mouse) {
-                        var mouse = mouse;
-
-                        d3.selectAll(".mouse-per-line")
-                            .attr("transform", function(d, i) {
-
-                                //encontra a posição do mouse no mapa em relação ao dado.
-                                var xDate = x.invert(mouse[0]),
-                                    bisect = d3.bisector(function(d) {
-                                        return d.date;
-                                    }).left;
-                                var idx = bisect(d.values, xDate);
-
-                                //seta a posição do texto
-                                d3.select(this).select('text')
-                                    .text(y.invert(y(d.values[idx].remuneracao)).toFixed(2));
-
-                                //seta a posição da linha
-                                d3.select(".mouse-line")
-                                    .attr("d", function() {
-                                        var data = "M" + x(d.values[idx].date) + "," + height;
-                                        data += " " + x(d.values[idx].date) + "," + 0;
-                                        return data;
-                                    });
-                                return "translate(" + x(d.values[idx].date) + "," + y(d.values[idx].remuneracao) + ")";
                             });
                     };
 
