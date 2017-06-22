@@ -1,5 +1,6 @@
 #Autor: Ítalo de Pontes
 #Os CSV's são gerados mensalmente, assim, para cada arquivo de dados, uma nova variável é atribuida
+#Input in UTF-8 format
 mesReferencia = "~/Dropbox/quebraquebra/camara/2015/RemuneracaoMensalServidores012015.csv"
 
 #Por convensão, decidiu-se utilizar o formato de arquivo CSV, logo
@@ -9,13 +10,19 @@ mesReferencia = "~/Dropbox/quebraquebra/camara/2015/RemuneracaoMensalServidores0
 #Read without 'factors': https://stackoverflow.com/questions/5187745/imported-a-csv-dataset-to-r-but-the-values-becomes-factors
 data <- read.csv2(file=mesReferencia, sep=";", header=FALSE, stringsAsFactors=FALSE, na.strings="unknown", skip=1) #Skip o header
 
+###########################################################
 #Adiciona coluna mes a todos os dados e concatena em uma só variável
+###########################################################
 colnames(data) <-  c("cargo","grupo_funcional","folha_pagamento","ano_ingresso","remuneracao_fixa","vantagens_pessoais","funcao_comissao","gratificacao_natalina","ferias","remuneracoes_eventuais","abono_permanencia","redutor_constitucional","previdencia","imposto_renda","remuneracao_apos_desconto","diarias","auxilios","vantagens_indenizatorias")
 
+###########################################################
 #Quantos funcionários constam na folha de pagamento deste mês?
+###########################################################
 qntdServidores <- nrow(data)
 
+###########################################################
 #Quantos milhões/bilhões são pagos mensalmente em <...>?
+###########################################################
 sum(data$remuneracao_fixa)
 sum(data$vantagens_pessoais)
 sum(data$funcao_comissao)
@@ -31,23 +38,51 @@ sum(data$diarias)
 sum(data$auxilios)
 sum(data$vantagens_indenizatorias)
 
-#Qual total mensal?
+###########################################################
+#Qual total mensal?                                       #
+###########################################################
 sum(data$remuneracao_fixa,data$vantagens_pessoais,data$funcao_comissao,data$gratificacao_natalina,data$ferias,data$remuneracoes_eventuais,data$abono_permanencia,data$redutor_constitucional,data$previdencia,data$imposto_renda,data$diarias,data$auxilios,data$vantagens_indenizatorias)
 #Removido "Remuneração apos descontos"
 
-#Quais são os top 10 salários em 2016 (no geral)
-top10salarios <- aggregate(remuneracao_apos_desconto~cargo, FUN=sum, data)
-top10 <- top10salarios[order(top10salarios$remuneracao_apos_desconto, descreasing=TRUE)[1:10],]
+###########################################################
+#Quais são os top 10 salários em 2016 (no geral)          #
+###########################################################
+salariosAgregados <- aggregate(remuneracao_apos_desconto~cargo, FUN=sum, data)
+topSalarios <- salariosAgregados[order(salariosAgregados$remuneracao_apos_desconto, decreasing=TRUE)[1:10],]
+rownames(topSalarios) <- NULL
+colnames(topSalarios) <- c("Cargo", "Remuneracao após desconto")
+topSalarios
 
-remuneracao_eventual_por_candidato <- aggregate(remuneracao_eventual~nome, FUN=sum, data=deputadosAno2016)
-topDeputadosRemunerados2016 <- remuneracao_eventual_por_candidato[order(remuneracao_eventual_por_candidato$remuneracao_eventual, decreasing=TRUE)[1:10],]
-rownames(topDeputadosRemunerados2016) <- NULL
-colnames(topDeputadosRemunerados2016) <- c("Nome", "Remuneracao eventual recebida em 2016")
-topDeputadosRemunerados2016
+###########################################################
+#Quais cargos mais bem remunerados?                       #
+###########################################################
+library("dplyr")
 
-#Quais cargos mais bem remunerados?
+topSalariosFunction <- function(data)
+{
+  salariosAgregados <- aggregate(remuneracao_apos_desconto~cargo, FUN=sum, data)
+  topSalarios <- salariosAgregados[order(salariosAgregados$remuneracao_apos_desconto, decreasing=TRUE)[1:10],]
+  rownames(topSalarios) <- NULL
+  colnames(topSalarios) <- c("Cargo", "Remuneracao")
+  return(topSalarios)
+}
 
+
+soAnalista <- filter(data, grepl("Analista Legislativo", cargo))
+soTecnico <- filter(data, !grepl("cnico", cargo))
+soSecretario <- filter(data, grepl("Secret", cargo))
+soNaturezaEspecial <- filter(data, grepl("Cargo de Natureza Especial", cargo))
+soDeputado <- filter(data, grepl("Deputado", cargo))
+
+analistas <- topSalariosFunction(soAnalista)
+tecnicos <- topSalariosFunction(soTecnico)
+#secretarios <- topSalariosFunction(soSecretario)
+especiais <- topSalariosFunction(soNaturezaEspecial)
+deputado <- topSalariosFunction(soDeputado)
+
+###########################################################
 #Quantos deputados receberam no ano X acima do teto (33k)?
+###########################################################
 #install.packages("plotly")
 library(plotly)
 p <- plot_ly(y= data[data$mes=="1",]$remuneracao_total, type="box", name="Janeiro") %>%
