@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('app')
-        .directive('d3Chart', [function() {
+        .directive('d3Chart', ['$window', function($window) {
             return {
                 restrict: 'EA',
                 scope: {
@@ -11,9 +11,10 @@
                 link: function(scope, iElement, iAttrs) {
 
                     var margin = { top: 20, right: 80, bottom: 30, left: 50 };
-                    var w = 1200;
+                    //var w = $window.innerWidth - 2 * ($window.innerWidth / 5);
+                    var w = 800;
                     var h = 500;
-                    var wl = 30;
+                    var wl = 10;
                     var hl = 30;
                     var charOpacidadeOut = "0.1";
                     var charOpacidadeOver = "0.6";
@@ -24,7 +25,7 @@
                         .attr("width", w)
                         .attr("height", h)
                         .attr("class", "graph-svg-component"),
-                        margin = { top: 20, right: 80, bottom: 30, left: 50 },
+                        margin = { top: 20, right: 40, bottom: 30, left: 30 },
                         width = svg.attr("width") - margin.left - margin.right,
                         height = svg.attr("height") - margin.top - margin.bottom,
                         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -71,6 +72,9 @@
                     // Define the div for the tooltip
                     var tooltip = d3.select("body").append("div")
                         .attr("class", "tooltip")
+                        .style("opacity", 0);
+                    var tooltipLeg = d3.select("body").append("div")
+                        .attr("class", "tooltipLeg")
                         .style("opacity", 0);
 
                     /**
@@ -310,6 +314,9 @@
                         tooltip.transition()
                             .duration(500)
                             .style("opacity", 0);
+                        tooltipLeg.transition()
+                            .duration(500)
+                            .style("opacity", 0);
                     };
 
                     /**
@@ -333,6 +340,17 @@
                                 return z(d.id);
                             })
                             .style("opacity", 0.4)
+                            .on("mouseover", function(d) {
+                                tooltipLeg.transition()
+                                    .duration(200)
+                                    .style("opacity", .9);
+                                tooltipLeg.html(d.id)
+                                    .style("left", (d3.event.pageX) + "px")
+                                    .style("top", (d3.event.pageY - 28) + "px");
+                            })
+                            .on("mouseout", function(d) {
+                                delLegendaChart();
+                            })
                             .on("click", function(d) {
                                 d3.select(this).style("opacity", function(d) {
                                     return checaOpacidadeLegenda(d3.select(this).style("opacity"));
@@ -391,9 +409,6 @@
                             .attr("height", 20)
                             .attr("y", function(d, i) {
                                 return (i - 1) * 30 + 15;
-                            })
-                            .text(function(d) {
-                                return d.id;
                             });
                     };
 

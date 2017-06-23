@@ -5,13 +5,13 @@
         function(APP_D3) {
             var self = this;
             self.dados = APP_D3.DADOS_CAMARA_PLENARIO;
+            self.opcoes = [
+                { "nome": "Plenário", "url": APP_D3.DADOS_CAMARA_PLENARIO },
+                { "nome": "Propostas", "url": APP_D3.DADOS_CAMARA_PROPOSTAS }
+            ]
 
-            self.setDados = function() {
-                if (self.dados === APP_D3.DADOS_CAMARA_PLENARIO) {
-                    self.dados = APP_D3.DADOS_CAMARA_PROPOSTAS;
-                } else {
-                    self.dados = APP_D3.DADOS_CAMARA_PLENARIO;
-                }
+            self.setDados = function(url) {
+                self.dados = url;
             };
         }
     ]);
