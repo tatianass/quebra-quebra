@@ -12,7 +12,7 @@
                 { "nome": "Bolha1", "url": APP_D3.DADOS_FUNCOES, "chart": "bubble" },
                 { "nome": "Bolha2", "url": APP_D3.DADOS_FUNCOES2, "chart": "bubble" }
             ]
-            $scope.chartSelecionado = "Multiline1";
+            self.chartSelecionado = self.opcoes[0];
 
             self.setDados = function(opcao) {
                 if ('multiline' === opcao.chart) {
@@ -20,8 +20,6 @@
                 } else {
                     self.dadosBubble = opcao.url;
                 }
-
-                $scope.chartSelecionado = opcao.nome;
             };
         }
     ]);

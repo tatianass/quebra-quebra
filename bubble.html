@@ -34,21 +34,17 @@
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque quam magna, placerat quis efficitur nec, sagittis ut felis. Mauris id orci quis est volutpat facilisis. Aenean laoreet, quam ut semper lacinia, justo tortor ultrices velit, eu commodo libero purus quis sem. Phasellus eget convallis dui. Ut ornare felis eget felis euismod molestie. In hac habitasse platea dictumst. Aenean ut nulla tincidunt, molestie tortor sit amet, consequat ipsum. Vestibulum eleifend nisl et ex consequat tempus. Vestibulum at sapien sodales, mollis tellus vitae, volutpat ex. Vivamus accumsan ac ante fermentum maximus. In eros mi, tincidunt at facilisis at, vestibulum a tortor. Quisque eget elit est. Nullam sit amet iaculis odio.Fusce fermentum, mauris ut rhoncus blandit, diam metus commodo enim, et blandit orci eros vel lorem. Aliquam metus turpis.</p>
             </div>
             <div class="col-sm-1">
-                <form>
-                    <div data-ng-repeat="opcao in d3Ctrl.opcoes">
-                        <label>
-                            <input type="radio" name="chart" data-ng-value="opcao.nome" data-ng-model="chartSelecionado" data-ng-click="d3Ctrl.setDados( opcao)" /> &nbsp;
-                            <span>{{opcao.nome}}</span></label>
-                    </div>
-                </form>
+                <p>Gráfico</p>
+                <select data-ng-model="d3Ctrl.chartSelecionado" data-ng-options="opcao.nome for opcao in d3Ctrl.opcoes" data-ng-change="d3Ctrl.setDados(d3Ctrl.chartSelecionado)">
+                </select>
             </div>
             <div class="col-sm-8">
                 <div>
-                    <div data-ng-if="chartSelecionado === 'Multiline1' || chartSelecionado === 'Multiline2'">
+                    <div data-ng-if="d3Ctrl.chartSelecionado.nome === 'Multiline1' || d3Ctrl.chartSelecionado.nome === 'Multiline2'">
                         <d3-chart dados="d3Ctrl.dadosMultiline"></d3-chart>
                         <div id="chart" class="chart"></div>
                     </div>
-                    <div data-ng-if="chartSelecionado === 'Bolha1' || chartSelecionado === 'Bolha2'">
+                    <div data-ng-if="d3Ctrl.chartSelecionado.nome === 'Bolha1' || d3Ctrl.chartSelecionado.nome === 'Bolha2'">
                         <d3-bubble-chart dados="d3Ctrl.dadosBubble"></d3-bubble-chart>
                         <div id="chart" class="chart"></div>
                     </div>
