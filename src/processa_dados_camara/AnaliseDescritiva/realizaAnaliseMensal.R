@@ -10,6 +10,8 @@ mesReferencia = "~/Dropbox/quebraquebra/camara/2015/RemuneracaoMensalServidores0
 #Read without 'factors': https://stackoverflow.com/questions/5187745/imported-a-csv-dataset-to-r-but-the-values-becomes-factors
 data <- read.csv2(file=mesReferencia, sep=";", header=FALSE, stringsAsFactors=FALSE, na.strings="unknown", skip=1) #Skip o header
 
+#dec="." <- testar isso
+
 ###########################################################
 #Adiciona coluna mes a todos os dados e concatena em uma só variável
 ###########################################################
