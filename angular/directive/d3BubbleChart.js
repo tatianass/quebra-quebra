@@ -92,60 +92,11 @@
                             //criando legenda
                             var legenda = svgLegenda.append("g")
                                 .attr('transform', 'translate(-20,30)');
-
-                            addRectLegenda(legenda, root.children);
                             addTextoLegenda(legenda, root.children);
                         });
                     };
 
                     d3.select(self.frameElement).style("height", diameter + "px");
-
-                    /**
-                     * Desenha os retângulos da legenda.
-                     * 
-                     * @param {Object} legenda - os dados da legenda.
-                     * @param {Object} node - os dados dos node.
-                     */
-                    function addRectLegenda(legenda, node) {
-                        var legend_data = node.filter(function(d) {
-
-                            d.original_index = d.data.className;
-                            return d.data.packageName;
-                        });
-                        legenda.selectAll('rect')
-                            .data(node)
-                            .enter()
-                            .append("rect")
-                            .attr("x", 30)
-                            .attr("y", function(d, i) {
-                                return (i - 1) * 30;
-                            })
-                            .attr("width", 20)
-                            .attr("height", 20)
-                            .style("fill", function(d) {
-                                return z(d.data.packageName);
-                            })
-                            .style("opacity", charOpacidadeOut)
-                            .on("mouseover", function(d) {
-                                tooltipLeg.transition()
-                                    .duration(200)
-                                    .style("opacity", .9);
-                                tooltipLeg.html(d.data.className)
-                                    .style("left", (d3.event.pageX) + "px")
-                                    .style("top", (d3.event.pageY - 28) + "px");
-                                checaChart(d);
-                            })
-                            .on("mouseout", function(d) {
-                                checaChart(d);
-                                delLegendaChart();
-                            })
-                            .on("click", function(d) {
-                                d3.select(this).style("opacity", function(d) {
-                                    return checaOpacidadeLegenda(d3.select(this).style("opacity"));
-                                });
-                                checaChart(d);
-                            });
-                    };
 
                     /**
                      * Ativa ou desativa a linha.

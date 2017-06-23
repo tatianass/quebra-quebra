@@ -135,7 +135,6 @@
                             var legenda = svgLegenda.append("g")
                                 .attr('transform', 'translate(-20,30)');
 
-                            addRectLegenda(legenda, funcionarios);
                             addTextoLegenda(legenda, funcionarios);
                         });
                     };
@@ -315,48 +314,6 @@
                         tooltipLeg.transition()
                             .duration(500)
                             .style("opacity", 0);
-                    };
-
-                    /**
-                     * Desenha os retângulos da legenda.
-                     * 
-                     * @param {Object} legenda - os dados da legenda.
-                     * @param {Object} funcionarios - os dados dos funcionarios.
-                     */
-                    function addRectLegenda(legenda, funcionarios) {
-                        legenda.selectAll('rect')
-                            .data(funcionarios)
-                            .enter()
-                            .append("rect")
-                            .attr("x", 30)
-                            .attr("y", function(d, i) {
-                                return (i - 1) * 30;
-                            })
-                            .attr("width", 20)
-                            .attr("height", 20)
-                            .style("fill", function(d) {
-                                return z(d.id);
-                            })
-                            .style("opacity", 0.4)
-                            .on("mouseover", function(d) {
-                                tooltipLeg.transition()
-                                    .duration(200)
-                                    .style("opacity", .9);
-                                tooltipLeg.html(d.id)
-                                    .style("left", (d3.event.pageX) + "px")
-                                    .style("top", (d3.event.pageY - 28) + "px");
-                                checaChart(d);
-                            })
-                            .on("mouseout", function(d) {
-                                delLegendaChart();
-                                checaChart(d);
-                            })
-                            .on("click", function(d) {
-                                d3.select(this).style("opacity", function(d) {
-                                    return checaOpacidadeLegenda(d3.select(this).style("opacity"));
-                                });
-                                checaChart(d);
-                            });
                     };
 
                     /**
