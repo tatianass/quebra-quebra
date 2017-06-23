@@ -1,0 +1,67 @@
+.legenda {}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 80px;
+    height: 80px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+div.tooltipLeg {
+    position: absolute;
+    padding: 4px;
+    font: 14px sans-serif;
+    pointer-events: none;
+}
+
+.viewport {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    overflow-y: auto;
+    width: 280px;
+    height: 400px;
+    background-color: #e8e8e8;
+    border: 1px solid #AAAAAA;
+    border-radius: 4px;
+    box-shadow: inset 1px 1px 6px 2px rgba(0, 0, 0, .25);
+}
+
+.scroll-svg {}
+
+.longscroll .row {
+    font-family: Arial;
+    font-size: 11px;
+    height: 19px;
+    padding: 0 8px;
+    border-bottom: solid #eee 1px;
+}
+
+.information {
+    position: absolute;
+    top: 15px;
+    left: 300px;
+    width: 350px;
+    height: 400px;
+}
+
+.info-svg {
+    fill: #2968AA;
+    overflow: visible;
+}
+
+.brace {
+    stroke: #2968AA;
+    stroke-width: 2px;
+    fill: none;
+}
+
+.infotext {
+    font-size: 20px;
+}

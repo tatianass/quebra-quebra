@@ -39,8 +39,6 @@
                     //formatando linguagem das datas
                     var locale = dataPTBR();
 
-                    var color = d3.scaleOrdinal(d3.schemeCategory20b);
-
                     //formatando data
                     var formatMillisecond = locale.format(".%L"),
                         formatSecond = locale.format(":%S"),
@@ -347,9 +345,11 @@
                                 tooltipLeg.html(d.id)
                                     .style("left", (d3.event.pageX) + "px")
                                     .style("top", (d3.event.pageY - 28) + "px");
+                                checaChart(d);
                             })
                             .on("mouseout", function(d) {
                                 delLegendaChart();
+                                checaChart(d);
                             })
                             .on("click", function(d) {
                                 d3.select(this).style("opacity", function(d) {

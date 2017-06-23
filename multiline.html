@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR" ng-app="app">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/legenda.css">
+    <!-- AngularJS -->
+    <script src="assets/js/angular.min.js"></script>
+    <script src="assets/js/angular-locale_pt-br.js"></script>
+    <!-- Model -->
+    <script type="text/javascript" src="angular/model/app.js"></script>
+    <script type="text/javascript" src="angular/constants.js"></script>
+    <!-- Service -->
+    <script type="text/javascript" src="angular/service/d3Service.js"></script>
+    <!-- Directive -->
+    <script type="text/javascript" src="angular/directive/d3Chart.js"></script>
+    <!-- Controller -->
+    <script type="text/javascript" src="angular/controller/d3Controller.js"></script>
+</head>
+
+<body>
+    <div class="container" data-ng-controller="d3Controller as d3Ctrl">
+        <div class="row">
+            <div class="col-sm-3">
+                <h1>Lorem ipsum </h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque quam magna, placerat quis efficitur nec, sagittis ut felis. Mauris id orci quis est volutpat facilisis. Aenean laoreet, quam ut semper lacinia, justo tortor ultrices velit, eu commodo libero purus quis sem. Phasellus eget convallis dui. Ut ornare felis eget felis euismod molestie. In hac habitasse platea dictumst. Aenean ut nulla tincidunt, molestie tortor sit amet, consequat ipsum. Vestibulum eleifend nisl et ex consequat tempus. Vestibulum at sapien sodales, mollis tellus vitae, volutpat ex. Vivamus accumsan ac ante fermentum maximus. In eros mi, tincidunt at facilisis at, vestibulum a tortor. Quisque eget elit est. Nullam sit amet iaculis odio.Fusce fermentum, mauris ut rhoncus blandit, diam metus commodo enim, et blandit orci eros vel lorem. Aliquam metus turpis.</p>
+            </div>
+            <div class="col-sm-1">
+                <button data-ng-click="d3Ctrl.setDados(opcao.url)" data-ng-repeat="opcao in d3Ctrl.opcoes">{{opcao.nome}}</button>
+                <br>
+                <p>Legenda</p>
+                <div class="legenda" id="legenda"></div>
+            </div>
+            <div class="col-sm-8">
+                <d3-chart dados="d3Ctrl.dados"></d3-chart>
+                <div id="chart" class="chart"></div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/rebind.js"></script>
+    <script src="assets/js/d3.min.js"></script>
+</body>
+
+</html>

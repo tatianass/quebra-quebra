@@ -8,7 +8,8 @@
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bubble.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/legenda.css">
     <!-- AngularJS -->
     <script src="assets/js/angular.min.js"></script>
     <script src="assets/js/angular-locale_pt-br.js"></script>
@@ -18,7 +19,7 @@
     <!-- Service -->
     <script type="text/javascript" src="angular/service/d3Service.js"></script>
     <!-- Directive -->
-    <script type="text/javascript" src="angular/directive/d3Chart.js"></script>
+    <script type="text/javascript" src="angular/directive/d3BubbleChart.js"></script>
     <!-- Controller -->
     <script type="text/javascript" src="angular/controller/d3Controller.js"></script>
 </head>
@@ -37,7 +38,7 @@
                 <div class="legenda" id="legenda"></div>
             </div>
             <div class="col-sm-8">
-                <d3-chart dados="d3Ctrl.dados"></d3-chart>
+                <d3-bubble-chart dados="d3Ctrl.dados"></d3-bubble-chart>
                 <div id="chart" class="chart"></div>
             </div>
         </div>

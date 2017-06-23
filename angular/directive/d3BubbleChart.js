@@ -1,0 +1,237 @@
+(function() {
+    'use strict';
+
+    angular.module('app')
+        .directive('d3BubbleChart', [function() {
+            return {
+                restrict: 'EA',
+                scope: {
+                    dados: '='
+                },
+                link: function(scope, iElement, iAttrs) {
+
+                    var wl = 10;
+                    var hl = 30;
+                    var charOpacidadeOut = "0.4";
+                    var charOpacidadeOver = "1";
+                    // Define the div for the tooltip
+                    var tooltip = d3.select("body").append("div")
+                        .attr("class", "tooltip")
+                        .style("opacity", 0);
+                    var tooltipLeg = d3.select("body").append("div")
+                        .attr("class", "tooltipLeg")
+                        .style("opacity", 0);
+                    var diameter = 600,
+                        format = d3.format(",d"),
+                        z = d3.scaleOrdinal(d3.schemeCategory20c);
+
+                    var bubble = d3.pack()
+                        .size([diameter, diameter])
+                        .padding(1.5);
+
+                    var svg = d3.select("#chart")
+                        .append("svg")
+                        .attr("width", diameter)
+                        .attr("height", diameter)
+                        .attr("class", "bubble");
+
+                    var svgLegenda = d3.select("#legenda")
+                        .append("svg")
+                        .attr('class', 'legenda')
+                        .attr("width", wl * 5)
+                        .attr("height", hl * 5);
+
+                    scope.$watch('dados', function(newVals, oldVals) {
+                        return scope.render(newVals);
+                    }, true);
+
+                    scope.render = function(dados) {
+                        d3.json(scope.dados, function(error, data) {
+                            if (error) throw error;
+
+                            // remover itens do grafico antigo
+                            svg.selectAll(".node").remove();
+
+                            var root = d3.hierarchy(classes(data))
+                                .sum(function(d) {
+                                    return d.value;
+                                })
+                                .sort(function(a, b) {
+                                    return b.value - a.value;
+                                });
+
+                            bubble(root);
+                            var node = svg.selectAll(".node")
+                                .data(root.children)
+                                .enter().append("g")
+                                .attr("class", "node")
+                                .attr("transform", function(d) {
+                                    return "translate(" + d.x + "," + d.y + ")";
+                                });
+
+                            node.append("circle")
+                                .attr("r", function(d) {
+                                    return d.r;
+                                })
+                                .style("fill", function(d) {
+                                    return z(d.data.packageName);
+                                })
+                                .style("opacity", charOpacidadeOut)
+                                .attr("id", function(d) {
+                                    return 'tag' + d.data.className.replace(/\s+/g, '');
+                                })
+                                .on("mouseover", function(d) {
+                                    checaChart(d);
+                                    addLegendaChart(d, d3.mouse(this));
+                                })
+                                .on("mouseout", function(d) {
+                                    checaChart(d);
+                                    delLegendaChart();
+                                });;
+
+                            //criando legenda
+                            var legenda = svgLegenda.append("g")
+                                .attr('transform', 'translate(-20,30)');
+
+                            addRectLegenda(legenda, root.children);
+                            addTextoLegenda(legenda, root.children);
+                        });
+                    };
+
+                    d3.select(self.frameElement).style("height", diameter + "px");
+
+                    /**
+                     * Desenha os retângulos da legenda.
+                     * 
+                     * @param {Object} legenda - os dados da legenda.
+                     * @param {Object} node - os dados dos node.
+                     */
+                    function addRectLegenda(legenda, node) {
+                        var legend_data = node.filter(function(d) {
+
+                            d.original_index = d.data.className;
+                            return d.data.packageName;
+                        });
+                        legenda.selectAll('rect')
+                            .data(node)
+                            .enter()
+                            .append("rect")
+                            .attr("x", 30)
+                            .attr("y", function(d, i) {
+                                return (i - 1) * 30;
+                            })
+                            .attr("width", 20)
+                            .attr("height", 20)
+                            .style("fill", function(d) {
+                                return z(d.data.packageName);
+                            })
+                            .style("opacity", charOpacidadeOut)
+                            .on("mouseover", function(d) {
+                                tooltipLeg.transition()
+                                    .duration(200)
+                                    .style("opacity", .9);
+                                tooltipLeg.html(d.data.className)
+                                    .style("left", (d3.event.pageX) + "px")
+                                    .style("top", (d3.event.pageY - 28) + "px");
+                                checaChart(d);
+                            })
+                            .on("mouseout", function(d) {
+                                checaChart(d);
+                                delLegendaChart();
+                            })
+                            .on("click", function(d) {
+                                d3.select(this).style("opacity", function(d) {
+                                    return checaOpacidadeLegenda(d3.select(this).style("opacity"));
+                                });
+                                checaChart(d);
+                            });
+                    };
+
+                    /**
+                     * Ativa ou desativa a linha.
+                     * 
+                     * @param {Object} d - linha selecionada.
+                     */
+                    function checaChart(d) {
+                        // Determine if current line is visible 
+                        var active = d.active ? false : true,
+                            newOpacity = active ? charOpacidadeOver : charOpacidadeOut;
+                        // Hide or show the elements based on the ID
+                        d3.select("#tag" + d.data.className.replace(/\s+/g, ''))
+                            .transition().duration(100)
+                            .style("opacity", newOpacity);
+                        // Update whether or not the elements are active
+                        d.active = active;
+                    };
+
+                    function addLegendaChart(d, mouse) {
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html("Nome: " + d.data.className + "<br/>" + "Função: " + d.data.packageName + "<br/>" + "Valor: " + d.data.value)
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px");
+                    };
+
+                    function delLegendaChart() {
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                        tooltipLeg.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    };
+
+                    /**
+                     * Retorna a opacidade se o retângulo for clicado.
+                     * 
+                     * @param {String} opacidade - 1 padrão e 0.4 desativado.
+                     * 
+                     * @return {String} opacidade - nova opacidade.
+                     */
+                    function checaOpacidadeLegenda(opacidade) {
+                        if (opacidade === charOpacidadeOut) {
+                            opacidade = charOpacidadeOver;
+                        } else {
+                            opacidade = charOpacidadeOut;
+                        }
+
+                        return opacidade;
+                    };
+
+                    /**
+                     * Adciona legenda ao mapa.
+                     * 
+                     * @param {Object} legenda - informações da legenda.
+                     * @param {Object} node - dados dos funcionários.
+                     */
+                    function addTextoLegenda(legenda, node) {
+                        legenda.selectAll('text')
+                            .data(node)
+                            .enter()
+                            .append("text")
+                            .attr("x", 60)
+                            .attr("width", 20)
+                            .attr("height", 20)
+                            .attr("y", function(d, i) {
+                                return (i - 1) * 30 + 15;
+                            });
+                    };
+
+                    // Returns a flattened hierarchy containing all leaf nodes under the root.
+                    function classes(root) {
+                        var classes = [];
+
+                        function recurse(name, node) {
+                            if (node.children) node.children.forEach(function(child) { recurse(node.name, child); });
+                            else classes.push({ packageName: name, className: node.name, value: node.size });
+                        }
+
+                        recurse(null, root);
+                        return { children: classes };
+                    }
+                }
+            };
+        }]);
+
+}());
