@@ -69,18 +69,80 @@ topSalariosFunction <- function(data)
   return(topSalarios)
 }
 
-
+#Filtra os funcionários de cada cargo
 soAnalista <- filter(data, grepl("Analista Legislativo", cargo))
-soTecnico <- filter(data, !grepl("cnico", cargo))
+soTecnico <- filter(data, grepl("cnico Legislativo", cargo))
 soSecretario <- filter(data, grepl("Secret", cargo))
 soNaturezaEspecial <- filter(data, grepl("Cargo de Natureza Especial", cargo))
 soDeputado <- filter(data, grepl("Deputado", cargo))
+soOutros <- filter(data, !grepl("Analista Legislativo|cnico Legislativo|Secret|Cargo de Natureza Especial|Deputado", cargo))
 
+#Retorna os top 10 salários de cada cargo
 analistas <- topSalariosFunction(soAnalista)
 tecnicos <- topSalariosFunction(soTecnico)
-#secretarios <- topSalariosFunction(soSecretario)
+secretarios <- topSalariosFunction(soSecretario)
 especiais <- topSalariosFunction(soNaturezaEspecial)
 deputado <- topSalariosFunction(soDeputado)
+outros <- topSalariosFunction(soOutros)
+
+#Mostra o top 10 de cada cargo
+show(analistas)
+show(tecnicos)
+show(secretarios)
+show(especiais)
+show(deputado)
+show(outros)
+
+#Relaciona o total obtido com o total real
+totalAnalista <- sum(soAnalista$remuneracao_apos_desconto)
+totalTecnico <- sum(soTecnico$remuneracao_apos_desconto)
+totalSecretario <- sum(soSecretario$remuneracao_apos_desconto)
+totalNatureza <- sum(soNaturezaEspecial$remuneracao_apos_desconto)
+totalDeputado <- sum(soDeputado$remuneracao_apos_desconto)
+totalOutros <- sum(outros$remuneracao_apos_desconto)
+
+somaObtida <- (totalAnalista+totalTecnico+totalSecretario+totalNatureza+totalDeputado+totalOutros)
+somaReal <- sum(data$remuneracao_apos_desconto)
+#Diferença de:
+somaReal-somaObtida
+#Proporção de:
+(somaObtida/somaReal)*100
+
+###########################################################
+#Filtrar por grupo funcional
+###########################################################
+soQuadroEfetivo <- filter(data, grepl("QUADRO EFETIVO - RJU", grupo_funcional))
+soCargoNaturezaEspecial <- filter(data, grepl("CARGO DE NATUREZA ESPECIAL", grupo_funcional))
+soInativo <- filter(data, grepl("INATIVO", grupo_funcional))
+soParlamentar <- filter(data, grepl("PARLAMENTAR", grupo_funcional))
+soPensaoCivil <- filter(data, grepl("PENSÃO CIVIL", grupo_funcional))
+
+#top 10 remuneracoes por grupo funcional
+topQuadroEfetivo <- topSalariosFunction(soQuadroEfetivo)
+topNaturezaEspecial <- topSalariosFunction(soCargoNaturezaEspecial)
+topInativo <- topSalariosFunction(soInativo)
+topParlamentar <- topSalariosFunction(soParlamentar)
+topPensaoCivil <- topSalariosFunction(soPensaoCivil)
+
+#Mostra as top 10 remuneracoes em diferentes grupos funcionais
+show(topQuadroEfetivo)
+show(topNaturezaEspecial)
+show(topInativo)
+show(topParlamentar)
+show(topPensaoCivil)
+
+#Calcula total por Quadro Funcional
+totalQuadroEfetivo <- sum(soQuadroEfetivo$remuneracao_apos_desconto)
+totalCargoNatureza <- sum(soCargoNaturezaEspecial$remuneracao_apos_desconto)
+totalParlamentar <- sum(soParlamentar$remuneracao_apos_desconto)
+totalInativo <- sum(soInativo$remuneracao_apos_desconto)
+totalPensao <- sum(soPensaoCivil$remuneracao_apos_desconto)
+
+somaObtidaTodosCargos <- sum(totalQuadroEfetivo+totalCargoNatureza+totalParlamentar+totalInativo+totalPensao)
+#Diferença de:
+somaReal-somaObtidaTodosCargos
+#Proporção de:
+(somaObtidaTodosCargos/somaReal)*100
 
 ###########################################################
 #Quantos deputados receberam no ano X acima do teto (33k)?
