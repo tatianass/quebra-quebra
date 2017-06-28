@@ -145,6 +145,23 @@ somaReal-somaObtidaTodosCargos
 (somaObtidaTodosCargos/somaReal)*100
 
 ###########################################################
+#Plotar boxplot de todos as remunerações mensais
+###########################################################
+library(reshape2)
+keeps <- c("cargo","ano_ingresso","remuneracao_fixa","vantagens_pessoais","funcao_comissao","gratificacao_natalina","ferias","remuneracoes_eventuais","abono_permanencia","redutor_constitucional","previdencia","imposto_renda","remuneracao_apos_desconto","diarias","auxilios","vantagens_indenizatorias")
+#c("grupo_funcional","ano_ingresso","remuneracao_fixa","vantagens_pessoais","funcao_comissao","gratificacao_natalina","ferias","remuneracoes_eventuais","abono_permanencia","redutor_constitucional","previdencia","imposto_renda","remuneracao_apos_desconto","diarias","auxilios","vantagens_indenizatorias")
+allDatam <- data[keeps]
+allDatam <- melt(allDatam)
+
+library(ggplot2)
+pdf("playlists_boxplot.pdf", width=10, height=8, paper='special')
+ggplot(data=allDatam) +
+  geom_boxplot(aes(x=cargo,y=value,fill=cargo)) +
+  facet_wrap(~variable)
+dev.off()
+
+
+###########################################################
 #Quantos deputados receberam no ano X acima do teto (33k)?
 ###########################################################
 #install.packages("plotly")
