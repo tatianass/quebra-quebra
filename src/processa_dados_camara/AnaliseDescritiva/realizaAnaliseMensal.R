@@ -145,20 +145,98 @@ somaReal-somaObtidaTodosCargos
 (somaObtidaTodosCargos/somaReal)*100
 
 ###########################################################
-#Plotar boxplot de todos as remunerações mensais
+#Plotar boxplot
 ###########################################################
 library(reshape2)
-keeps <- c("cargo","ano_ingresso","remuneracao_fixa","vantagens_pessoais","funcao_comissao","gratificacao_natalina","ferias","remuneracoes_eventuais","abono_permanencia","redutor_constitucional","previdencia","imposto_renda","remuneracao_apos_desconto","diarias","auxilios","vantagens_indenizatorias")
-#c("grupo_funcional","ano_ingresso","remuneracao_fixa","vantagens_pessoais","funcao_comissao","gratificacao_natalina","ferias","remuneracoes_eventuais","abono_permanencia","redutor_constitucional","previdencia","imposto_renda","remuneracao_apos_desconto","diarias","auxilios","vantagens_indenizatorias")
-allDatam <- data[keeps]
-allDatam <- melt(allDatam)
-
 library(ggplot2)
-pdf("playlists_boxplot.pdf", width=10, height=8, paper='special')
-ggplot(data=allDatam) +
-  geom_boxplot(aes(x=cargo,y=value,fill=cargo)) +
-  facet_wrap(~variable)
-dev.off()
+
+plotBoxplots <- function(data, fileName, variables)
+{
+  require(scales)
+  allDatam <- data[variables]
+  allDatam <- melt(allDatam)
+  colnames(allDatam) <- c("grupos", "variable", "value")
+  graphic <- ggplot(data=allDatam) +
+    geom_boxplot(aes(x=grupos,y=value,fill=grupos)) +
+    facet_wrap(~variable) +
+    scale_y_continuous(labels = scales::comma)
+  show(graphic)
+  pdf(fileName, width=10, height=8, paper='special')
+  show(graphic)
+  dev.off()
+}
+
+###########################################################
+#Plotar boxplot de todos os GRUPOS FUNCIONAIS
+###########################################################
+soQuadroEfetivo <- filter(data, grepl("QUADRO EFETIVO - RJU", grupo_funcional))
+soCargoNaturezaEspecial <- filter(data, grepl("CARGO DE NATUREZA ESPECIAL", grupo_funcional))
+soInativo <- filter(data, grepl("INATIVO", grupo_funcional))
+soParlamentar <- filter(data, grepl("PARLAMENTAR", grupo_funcional))
+soPensaoCivil <- filter(data, grepl("PENSÃO CIVIL", grupo_funcional))
+
+soQuadroEfetivo$grupo_funcional <- "quadro_efetivo"
+soCargoNaturezaEspecial$grupo_funcional <- "cargo_natureza"
+soInativo$grupo_funcional <- "inativo"
+soParlamentar$grupo_funcional <- "parlamentar"
+soPensaoCivil$grupo_funcional <- "pensao_civil"
+
+dataFilteredByGroup <- rbind(soQuadroEfetivo, soCargoNaturezaEspecial, soInativo, soParlamentar, soPensaoCivil)
+
+keeps <- c("grupo_funcional","remuneracao_fixa","previdencia","imposto_renda","remuneracao_apos_desconto")
+plotBoxplots(dataFilteredByGroup, "boxplot_grupo_funcional_remuneracoes.pdf", keeps)
+
+keeps <- c("grupo_funcional","ano_ingresso")
+plotBoxplots(dataFilteredByGroup, "boxplot_grupo_funcional_ano_ingresso.pdf", keeps)
+
+keeps <-  c("grupo_funcional","ano_ingresso","remuneracao_fixa","vantagens_pessoais","funcao_comissao","gratificacao_natalina","ferias","remuneracoes_eventuais","abono_permanencia","redutor_constitucional","previdencia","imposto_renda","remuneracao_apos_desconto","diarias","auxilios","vantagens_indenizatorias")
+plotBoxplots(dataFilteredByGroup, "boxplot_grupo_funcional_tudo.pdf", keeps)
+
+keeps <- c("grupo_funcional","ferias","remuneracoes_eventuais","redutor_constitucional","previdencia","imposto_renda")
+plotBoxplots(dataFilteredByGroup, "boxplot_grupo_funcional_negativo.pdf", keeps)
+
+keeps <- c("grupo_funcional","vantagens_indenizatorias")
+plotBoxplots(dataFilteredByGroup, "boxplot_grupo_funcional_indenizacoes.pdf", keeps)
+
+keeps <- c("grupo_funcional","vantagens_pessoais","funcao_comissao","gratificacao_natalina","ferias","remuneracoes_eventuais","abono_permanencia","diarias","auxilios")
+plotBoxplots(dataFilteredByGroup, "boxplot_grupo_so_adicionais.pdf", keeps)
+
+###########################################################
+#Plotar boxplot de todos os CARGOS
+###########################################################
+soAnalista <- filter(data, grepl("Analista Legislativo", cargo))
+soTecnico <- filter(data, grepl("cnico Legislativo", cargo))
+soSecretario <- filter(data, grepl("Secret", cargo))
+soNaturezaEspecial <- filter(data, grepl("Cargo de Natureza Especial", cargo))
+soDeputado <- filter(data, grepl("Deputado", cargo))
+soOutros <- filter(data, !grepl("Analista Legislativo|cnico Legislativo|Secret|Cargo de Natureza Especial|Deputado", cargo))
+
+soAnalista$cargo <- "analista"
+soTecnico$cargo <- "tecnico"
+soSecretario$cargo <- "secretario"
+soNaturezaEspecial$cargo <- "especial"
+soDeputado$cargo <- "deputados"
+soOutros$cargo <- "outros"
+
+dataFilteredByGroup <- rbind(soAnalista, soTecnico, soSecretario, soNaturezaEspecial, soDeputado, soOutros)
+
+keeps <- c("cargo","remuneracao_fixa","previdencia","imposto_renda","remuneracao_apos_desconto")
+plotBoxplots(dataFilteredByGroup, "boxplot_cargo_remuneracoes.pdf", keeps)
+
+keeps <- c("cargo","ano_ingresso")
+plotBoxplots(dataFilteredByGroup, "boxplot_cargo_ano_ingresso.pdf", keeps)
+
+keeps <-  c("cargo","ano_ingresso","remuneracao_fixa","vantagens_pessoais","funcao_comissao","gratificacao_natalina","ferias","remuneracoes_eventuais","abono_permanencia","redutor_constitucional","previdencia","imposto_renda","remuneracao_apos_desconto","diarias","auxilios","vantagens_indenizatorias")
+plotBoxplots(dataFilteredByGroup, "boxplot_cargo_tudo.pdf", keeps)
+
+keeps <- c("cargo","ferias","remuneracoes_eventuais","redutor_constitucional","previdencia","imposto_renda")
+plotBoxplots(dataFilteredByGroup, "boxplot_cargo_negativo.pdf", keeps)
+
+keeps <- c("cargo","vantagens_indenizatorias")
+plotBoxplots(dataFilteredByGroup, "boxplot_cargo_indenizacoes.pdf", keeps)
+
+keeps <- c("cargo","vantagens_pessoais","funcao_comissao","gratificacao_natalina","ferias","remuneracoes_eventuais","abono_permanencia","diarias","auxilios")
+plotBoxplots(dataFilteredByGroup, "boxplot_cargo_so_adicionais.pdf", keeps)
 
 
 ###########################################################
