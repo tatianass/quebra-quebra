@@ -58,6 +58,7 @@ topSalarios
 ###########################################################
 #Quais cargos mais bem remunerados?                       #
 ###########################################################
+install.packages("dplyr")
 library("dplyr")
 
 topSalariosFunction <- function(data)
