@@ -15,6 +15,7 @@
             self.chartSelecionado = self.opcoes[0];
 
             self.setDados = function(opcao) {
+                self.chartSelecionado = opcao;
                 if ('multiline' === opcao.chart) {
                     self.dadosMultiline = opcao.url;
                 } else {
