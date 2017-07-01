@@ -71,4 +71,9 @@ rect {
 
 .container {
     margin-left: 0px;
+    width: 100%;
+}
+
+#charts {
+    height: 70%;
 }

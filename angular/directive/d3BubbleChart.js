@@ -10,6 +10,7 @@
                 },
                 link: function(scope, iElement, iAttrs) {
 
+                    var dimensoes = getDimensoes();
                     var wl = 10;
                     var hl = 30;
                     var charOpacidadeOut = "0.4";
@@ -21,7 +22,7 @@
                     var tooltipLeg = d3.select("body").append("div")
                         .attr("class", "tooltipLeg")
                         .style("opacity", 0);
-                    var diameter = 600,
+                    var diameter = dimensoes.w,
                         format = d3.format(",d"),
                         z = d3.scaleOrdinal(d3.schemeCategory20c);
 
@@ -181,6 +182,16 @@
                         recurse(null, root);
                         return { children: classes };
                     }
+
+                    /**
+                     * Get das dimensões da div do chart.
+                     * 
+                     * @return {Object} dimensões.
+                     */
+                    function getDimensoes() {
+                        //60% of the height
+                        return { 'h': window.innerHeight, 'w': angular.element(document.querySelector('#charts'))[0].offsetWidth * 0.8 };
+                    };
                 }
             };
         }]);

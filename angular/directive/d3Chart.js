@@ -10,10 +10,8 @@
                 },
                 link: function(scope, iElement, iAttrs) {
 
-                    var margin = { top: 20, right: 80, bottom: 30, left: 50 };
-                    //var w = $window.innerWidth - 2 * ($window.innerWidth / 5);
-                    var w = 800;
-                    var h = 500;
+                    var margin = { top: 20, right: 80, bottom: 30, left: 50 }
+                    var dimensoes = getDimensoes();
                     var wl = 10;
                     var hl = 30;
                     var charOpacidadeOut = "0.1";
@@ -22,8 +20,10 @@
                     //definindo tamanho do gráfico
                     var svg = d3.select("#chart")
                         .append("svg")
-                        .attr("width", w)
-                        .attr("height", h)
+                        .attr("width", dimensoes.w)
+                        .attr("height", dimensoes.h)
+                        .attr("viewBox", "0 0 700 400")
+                        .attr("preserveAspectRatio", "xMinYMin meet")
                         .attr("class", "graph-svg-component"),
                         margin = { top: 20, right: 40, bottom: 30, left: 30 },
                         width = svg.attr("width") - margin.left - margin.right,
@@ -86,7 +86,37 @@
                     scope.$watch('dados', function(newVals, oldVals) {
                         return scope.render(newVals);
                     }, true);
+                    var w = angular.element(window);
+                    scope.getWindowDimensions = function() {
+                        return {
+                            'h': window.innerHeight * 0.6,
+                            'w': angular.element(document.querySelector('#charts'))[0].offsetWidth
+                        };
+                    };
+                    scope.$watch(scope.getWindowDimensions, function(newValue, oldValue) {
+                        svg = svg.attr("width", newValue.w),
+                            svg.attr("height", newValue.h),
+                            width = svg.attr("width") - margin.left - margin.right,
+                            height = svg.attr("height") - margin.top - margin.bottom,
 
+                            x = d3.scaleTime().range([0, width]),
+                            y = d3.scaleLinear().range([height, 0]);
+
+                        svg.select("axis axis--x")
+                            .attr("transform", "translate(0," + height + ")")
+                            .call(d3.axisBottom(x)
+                                .tickFormat(multiFormat));
+
+                        //addndo eixo y
+                        svg.select("axis axis--y")
+                            .attr("transform", "translate(" + width + ",0)")
+                            .call(d3.axisRight(y));
+
+                    }, true);
+
+                    w.bind('resize', function() {
+                        scope.$apply();
+                    });
                     /**
                      * Cria o gráfico.
                      * 
@@ -398,6 +428,16 @@
                     function cria_grade_y() {
                         return d3.axisLeft(y)
                             .ticks(5)
+                    };
+
+                    /**
+                     * Get das dimensões da div do chart.
+                     * 
+                     * @return {Object} dimensões.
+                     */
+                    function getDimensoes() {
+                        //60% of the height
+                        return { 'h': window.innerHeight * 0.6, 'w': angular.element(document.querySelector('#charts'))[0].offsetWidth };
                     };
                 }
             };
