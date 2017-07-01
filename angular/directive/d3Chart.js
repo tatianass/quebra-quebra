@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('app')
-        .directive('d3Chart', ['$window', function($window) {
+        .directive('d3Chart', [function() {
             return {
                 restrict: 'EA',
                 scope: {
@@ -22,8 +22,6 @@
                         .append("svg")
                         .attr("width", dimensoes.w)
                         .attr("height", dimensoes.h)
-                        .attr("viewBox", "0 0 700 400")
-                        .attr("preserveAspectRatio", "xMinYMin meet")
                         .attr("class", "graph-svg-component"),
                         margin = { top: 20, right: 40, bottom: 30, left: 30 },
                         width = svg.attr("width") - margin.left - margin.right,
@@ -86,37 +84,7 @@
                     scope.$watch('dados', function(newVals, oldVals) {
                         return scope.render(newVals);
                     }, true);
-                    var w = angular.element(window);
-                    scope.getWindowDimensions = function() {
-                        return {
-                            'h': window.innerHeight * 0.6,
-                            'w': angular.element(document.querySelector('#charts'))[0].offsetWidth
-                        };
-                    };
-                    scope.$watch(scope.getWindowDimensions, function(newValue, oldValue) {
-                        svg = svg.attr("width", newValue.w),
-                            svg.attr("height", newValue.h),
-                            width = svg.attr("width") - margin.left - margin.right,
-                            height = svg.attr("height") - margin.top - margin.bottom,
 
-                            x = d3.scaleTime().range([0, width]),
-                            y = d3.scaleLinear().range([height, 0]);
-
-                        svg.select("axis axis--x")
-                            .attr("transform", "translate(0," + height + ")")
-                            .call(d3.axisBottom(x)
-                                .tickFormat(multiFormat));
-
-                        //addndo eixo y
-                        svg.select("axis axis--y")
-                            .attr("transform", "translate(" + width + ",0)")
-                            .call(d3.axisRight(y));
-
-                    }, true);
-
-                    w.bind('resize', function() {
-                        scope.$apply();
-                    });
                     /**
                      * Cria o gráfico.
                      * 
