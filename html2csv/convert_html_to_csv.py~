@@ -126,6 +126,7 @@ if __name__ == '__main__':
 		tree = html.fromstring(dado_servidor)
 		
 		servidor = servidor_camara()
+		print servidor.to_string()
 		servidor.mes = mes
 		servidor.ano = ano
 		
