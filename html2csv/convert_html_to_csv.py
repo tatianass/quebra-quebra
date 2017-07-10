@@ -1,11 +1,11 @@
 #coding=utf-8
 #################################################################################
-#Author: Italo de Pontes Oliveira			#
-#Based on Spotipy API			#
-#created in: 08, july, 2017				#
-#e-mail: italooliveira at copin dot ufcg dot edu dot br		#
-#Github link: github.com/italoPontes/PhdWorks		#
-#Whatsapp: +55 83 993 554 224				#
+#Author: Italo de Pontes Oliveira						#
+#Based on Spotipy API								#
+#created in: 08, july, 2017							#
+#e-mail: italooliveira at copin dot ufcg dot edu dot br				#
+#Github link: github.com/italoPontes/PhdWorks					#
+#Whatsapp: +55 83 993 554 224							#
 #################################################################################
 import codecs
 import io
@@ -26,6 +26,8 @@ class remuneracao:
 	gratificacao_natalina = 0.0
 	horas_extras = 0.0
 	outras_remuneracoes = 0.0
+	adicional_periculosidade = 0.0
+	adicional_noturno = 0.0
 	abono_permanencia = 0.0
 	#descontos_obrigatorios = 0.0
 	reversao = 0.0
@@ -36,7 +38,9 @@ class remuneracao:
 	#vantagens_indenizatorias = 0.0
 	diarias = 0.0
 	auxilios = 0.0
+	auxilio_alimentacao = 0.0
 	vantagens_indenizatorias = 0.0
+	licenca_premio = 0.0
 	
 	def to_string(self):
 		information = str("%s," % (self.tipo_de_folha))
@@ -46,6 +50,8 @@ class remuneracao:
 		information += str("%s," % (self.gratificacao_natalina))
 		information += str("%s," % (self.horas_extras))
 		information += str("%s," % (self.outras_remuneracoes))
+		information += str("%s," % (self.adicional_periculosidade))
+		information += str("%s," % (self.adicional_noturno))
 		information += str("%s," % (self.abono_permanencia))
 		information += str("%s," % (self.reversao))
 		information += str("%s," % (self.imposto_de_renda))
@@ -54,7 +60,9 @@ class remuneracao:
 		information += str("%s," % (self.remuneracao_apos_descontos))
 		information += str("%s," % (self.diarias))
 		information += str("%s," % (self.auxilios))
-		information += str("%s" % (self.vantagens_indenizatorias))
+		information += str("%s," % (self.auxilio_alimentacao))
+		information += str("%s," % (self.vantagens_indenizatorias))
+		information += str("%s" % (self.licenca_premio))
 		return information
 		
 		
@@ -70,14 +78,19 @@ class servidor_camara:
 	cargo = "NaN"
 	padrao = "NaN"
 	especialidade = "NaN"
+	nome_da_funcao = "NaN"
+	funcao = "NaN"
 	mes = 0
 	ano = 0
 	remuneracao_normal = remuneracao()
 	remuneracao_suplementar = remuneracao()
 	
 	def __init__(self):
+		self.remuneracao_normal = remuneracao()
+		self.remuneracao_suplementar = remuneracao()
 		self.remuneracao_normal.tipo_de_folha = "Normal"
 		self.remuneracao_suplementar.tipo_de_folha = "Suplementar"
+		
 	
 	def to_string(self):
 		information = str("%s," % (self.user_id))
@@ -123,6 +136,8 @@ if __name__ == '__main__':
 		dado_servidor = conteudo_arquivo[187]
 		dado_servidor = dado_servidor.replace("col1tab_resposta", "col1_resposta")
 		dado_servidor = dado_servidor.replace("col2_resposta\"></td>", "col2_resposta\">0,00</td>")
+		dado_servidor = dado_servidor.replace("<span style=\"padding-left:20px\">", "<td class=\"col1_resposta\">")
+		
 		tree = html.fromstring(dado_servidor)
 		
 		servidor = servidor_camara()
@@ -145,23 +160,35 @@ if __name__ == '__main__':
 		informacoes_servidor = tree.xpath('//div[@class="span3"]//div/text()')
 		for item in informacoes_servidor:
 			second_part = (item).split(": ")[-1]
-			
-			if "Nome" in item:
+			if "Nome:" in item:
 				servidor.nome = second_part
-			elif "nculo" in item:
+			#Vínculo:
+			elif "nculo:" in item:
 				servidor.vinculo = second_part
+			#Situação:
 			elif "Situa" in item:
 				servidor.situacao = second_part
+			#Admissão:
 			elif "Admiss" in item:
 				servidor.admissao = second_part
-			elif "Cargo" in item:
+			#Cargo/Plano:
+			elif "Plano:" in item:
 				servidor.cargo = second_part
+			#Padrão:
 			elif "Padr" in item:
 				servidor.padrao = second_part
-			elif "Especialidade" in item:
+			#Especialidade:
+			elif "Especialidade:" in item:
 				servidor.especialidade = second_part
-		
-		
+			#Nome da Função:
+			elif "Nome da Fun" in item:
+				servidor.nome_da_funcao = second_part
+			#Função:
+			elif "Fun" in item:
+				servidor.funcao = second_part
+			
+			
+				
 		#################################################################################
 		#Coleta MES e ANO
 		#################################################################################
@@ -178,8 +205,6 @@ if __name__ == '__main__':
 			servidor.mes = mes
 			servidor.ano = ano
 		
-		print servidor.to_string()
-		
 		#################################################################################
 		#Coleta remuneracao completa
 		#################################################################################
@@ -189,6 +214,7 @@ if __name__ == '__main__':
 		
 		for tipo_dado, valor in zip(dados_remuneratorios, folha_de_pagamento):
 			valor = valor.replace(",", ".")
+			
 			if "Tipo da Folha" in tipo_dado:
 				if valor == "Normal":
 					is_normal = True
@@ -231,6 +257,18 @@ if __name__ == '__main__':
 					servidor.remuneracao_normal.outras_remuneracoes = valor
 				else:
 					servidor.remuneracao_suplementar.outras_remuneracoes = valor
+			#Adicional de Periculosidade
+			elif "Adicional de Periculosidade" in tipo_dado:
+				if is_normal:
+					servidor.remuneracao_normal.adicional_de_periculosidade = valor
+				else:
+					servidor.remuneracao_suplementar.outras_remuneracoes = valor
+			#Adicional Noturno
+			elif "Adicional Noturno" in tipo_dado:
+				if is_normal:
+					servidor.remuneracao_normal.adicional_noturno = valor
+				else:
+					servidor.remuneracao_suplementar.adicional_noturno = valor
 			#Abono de Permanência
 			elif "Abono de Perman" in tipo_dado:
 				if is_normal:
@@ -273,8 +311,14 @@ if __name__ == '__main__':
 					servidor.remuneracao_normal.diarias = valor
 				else:
 					servidor.remuneracao_suplementar.diarias = valor
+			#Auxílio-Alimentação
+			elif "lio-Alimenta" in tipo_dado:
+				if is_normal:
+					servidor.remuneracao_normal.auxilio_alimentacao = valor
+				else:
+					servidor.remuneracao_suplementar.auxilio_alimentacao = valor
 			#Auxílios
-			elif "Aux" in tipo_dado:
+			elif "lios" in tipo_dado:
 				if is_normal:
 					servidor.remuneracao_normal.auxilios = valor
 				else:
@@ -285,7 +329,13 @@ if __name__ == '__main__':
 					servidor.remuneracao_normal.vantagens_indenizatorias = valor
 				else:
 					servidor.remuneracao_suplementar.vantagens_indenizatorias = valor
-		
+			#Licença-prêmio convertida em pecúnia - aposentado
+			elif "mio convertida em pec" in tipo_dado:
+				if is_normal:
+					servidor.remuneracao_normal.licenca_premio = valor
+				else:
+					servidor.remuneracao_suplementar.licenca_premio = valor
+
 		#################################################################################
 		#Salva os dados do html em um csv
 		#################################################################################
