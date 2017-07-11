@@ -13,6 +13,7 @@ import os
 import sys
 from lxml import html
 import requests
+import StringIO
 
 #################################################################################
 #Cria a classe contendo dados sobre a remuneracao do servidor
@@ -93,14 +94,22 @@ class servidor_camara:
 		
 	
 	def to_string(self):
+		#information = '{}'.format(self.nome)
 		information = str("%s," % (self.user_id))
-		information += str("%s," % (self.nome))
-		information += str("%s," % (self.vinculo))
-		information += str("%s," % (self.situacao))
-		information += str("%s," % (self.admissao))
-		information += str("%s," % (self.cargo))
-		information += str("%s," % (self.padrao))
-		information += str("%s," % (self.especialidade))
+		information += self.nome
+		information += ","
+		information += self.vinculo
+		information += ","
+		information += self.situacao
+		information += ","
+		information += self.admissao
+		information += ","
+		information += self.cargo
+		information += ","
+		information += self.padrao
+		information += ","
+		information += self.especialidade
+		information += ","
 		information += str("%s," % (self.mes))
 		information += str("%s," % (self.ano))
 		information += str("%s," % (self.remuneracao_normal.to_string()))
@@ -121,7 +130,7 @@ if __name__ == '__main__':
 		nome_arquivo_saida = sys.argv[2]
 		arquivo_de_log = sys.argv[3]
 	else:
-		print("Você deve chamar: %s [diretorio_entrada] [csv_saida] [log]" % (sys.argv[0]))
+		print("Você deve chamar: %s [arquivo_entrada] [csv_saida] [log]" % (sys.argv[0]))
 		sys.exit()
 	
 	user_id = nome_do_arquivo.split("=")[1].split("&")[0]
@@ -146,7 +155,7 @@ if __name__ == '__main__':
 		
 		#Salva identificador unico do servidor
 		servidor.user_id = user_id
-				
+		
 		#################################################################################
 		#Coleta (07) informações básicas do servidor:
 		#	* Nome (e.g., Fulano de Tal)
@@ -159,7 +168,9 @@ if __name__ == '__main__':
 		#################################################################################
 		informacoes_servidor = tree.xpath('//div[@class="span3"]//div/text()')
 		for item in informacoes_servidor:
+			
 			second_part = (item).split(": ")[-1]
+			
 			if "Nome:" in item:
 				servidor.nome = second_part
 			#Vínculo:
@@ -186,9 +197,7 @@ if __name__ == '__main__':
 			#Função:
 			elif "Fun" in item:
 				servidor.funcao = second_part
-			
-			
-				
+		
 		#################################################################################
 		#Coleta MES e ANO
 		#################################################################################
@@ -204,6 +213,7 @@ if __name__ == '__main__':
 		except:
 			servidor.mes = mes
 			servidor.ano = ano
+		
 		
 		#################################################################################
 		#Coleta remuneracao completa
@@ -335,12 +345,12 @@ if __name__ == '__main__':
 					servidor.remuneracao_normal.licenca_premio = valor
 				else:
 					servidor.remuneracao_suplementar.licenca_premio = valor
-
+		
 		#################################################################################
 		#Salva os dados do html em um csv
 		#################################################################################
 		arquivo_saida = open(nome_arquivo_saida, "a")
-		arquivo_saida.write(servidor.to_string())
+		arquivo_saida.write(servidor.to_string().encode('utf-8'))
 		arquivo_saida.close()
 		
 		'''
