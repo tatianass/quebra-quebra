@@ -10,7 +10,7 @@ Gera um arquivo `data/outros_servidores.txt` com a lista de nomes de todos os se
 
 ## remuneracao_deputados_ano.sh
 
-Gera arquivos SQL com comandos INSERT INTO `data/deputados_inserts_${ANO}${MES}.sql` que contem todas as remunerações de todos os deputados duramte um ano.
+Gera arquivos SQL com comandos INSERT INTO `data/deputados_inserts_${ANO}${MES}.sql` que contem todas as remunerações de todos os deputados durante um ano.
 
 ## remuneracao_funcionario.sh
 
@@ -18,7 +18,7 @@ Gera comandos SQL INSERT INTO das remunerações para um deputado num periodo es
 
 ## remuneracao_outros_servidores_ano.sh
 
-Gera arquivos SQL com comandos INSERT INTO `data/outros_inserts_${ANO}${MES}` que contem todas as remunerações de todos os servidores (não deputados) duramte um ano.
+Gera arquivos SQL com comandos INSERT INTO `data/outros_inserts_${ANO}${MES}` que contem todas as remunerações de todos os servidores (não deputados) durante um ano.
 
 ## servidores_lotacao.sh
 

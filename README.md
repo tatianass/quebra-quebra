@@ -29,19 +29,19 @@ git clone https://github.com/tatianass/quebra-quebra.git
 
 ## Crawler e scrapping dos dados da camara de deputados
 
-Accedendo a pasta `camara_deputados` voce cai encontrar diferentes programas para accesar os dados da camara de deputados
+Entrando na pasta `camara_deputados` você vai encontrar diferentes programas para acessar os dados da Câmara de Deputados.
 
 ### lotacoes.sh
 
-Gera um arquivo data/lotacoes.txt que tem todas as locatacoes (departamentos) da camera.
+Gera um arquivo data/lotacoes.txt que tem todas as lotações (departamentos) da Câmara.
 
 ### outro_servidores.sh
 
-Gera um arquivo data/outros_servidores.txt com a lista de nomes de todos os servidores (não deputados) que trabalham na camera de deputados.
+Gera um arquivo data/outros_servidores.txt com a lista de nomes de todos os servidores (não deputados) que trabalham na Câmara de deputados.
 
 ### remuneracao_deputados_ano.sh
 
-Gera arquivos SQL com comandos INSERT INTO data/deputados_inserts_${ANO}${MES}.sql que contem todas as remunerações de todos os deputados duramte um ano.
+Gera arquivos SQL com comandos INSERT INTO data/deputados_inserts_${ANO}${MES}.sql que contem todas as remunerações de todos os deputados durante um ano.
 
 ### remuneracao_funcionario.sh
 
@@ -49,7 +49,7 @@ Gera comandos SQL INSERT INTO das remunerações para um deputado num periodo es
 
 ### remuneracao_outros_servidores_ano.sh
 
-Gera arquivos SQL com comandos INSERT INTO data/outros_inserts_${ANO}${MES} que contem todas as remunerações de todos os servidores (não deputados) duramte um ano.
+Gera arquivos SQL com comandos INSERT INTO data/outros_inserts_${ANO}${MES} que contem todas as remunerações de todos os servidores (não deputados) durante um ano.
 
 ### servidores_lotacao.sh
 
@@ -61,7 +61,7 @@ Segue os passos utilizados para o download dos dados do site do senado.leg.gov:
 
 1. Adicionar a extensão de baixar cookies no Mozilla: https://addons.mozilla.org/pt-BR/firefox/addon/export-cookies/?src=api
 
-2. Entrar no site: http://www.senado.gov.br/transparencia/rh/servidores/
+2. Entrar no site: http://www.senado.gov.br/transparencia/rh/servidores/nova_consulta.asp
 
 3. Selecionar um servidor qualquer
 
@@ -73,12 +73,12 @@ Segue os passos utilizados para o download dos dados do site do senado.leg.gov:
 
 7. Baixe os dados utilizando o shell do linux com o comando (há comandos semelhantes em outros sistemas operacionais, porém não foram testados): ''' cat codigos.txt | xargs -i wget "http://www.senado.gov.br/transparencia/rh/servidores/remuneracao.asp?fcodigo={}&fvinculo=&mes=01/01/2017" --load-cookies=cookies.txt ''' OBS: codigos.txt está disponível no github do projeto, a data deve ser conforme a selecionada no passo 4 e, os cookies são os que foram baixados no passe 7
 
-## Tutorial para carregar as analises do Tableau
+## Tutorial para carregar as análises feitas no Tableau
 
 As nossas análises de dados foram feitas no software de vizualização de dados chamado Tableau. Abaixo os passos para abrir e fazer uso dessas análises:
 
-1. Se ainda não tiver, baixe a última versao do Tableau Public (versão free do Tableau) em: https://public.tableau.com/en-us/s/download. 
-2. Após isso, baixe o workbook (arquivo com todas as análises que fizemos) da pasta workbook tableau.
+1. Se ainda não tiver, baixe a última versão do Tableau Public (versão free do Tableau) em: https://public.tableau.com/en-us/s/download. 
+2. Após isso, baixe o workbook (arquivo com todas as análises que fizemos) da pasta `/workbook tableau`.
 3. Finalmente, inicie o Tableau e abra o arquivo baixado no passo anterior.
 
 ## Scripts em R
