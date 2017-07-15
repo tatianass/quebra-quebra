@@ -31,7 +31,7 @@ foreach ($arquivos as $arquivo) {
             . "VALUES ({$idServidor}, '{$nomeServidor}', {$anoAdmissaoServidor});\r\n";
 
         $cargo = trim(escape($registro[5]));
-        $sqlCargo .= "REPLACE INTO fagne763_quebraquebra.senado_cargo (descricao) "
+        $sqlCargo .= "INSERT IGNORE INTO fagne763_quebraquebra.senado_cargo (descricao) "
             . "VALUES ('{$cargo}');\r\n";
     }
 
