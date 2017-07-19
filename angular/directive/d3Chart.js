@@ -136,7 +136,9 @@
                             addTextoLegenda(legenda, funcionarios);
 
                             onFilter(funcionarios);
-
+                            d3.select('#filterOn').on('change', function() {
+                                onFilter(funcionarios);
+                            });
                             d3.select('#search').on('click', function() {
                                 onFilter(funcionarios);
                             });

@@ -97,6 +97,9 @@
 
                             onFilter(root.children);
 
+                            d3.select('#filterOn').on('change', function() {
+                                onFilter(root.children);
+                            });
                             d3.select('#search').on('click', function() {
                                 onFilter(root.children);
                             });
