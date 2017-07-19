@@ -1,22 +1,28 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+set_time_limit(0);
 
-function escape(string $value): string {
+function escape($value) {
     return trim(strtoupper(str_replace('\'', '\\\'', $value)));
+}
+
+function mountDecimal($value) {
+    if (!is_numeric($value)) {
+        return 0;
+    }
+
+    return (float)preg_replace('/^(\d*)(\d{2})$/', '$1.$2', $value);
 }
 
 chdir('./csv');
 $arquivos = glob('{*.csv}', GLOB_BRACE);
 
 foreach ($arquivos as $arquivo) {
-    $file = file($arquivo);
-    echo "<p>{$arquivo}</p>";
-//    $atributos = explode(',', $file[0]);
-//    var_dump($atributos);die;
+    $file = fopen($arquivo, 'r');
 
-    for ($i = 0; $i < count($file); $i++) {
-        $registro = explode(',', $file[$i]);
+    while (!feof($file)) {
+        $registro = explode(',', fgets($file));
 
         $servidor = escape($registro[1]);
         $vinculo = escape($registro[2]);
@@ -28,24 +34,24 @@ foreach ($arquivos as $arquivo) {
         $mes = (int)$registro[8];
         $ano = (int)$registro[9];
 
-        $tipo = escape($registro[10]);
-        $remuneracaoBasica = (float)$registro[11];
-        $vantagensPessoais = (float)$registro[12];
-        $funcaoCargoComissao = (float)$registro[13];
-        $gratificacaoNatalina = (float)$registro[14];
-        $horasExtras = (float)$registro[15];
-        $outrasRemuneracoesEventuais = (float)$registro[16];
-        $adicionalPericulosidade = (float)$registro[17];
-        $adicionalNoturno = (float)$registro[18];
-        $abonoPermanencia = (float)$registro[19];
-        $reversao = (float)$registro[20];
-        $impostoRenda = (float)$registro[21];
-        $psss = (float)$registro[22];
-        $faltas = (float)$registro[23];
-        $diarias = (float)$registro[25];
-        $auxilioAlimentacao = (float)$registro[27];
-        $outrasVantagensIndenizatorias = (float)$registro[28];
-        $licencaPremio = (float)$registro[29];
+        $tipo = 'NORMAL';
+        $remuneracaoBasica = mountDecimal($registro[10]);
+        $vantagensPessoais = mountDecimal($registro[11]);
+        $funcaoCargoComissao = mountDecimal($registro[12]);
+        $gratificacaoNatalina = mountDecimal($registro[13]);
+        $horasExtras = mountDecimal($registro[14]);
+        $outrasRemuneracoesEventuais = mountDecimal($registro[15]);
+        $adicionalPericulosidade = mountDecimal($registro[16]);
+        $adicionalNoturno = mountDecimal($registro[17]);
+        $abonoPermanencia = mountDecimal($registro[18]);
+        $reversao = mountDecimal($registro[19]);
+        $impostoRenda = mountDecimal($registro[20]);
+        $psss = mountDecimal($registro[21]);
+        $faltas = mountDecimal($registro[22]);
+        $diarias = mountDecimal($registro[24]);
+        $auxilioAlimentacao = mountDecimal($registro[26]);
+        $outrasVantagensIndenizatorias = mountDecimal($registro[27]);
+        $licencaPremio = mountDecimal($registro[28]);
 
         $sql = "INSERT INTO senado_folha (tipo, ano, mes, servidor, ano_admissao, "
             . "vinculo, cargo, padrao, especialidade, situacao, "
@@ -53,8 +59,8 @@ foreach ($arquivos as $arquivo) {
             . "horas_extras, outras_remuneracoes_eventuais, "
             . "adicional_periculosidade, adicional_noturno, "
             . "abono_permanencia, reversao_teto_constitucional, imposto_renda, "
-            . "psss, faltas, diarias, auxilio_alimentacao, outras_vantagens_indenizatorias, licenca_premio "
-            . ") VALUES ( "
+            . "psss, faltas, diarias, auxilio_alimentacao, outras_vantagens_indenizatorias, licenca_premio"
+            . ") VALUES ("
             . "'{$tipo}', '${ano}', {$mes}, '{$servidor}', '{$anoAdmissao}', "
             . "'{$vinculo}', '{$cargo}', '{$padrao}', '{$especialidade}', '{$situacao}', "
             . "{$remuneracaoBasica}, {$vantagensPessoais}, {$funcaoCargoComissao}, {$gratificacaoNatalina}, "
@@ -62,46 +68,40 @@ foreach ($arquivos as $arquivo) {
             . "{$adicionalPericulosidade}, {$adicionalNoturno}, "
             . "{$abonoPermanencia}, {$reversao}, {$impostoRenda}, "
             . "{$psss}, {$faltas}, {$diarias}, {$auxilioAlimentacao}, {$outrasRemuneracoesEventuais}, {$licencaPremio} "
-            . ");\r\n ";
+            . "),\r\n";
 
-        $tipo = escape($registro[30]);
-        $remuneracaoBasica = (float)$registro[31];
-        $vantagensPessoais = (float)$registro[32];
-        $funcaoCargoComissao = (float)$registro[33];
-        $gratificacaoNatalina = (float)$registro[34];
-        $horasExtras = (float)$registro[35];
-        $outrasRemuneracoesEventuais = (float)$registro[36];
-        $adicionalPericulosidade = (float)$registro[37];
-        $adicionalNoturno = (float)$registro[38];
-        $abonoPermanencia = (float)$registro[39];
-        $reversao = (float)$registro[40];
-        $impostoRenda = (float)$registro[41];
-        $psss = (float)$registro[42];
-        $faltas = (float)$registro[43];
-        $diarias = (float)$registro[45];
-        $auxilioAlimentacao = (float)$registro[47];
-        $outrasVantagensIndenizatorias = (float)$registro[48];
-        $licencaPremio = (float)$registro[49];
+        $tipo = 'SUPLEMENTAR';
+        $remuneracaoBasica = mountDecimal($registro[29]);
+        $vantagensPessoais = mountDecimal($registro[30]);
+        $funcaoCargoComissao = mountDecimal($registro[31]);
+        $gratificacaoNatalina = mountDecimal($registro[32]);
+        $horasExtras = mountDecimal($registro[33]);
+        $outrasRemuneracoesEventuais = mountDecimal($registro[34]);
+        $adicionalPericulosidade = mountDecimal($registro[35]);
+        $adicionalNoturno = mountDecimal($registro[36]);
+        $abonoPermanencia = mountDecimal($registro[37]);
+        $reversao = mountDecimal($registro[38]);
+        $impostoRenda = mountDecimal($registro[39]);
+        $psss = mountDecimal($registro[40]);
+        $faltas = mountDecimal($registro[41]);
+        $diarias = mountDecimal($registro[43]);
+        $auxilioAlimentacao = mountDecimal($registro[45]);
+        $outrasVantagensIndenizatorias = mountDecimal($registro[46]);
+        $licencaPremio = mountDecimal($registro[47]);
 
-        $sql .= "INSERT INTO senado_folha (tipo, ano, mes, servidor, ano_admissao, "
-            . "vinculo, cargo, padrao, especialidade, situacao, "
-            . "remuneracao_basica, vantagens_pessoais, funcao_cargo_comissao, gratificacao_natalina, "
-            . "horas_extras, outras_remuneracoes_eventuais, "
-            . "adicional_periculosidade, adicional_noturno, "
-            . "abono_permanencia, reversao_teto_constitucional, imposto_renda, "
-            . "psss, faltas, diarias, auxilio_alimentacao, outras_vantagens_indenizatorias, licenca_premio "
-            . ") VALUES ( "
-            . "'{$tipo}', '${ano}', {$mes}, '{$servidor}', '{$anoAdmissao}', "
+        $sql .= "('{$tipo}', '${ano}', {$mes}, '{$servidor}', '{$anoAdmissao}', "
             . "'{$vinculo}', '{$cargo}', '{$padrao}', '{$especialidade}', '{$situacao}', "
             . "{$remuneracaoBasica}, {$vantagensPessoais}, {$funcaoCargoComissao}, {$gratificacaoNatalina}, "
             . "{$horasExtras}, {$outrasRemuneracoesEventuais}, "
             . "{$adicionalPericulosidade}, {$adicionalNoturno}, "
             . "{$abonoPermanencia}, {$reversao}, {$impostoRenda}, "
-            . "{$psss}, {$faltas}, {$diarias}, {$auxilioAlimentacao}, {$outrasRemuneracoesEventuais}, {$licencaPremio} "
-            . ");\r\n ";
+            . "{$psss}, {$faltas}, {$diarias}, {$auxilioAlimentacao}, {$outrasRemuneracoesEventuais}, {$licencaPremio}"
+            . ");\r\n";
 
         $sqlFile = fopen("../sql/senado-folha-{$ano}-{$mes}.sql", 'a');
         fwrite($sqlFile, $sql);
         fclose($sqlFile);
     }
+
+    fclose($file);
 }
