@@ -12,7 +12,7 @@ function mountDecimal($value) {
         return 0;
     }
 
-    return (float)preg_replace('/^(\d*)(\d{2})$/', '$1.$2', $value);
+    return (float)preg_replace('/^(-?\d*)(\d{2})$/', '$1.$2', $value);
 }
 
 chdir('./csv');
