@@ -134,7 +134,39 @@
                                 .attr('transform', 'translate(-20,30)');
 
                             addTextoLegenda(legenda, funcionarios);
+
+                            onFilter(funcionarios);
+
+                            d3.select('#search').on('click', function() {
+                                onFilter(funcionarios);
+                            });
                         });
+                    };
+
+                    function onFilter(dados) {
+                        var filterText = d3.select('#filterOn').property('value');
+
+                        filteredData = dados;
+                        if (filterText !== "") {
+                            var filteredData = dados.filter(function(d) {
+                                var checaFiltro = d.id.indexOf(filterText) === 0;
+                                if (checaFiltro) {
+                                    d.active = false;
+                                    checaChart(d);
+                                } else {
+                                    d.active = true;
+                                    checaChart(d);
+                                }
+
+                                return checaFiltro;
+                            });
+                        };
+
+                        d3.select('#filteredList').html(
+                            filteredData.map(function(d) {
+                                return d.id;
+                            }).join("<br/>")
+                        );
                     };
 
                     /**

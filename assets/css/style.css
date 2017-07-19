@@ -77,3 +77,21 @@ rect {
 #charts {
     height: 70%;
 }
+
+#filteredList {
+    overflow-y: auto;
+    height: 60px;
+}
+#filterOn {
+    float: left;
+    width: 60%;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+#search {
+    float: right;
+    width: 30%;
+}
+#filteredList{
+    clear: left;
+}

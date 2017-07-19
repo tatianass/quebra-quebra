@@ -49,6 +49,11 @@
                 <span data-ng-repeat="opcao in d3Ctrl.opcoes track by $index">
                     <input href="" data-ng-click="d3Ctrl.setDados(opcao)" type="button" data-ng-value="opcao.nome" data-ng-class="{'opcao btn-n-ativo': d3Ctrl.chartSelecionado.nome != opcao.nome, 'opcao btn-ativo': d3Ctrl.chartSelecionado.nome === opcao.nome}">
                 </span>
+                <div>
+                    <input type="text" id="filterOn" />
+                    <button id="search">search</button>
+                </div>
+                <div id="filteredList"></div>
             </div>
         </div>
     </div>

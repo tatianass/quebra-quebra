@@ -94,10 +94,42 @@
                             var legenda = svgLegenda.append("g")
                                 .attr('transform', 'translate(-20,30)');
                             addTextoLegenda(legenda, root.children);
+
+                            onFilter(root.children);
+
+                            d3.select('#search').on('click', function() {
+                                onFilter(root.children);
+                            });
                         });
                     };
 
                     d3.select(self.frameElement).style("height", diameter + "px");
+
+                    function onFilter(dados) {
+                        var filterText = d3.select('#filterOn').property('value');
+
+                        filteredData = dados;
+                        if (filterText !== "") {
+                            var filteredData = dados.filter(function(d) {
+                            var checaFiltro = d.data.className.indexOf(filterText) === 0;
+                                if(checaFiltro){
+                                    d.active = false;
+                                    checaChart(d);
+                                }else{
+                                    d.active = true;
+                                    checaChart(d);
+                                }
+
+                                return checaFiltro;
+                            });
+                        }
+
+                        d3.select('#filteredList').html(
+                            filteredData.map(function(d) {
+                                return d.data.className;
+                            }).join("<br/>")
+                        );
+                    };
 
                     /**
                      * Ativa ou desativa a linha.
