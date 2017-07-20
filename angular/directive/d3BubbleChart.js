@@ -155,7 +155,7 @@
                         tooltip.transition()
                             .duration(200)
                             .style("opacity", .9);
-                        tooltip.html("Nome: " + d.data.className + "<br/>" + "Função: " + d.data.packageName + "<br/>" + "Valor: " + d.data.value)
+                        tooltip.html("<p>Nome: " + d.data.className + "<br/>" + "Função: " + d.data.packageName + "<br/>" + "Valor: " + d.data.value + "</p>")
                             .style("left", (d3.event.pageX) + "px")
                             .style("top", (d3.event.pageY - 28) + "px");
                     };
