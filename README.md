@@ -59,7 +59,7 @@ Gera uma lista de nomes de servidores que trabalham numa especifica lotação da
 
 Segue os passos utilizados para o download dos dados do site do senado.leg.gov: 
 
-1. Adicionar a extensão de baixar cookies no Mozilla: https://addons.mozilla.org/pt-BR/firefox/addon/export-cookies/?src=api
+1. Adicionar a extensão de baixar cookies no Mozilla: https://addons.mozilla.org/pt-BR/firefox/addon/export-cookies/?src=api . Ou use esta extensão no Google Chrome: https://chrome.google.com/webstore/detail/cookiestxt/njabckikapfpffapmjgojcnbfjonfjfg?utm_source=chrome-app-launcher-info-dialog
 
 2. Entrar no site: http://www.senado.gov.br/transparencia/rh/servidores/nova_consulta.asp
 
