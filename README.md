@@ -70,8 +70,9 @@ Segue os passos utilizados para o download dos dados do site do senado.leg.gov:
 5. Colocar o captcha e clicar em mais informações
 
 6. Vá em Ferramentas, na barra superior do Mozilla, e clique em baixar cookies
+OBS: As informaçes que serão baixadas serão apenas do mês e ano do cookie que você baixou, ou seja, para baixar informaçes de outro mês e ano, você precisará baixar um novo cookie
 
-7. Baixe os dados utilizando o shell do linux com o comando (há comandos semelhantes em outros sistemas operacionais, porém não foram testados): ''' cat codigos.txt | xargs -i wget "http://www.senado.gov.br/transparencia/rh/servidores/remuneracao.asp?fcodigo={}&fvinculo=&mes=01/01/2017" --load-cookies=cookies.txt ''' OBS: codigos.txt está disponível no github do projeto, a data deve ser conforme a selecionada no passo 4 e, os cookies são os que foram baixados no passe 7
+7. Baixe os dados utilizando o shell do linux com o comando (há comandos semelhantes em outros sistemas operacionais, porém não foram testados): ''' cat codigos.txt | xargs -i wget "http://www.senado.gov.br/transparencia/rh/servidores/remuneracao.asp?fcodigo={}&fvinculo=&mes=01/01/2017" --load-cookies=cookies.txt ''' OBS: codigos.txt está disponível no github do projeto, a data deve ser conforme a selecionada no passo 4 e, os cookies são os que foram baixados no passe 6
 
 ## Tutorial para carregar as análises feitas no Tableau
 
