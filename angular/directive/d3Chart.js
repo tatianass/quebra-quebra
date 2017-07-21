@@ -103,18 +103,29 @@
                          * 
                          * @param {String} dados - path para os dados.
                          */
-                        d3.tsv(dados, type, function(error, data) {
+                        d3.json(dados, function(error, data) {
                             if (error) throw error;
 
-                            //transformando dados para json
-                            var funcionarios = data.columns.slice(1).map(function(id) {
-                                return {
-                                    id: id,
-                                    values: data.map(function(d) {
-                                        return { date: d.date, remuneracao: d[id] };
-                                    })
-                                };
+                            var data = data["columns"];
+
+                            var columns = ["New York", "San Francisco"];
+
+                            data.forEach(function(d) {
+                                d.date = parserDatas(d.date);
                             });
+
+                            var funcionarios = [];
+                            columns.forEach(function(c) {
+                                var i = { "id": "", "values": [] }
+                                i["id"] = c;
+                                data.forEach(function(d) {
+                                    var j = { "date": 0, "remuneracao": 0 };
+                                    j.date = d.date;
+                                    j.remuneracao = d[c];
+                                    i.values.push(j);
+                                })
+                                funcionarios.push(i);
+                            })
 
                             carregaCoordenadas(funcionarios, data);
                             addEixos();
@@ -136,9 +147,7 @@
                             addTextoLegenda(legenda, funcionarios);
 
                             onFilter(funcionarios);
-                            d3.select('#filterOn').on('change', function() {
-                                onFilter(funcionarios);
-                            });
+
                             d3.select('#search').on('click', function() {
                                 onFilter(funcionarios);
                             });
@@ -258,7 +267,7 @@
                          * 
                          * @return {Number} valor da remuneracao.
                          */
-                        z.domain(funcionarios.map(function(f) {
+                        z.domain(d3.extent(funcionarios, function(f) {
                             return f.id;
                         }));
                     };
@@ -334,7 +343,7 @@
                         tooltip.transition()
                             .duration(200)
                             .style("opacity", .9);
-                        tooltip.html("<p>" + d.id + "<br/> - <br/>" + formatMonth(d.values[idx].date) + "<br/>" + formatYear(d.values[idx].date) + "</p")
+                        tooltip.html(d.id + "<br/> - <br/>" + formatMonth(d.values[idx].date) + "<br/>" + formatYear(d.values[idx].date))
                             .style("left", (d3.event.pageX) + "px")
                             .style("top", (d3.event.pageY - 28) + "px");
                     };
