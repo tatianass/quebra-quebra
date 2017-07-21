@@ -2,7 +2,7 @@
 #Autor: Ítalo de Pontes Oliveira                                                                      #
 #Os CSV's são gerados mensalmente, assim, para cada arquivo de dados, uma nova variável é atribuida   #
 #######################################################################################################
-data_filename = "~/workspace/quebra-quebra/dados_senado_limpo.csv"
+data_filename = "~/workspace/quebra-quebra2/dados_senado_limpo.csv"
 
 #######################################################################################################
 #Por convensão, decidiu-se utilizar o formato de arquivo CSV, logo o separador sempre será a vírgula  #
@@ -176,7 +176,9 @@ remuneracao_s_cargo_2017 <- topSalarios(senado_2017, data$remuneracao_total_s, d
 remuneracao_especialidade_2017 <- topSalarios(senado_2017, data$remuneracao_total, data$especialidade)
 remuneracao_s_especialidade_2017 <- topSalarios(senado_2017, data$remuneracao_total_s, data$especialidade)
 
-###########################################################
+#######################################################################################################
+#3 variáveis
+#######################################################################################################
 topSalarios <- function(data, column_ref, column_dst, column_aux) {
   salariosAgregados <- aggregate(column_ref~column_dst+column_aux, FUN=sum, data)
   topSalarios <- salariosAgregados[order(salariosAgregados$column_ref, decreasing=TRUE)[1:10],]
@@ -185,6 +187,18 @@ topSalarios <- function(data, column_ref, column_dst, column_aux) {
   return(topSalarios)
 }
 
-remuneracao_id_2017 <- topSalarios(senado_2017, senado_2017$remuneracao_total, senado_2017$id, senado_2017$nome)
-remuneracao_s_id_2017 <- topSalarios(senado_2017, senado_2017$remuneracao_total_s, senado_2017$id, senado_2017$nome)
+remuneracao_id_2017 <- topSalarios(data, data$remuneracao_total, data$id, data$nome)
+remuneracao_s_id_2017 <- topSalarios(data, senado_2017$remuneracao_total_s, senado_2017$id, senado_2017$nome)
 
+#######################################################################################################
+#4 variáveis
+#######################################################################################################
+topSalarios <- function(data, column_ref, column_dst, column_aux, column_aux2) {
+  salariosAgregados <- aggregate(column_ref~column_dst+column_aux+column_aux2, FUN=sum, data)
+  topSalarios <- salariosAgregados[order(salariosAgregados$column_ref, decreasing=TRUE)[1:10],]
+  rownames(topSalarios) <- NULL
+  colnames(topSalarios) <- c("Cargo", "Remuneração após desconto")
+  return(topSalarios)
+}
+
+remuneracao_id_2017 <- topSalarios(data, data$remuneracao_total, data$id, data$nome, data$especialidade)
