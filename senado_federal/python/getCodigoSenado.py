@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
 
 def getCodigo(href):
-    return href.split('detalhe.asp?fcodigo=')[1]
+	print(href.split('detalhe.asp?fcodigo='))
+	return href.split('detalhe.asp?fcodigo=')[1]
 
 with open("../dados/nova_consulta.html") as fp:
     soup = BeautifulSoup(fp)
