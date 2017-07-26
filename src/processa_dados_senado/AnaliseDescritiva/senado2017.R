@@ -2,7 +2,7 @@
 #Autor: Ítalo de Pontes Oliveira                                                                      #
 #Os CSV's são gerados mensalmente, assim, para cada arquivo de dados, uma nova variável é atribuida   #
 #######################################################################################################
-data_filename = "~/workspace/quebra-quebra/src/processa_dados_senado/output_2017.csv"
+data_filename = "~/workspace/quebra-quebra/src/processa_dados_senado/dados_senado.csv"
 
 #######################################################################################################
 #Por convensão, decidiu-se utilizar o formato de arquivo CSV, logo o separador sempre será a vírgula  #
@@ -71,14 +71,6 @@ topSalarios # Tecnico, Analista e Consultor
 #Advogado, administração, médico, psicólogo, etc
 #Comparar com salários médios no setor privado
 #######################################################################################################
-
-
-
-
-
-
-
-
 
 
 

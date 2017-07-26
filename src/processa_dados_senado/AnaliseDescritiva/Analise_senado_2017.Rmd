@@ -1,0 +1,120 @@
+---
+title: "Análise do Senado"
+author: "Ítalo de Pontes Oliveira"
+date: "24 de julho de 2017"
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+#######################################################################################################
+#Autor: Ítalo de Pontes Oliveira                                                                      #
+#Os CSV's são gerados mensalmente, assim, para cada arquivo de dados, uma nova variável é atribuida   #
+#######################################################################################################
+data_filename = "~/workspace/quebra-quebra/src/processa_dados_senado/dados_senado.csv"
+
+#######################################################################################################
+#Por convensão, decidiu-se utilizar o formato de arquivo CSV, logo o separador sempre será a vírgula  #
+#######################################################################################################
+data <- read.csv2(file=data_filename, sep=",", header=FALSE, stringsAsFactors=FALSE, na.strings="unknown", dec=".")
+colnames(data) <-  c("id","nome","vinculo","situacao","ano_de_admissao","cargo","padrao","especialidade","mes","ano","remuneracao_basica","vantagens_pessoais","funcao_comissao","gratificacao_natalina","horas_extras","outras_remuneracoes","adicional_periculosidade","adicional_noturno","abono_permanencia","reversao","imposto_de_renda","psss","faltas","remuneracao_apos_descontos","diarias","auxilios","auxilio_alimentacao","vantagens_indenizatorias","adicional_ferias","ferias_indenizatorias","licenca_premio","remuneracao_basica_s","vantagens_pessoais_s","funcao_comissao_s","gratificacao_natalina_s","horas_extras_s","outras_remuneracoes_s","adicional_periculosidade_s","adicional_noturno_s","abono_permanencia_s","reversao_s","imposto_de_renda_s","psss_s","faltas_s","remuneracao_apos_descontos_s","diarias_s","auxilios_s","auxilio_alimentacao_s","vantagens_indenizatorias_s","adicional_ferias_s","ferias_indenizatorias_s","licenca_premio_s")
+
+library("dplyr")
+
+data <- mutate(data, remuneracao_total=remuneracao_basica + vantagens_pessoais + funcao_comissao + gratificacao_natalina + horas_extras + outras_remuneracoes + adicional_periculosidade + adicional_noturno + abono_permanencia + reversao + imposto_de_renda + psss + faltas + diarias + auxilios + auxilio_alimentacao + vantagens_indenizatorias + adicional_ferias + ferias_indenizatorias + licenca_premio)
+data <- mutate(data, remuneracao_total_s=remuneracao_basica_s + vantagens_pessoais_s + funcao_comissao_s + gratificacao_natalina_s + horas_extras_s + outras_remuneracoes_s + adicional_periculosidade_s + adicional_noturno_s + abono_permanencia_s + reversao_s + imposto_de_renda_s + psss_s + faltas_s + diarias_s + auxilios_s + auxilio_alimentacao_s + vantagens_indenizatorias_s + adicional_ferias_s + ferias_indenizatorias_s + licenca_premio_s)
+data <- mutate(data, remuneracao_total_liquida=remuneracao_total+remuneracao_total_s)
+
+sum(data$remuneracao_total, na.rm=T)        #520,648,967 = 520648967
+sum(data$remuneracao_total_s, na.rm=T)      #31,284,518 = 31284518
+
+ano_max <- max(data$ano)
+ano_min <- min(data$ano)
+
+options(scipen=999, OutDec= ",")
+
+senado_recente <- data[data$ano==ano_max,]
+
+remuneracao_total_liquida <- sum(data$remuneracao_total_liquida, na.rm=T)
+
+```
+
+O sistema desenvolvido pela equipe Quebra-Quebra, conseguiu obter a folha de pagamento para um total de `r round(nrow(data)/1000, 0)` mil empenhos de pagamento, entre os anos de `r ano_min` e `r ano_max`. Deste total, só em `r ano_max` foram: `r round(nrow(senado_recente)/1000, 0)` mil pagamentos. Ou seja, de todos os dados fornecidos pelo Senado, cerca de `r  round(nrow(senado_recente)/nrow(data)*100,1)`% dos pagamentos é relativo ao ano de `r ano_max`.
+
+Ao consideramos o montante pago, ou seja, qual total de gastos do Senado nesse intervalo de tempo (`r ano_min`-`r ano_max`) com remuneração, observa-se o pagamento de R$ `r round(remuneracao_total_liquida/1000000000, 2)` BILHÕES de reais. Ou seja, a remuneração líquida está na MÉDIA de R$ `r round(remuneracao_total_liquida/nrow(data), 2)`, este valor já inclui todos os descontos como o imposto de renda, Plano de Seguridade Social do Servidor Público (PSSS), a reversão do teto constitucional e eventuais ausências.
+
+```{r comentario_pib_distrito_federal, echo=FALSE}
+#De acordo com o IBGE
+#http://saladeimprensa.ibge.gov.br/noticias?view=noticia&id=1&busca=1&idnoticia=3315 
+#De acordo com o IBGE, o Distrito Federal tem 3,4% de represetatividade no PIB nacional (sétimo maior), embora possua o PIB per capita mais elevado do país (R$ 69.216).
+#Note that the `echo = FALSE` parameter.
+```
+
+#Pensionistas
+```{r aposentados, echo=FALSE}
+aposentados_recente <- senado_recente[senado_recente$situacao=="APOSENTADO",]
+aposentados_totais <- data[data$situacao=="APOSENTADO",]
+
+receita_total_recente <- sum(senado_recente$remuneracao_total_liquida)
+receita_aposentados_todos <- sum(aposentados_totais$remuneracao_total_liquida)
+receita_aposentados_recente <- sum(aposentados_recente$remuneracao_total_liquida)
+```
+
+O Senado fornece dados para `r round(nrow(aposentados_totais)/1000, 0)` mil pagamentos referentes a aposentados entre os anos de `r ano_min` e `r ano_max`. No total, já foi pago `r round(receita_aposentados_todos/1000000000, 1)` BILHÃO de reais em pagamento para aposentados do Senado, sendo `r round(receita_aposentados_todos/remuneracao_total_liquida*100, 1)`% de todos os pagamentos.
+
+```{r aposentados_graficos,fig.align='center', echo=FALSE, fig.width=5,fig.height=3}
+library(ggplot2)
+
+df2 <- data.frame(data=rep(c(ano_max, "Todos os Anos"), each=2),
+                situacao=rep(c("Aposentados", "Demais Servidores"),2),
+                remuneracao=c(receita_aposentados_recente/1000000000, receita_total_recente/1000000000, receita_aposentados_todos/1000000000, remuneracao_total_liquida/1000000000))
+
+ggplot(data=df2, aes(x=data, y=remuneracao, fill=situacao)) +
+geom_bar(stat="identity", position=position_dodge(width=0.6), width=0.5) +
+theme_minimal() +
+  labs(title="Remuneração dos Pensionistas", 
+       x="Data de Referência", y = "Remuneração em Bilhões de Reais",
+       fill = "Situação")
+```
+
+Só no ano de `r ano_max`, o Senado efetuou `r round(nrow(aposentados_recente)/1000, 0)` mil pagamentos à servidores aposentados, uma relação de `r round(nrow(aposentados_recente)/nrow(senado_recente)*100, 1)`% da folha de pagamento em `r ano_max`. Em relação a proporção total na folha de pagamento no ano `r ano_max`, os aposentados correspondem à `r round(receita_aposentados_recente/1000000, 1)` MILHÕES de reais em remuneração, o que corresponde à `r round(receita_aposentados_recente/receita_total_recente*100, 1)`% do total da folha de pagamento destinado aos aposentados.
+
+#Arrecadação
+
+```{r calculo_arrecadacao, echo=FALSE}
+deficit_total <- sum(aposentados_totais$remuneracao_total_liquida)+sum(data$imposto_de_renda)+sum(data$psss)
+deficit_recente <- sum(aposentados_recente$remuneracao_total_liquida)+sum(senado_recente$imposto_de_renda)+sum(senado_recente$psss)
+```
+
+O Senado arrecada alguns fundos do próprio servidor por meio de descontos do Imposto de renda e do Plano de Seguridade Social do Servidor Público (PSSS). Entre `r ano_min` e `r ano_max` foi arrecadado foi arrecado por meio do imposto de renda `r round(sum(data$imposto_de_renda/1000000)*(-1), 1)` MILHÕES de reais e `r round(sum(data$psss/1000000)*(-1), 1)` MILHÕES de reais por meio do PSSS, totalizando um montante de `r round(sum(data$imposto_de_renda+data$psss)/-1000000, 1)` MILHÕES de reais arrecadado dos servidores do Senado. Além disso, existe um outro desconto aplicados em altas remunerações é a reversão da remuneração de servidores que ultrapassam o limite constitucional, representando `r round(sum(data$reversao)/-1000000, 1)` MILHÕES de reais. Ou seja, nesse mesmo intervalo de tempo (`r ano_min`-`r ano_max`), o Senado efetuou o pagamento de `r round(sum(aposentados_totais$remuneracao_total_liquida)/1000000, 1)` MILHÕES de reais para aposentados conforme (seção anterior), o que significa um DÉFICIT de `r round(deficit_total/1000000,1)` MILHÕES de reais que estão sendo arrecadados por outros meios.
+
+```{r arrecadao_graficos, fig.align='center', echo=FALSE, fig.width=5, fig.height=3}
+library(ggplot2)
+
+df2 <- data.frame(data=rep(c("Todos os Anos", ano_max), each=4),
+                situacao=rep(c("Aposentados","PSSS","Imposto de Renda", "Déficit"),2),
+                remuneracao=c(receita_aposentados_recente/-1000000, sum(data$psss)/-1000000, sum(data$imposto_de_renda)/-1000000, deficit_total/-1000000,
+                              receita_aposentados_recente/-1000000, sum(data$psss)/-1000000, sum(data$imposto_de_renda)/-1000000, deficit_recente/-1000000 ))
+
+ggplot(data=df2, aes(x=data, y=remuneracao, fill=situacao)) +
+geom_bar(stat="identity", position=position_dodge(width=0.6), width=0.5) +
+theme_minimal() +
+  labs(title="Arrecadação do Senado Aposentadoria", 
+       x="Data de Referência", y = "Milhões de Reais",
+       fill = "Gastos/Arrecadação")
+```
+
+
+#Licença-Prêmio
+
+Outro tipo de pagamento efetuado pelo Senado chama-se Licença-Prêmio. Esse tipo de receita significa... EXPLICAR DEPOIS
+
+
+
+
+
+
+
+
+
