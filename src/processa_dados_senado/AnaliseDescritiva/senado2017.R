@@ -2,7 +2,7 @@
 #Autor: Ítalo de Pontes Oliveira                                                                      #
 #Os CSV's são gerados mensalmente, assim, para cada arquivo de dados, uma nova variável é atribuida   #
 #######################################################################################################
-data_filename = "~/workspace/quebra-quebra/src/processa_dados_senado/dados_senado.csv"
+data_filename = "../../../senado_federal/dados/dados_senado.csv"
 
 #######################################################################################################
 #Por convensão, decidiu-se utilizar o formato de arquivo CSV, logo o separador sempre será a vírgula  #
@@ -74,11 +74,63 @@ topSalarios # Tecnico, Analista e Consultor
 
 
 
+library("dplyr")
+
+data <- mutate(data, remuneracao_total=remuneracao_basica + vantagens_pessoais + funcao_comissao + gratificacao_natalina + horas_extras + outras_remuneracoes + adicional_periculosidade + adicional_noturno + abono_permanencia + reversao + imposto_de_renda + psss + faltas + diarias + auxilios + auxilio_alimentacao + vantagens_indenizatorias + adicional_ferias + ferias_indenizatorias + licenca_premio)
+data <- mutate(data, remuneracao_total_s=remuneracao_basica_s + vantagens_pessoais_s + funcao_comissao_s + gratificacao_natalina_s + horas_extras_s + outras_remuneracoes_s + adicional_periculosidade_s + adicional_noturno_s + abono_permanencia_s + reversao_s + imposto_de_renda_s + psss_s + faltas_s + diarias_s + auxilios_s + auxilio_alimentacao_s + vantagens_indenizatorias_s + adicional_ferias_s + ferias_indenizatorias_s + licenca_premio_s)
+data <- mutate(data, remuneracao_total_liquida=remuneracao_total+remuneracao_total_s)
+
+sum(data$remuneracao_total, na.rm=T)        #520,648,967 = 520648967
+sum(data$remuneracao_total_s, na.rm=T)      #31,284,518 = 31284518
+
+ano_max <- max(data$ano)
+ano_min <- min(data$ano)
+
+options(scipen=999, OutDec= ",")
+
+senado_recente <- data[data$ano==ano_max,]
+
+remuneracao_total_liquida <- sum(data$remuneracao_total_liquida, na.rm=T)
+
+
+aposentados_recente <- senado_recente[senado_recente$situacao=="APOSENTADO",]
+aposentados_totais <- data[data$situacao=="APOSENTADO",]
+
+receita_total_recente <- sum(senado_recente$remuneracao_total_liquida)
+receita_aposentados_todos <- sum(aposentados_totais$remuneracao_total_liquida)
+receita_aposentados_recente <- sum(aposentados_recente$remuneracao_total_liquida)
 
 
 
+library("ggplot2")
+demais_servidores_total <- remuneracao_total_liquida-receita_aposentados_todos
+demais_servidores_recente <- receita_total_recente-receita_aposentados_recente
 
+df2 <- data.frame(data=rep(c(ano_max, "Todos os Anos"), each=2),
+                  situacao=rep(c("Aposentados", "Demais Servidores"),2),
+                  remuneracao=c(receita_aposentados_recente/10^9, demais_servidores_recente/10^9, receita_aposentados_todos/10^9, demais_servidores_total/10^9))
 
+g <- ggplot(data=df2, aes(x=data, y=remuneracao, fill=situacao)) +
+  geom_bar(stat="identity", position=position_dodge(width=0.6), width=0.5) +
+  theme_minimal() +
+  labs(title="Remuneração dos Pensionistas", 
+       x="Data de Referência", y = "Remuneração em Bilhões de Reais",
+       fill = "Situação")
+
+library(ggplot2)
+library(plotly) 
+packageVersion("plotly")
+help(signup())
+
+p <- ggplot(iris, aes(Sepal.Length, Petal.Length, colour=Species)) + geom_point()
+p
+library(plotly)
+ggplotly(p)
+ggplotly(g)
+dolibrary(ggplot2)
+
+Sys.setenv("plotly_username"="italooliveira")
+Sys.setenv("plotly_api_key"="pJKE0nesUNVr1HveyY3i")
 
 #######################################################################################################
 #Plotar boxplot

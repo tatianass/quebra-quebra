@@ -12,7 +12,7 @@ output:
 #Autor: Ítalo de Pontes Oliveira                                                                      #
 #Os CSV's são gerados mensalmente, assim, para cada arquivo de dados, uma nova variável é atribuida   #
 #######################################################################################################
-data_filename = "~/workspace/quebra-quebra/src/processa_dados_senado/dados_senado.csv"
+data_filename = "~/workspace/quebra-quebra/senado_federal/dados/dados_senado.csv"
 
 #######################################################################################################
 #Por convensão, decidiu-se utilizar o formato de arquivo CSV, logo o separador sempre será a vírgula  #
@@ -40,9 +40,9 @@ remuneracao_total_liquida <- sum(data$remuneracao_total_liquida, na.rm=T)
 
 ```
 
-O sistema desenvolvido pela equipe Quebra-Quebra, conseguiu obter a folha de pagamento para um total de `r round(nrow(data)/1000, 0)` mil empenhos de pagamento, entre os anos de `r ano_min` e `r ano_max`. Deste total, só em `r ano_max` foram: `r round(nrow(senado_recente)/1000, 0)` mil pagamentos. Ou seja, de todos os dados fornecidos pelo Senado, cerca de `r  round(nrow(senado_recente)/nrow(data)*100,1)`% dos pagamentos é relativo ao ano de `r ano_max`.
+O sistema desenvolvido pela equipe Quebra-Quebra, conseguiu obter a folha de pagamento para um total de `r round(nrow(data)/10^3, 0)` mil empenhos de pagamento, entre os anos de `r ano_min` e `r ano_max`. Deste total, só em `r ano_max` foram: `r round(nrow(senado_recente)/10^3, 0)` mil pagamentos. Ou seja, de todos os dados fornecidos pelo Senado, cerca de `r  round(nrow(senado_recente)/nrow(data)*100,1)`% dos pagamentos é relativo ao ano de `r ano_max`.
 
-Ao consideramos o montante pago, ou seja, qual total de gastos do Senado nesse intervalo de tempo (`r ano_min`-`r ano_max`) com remuneração, observa-se o pagamento de R$ `r round(remuneracao_total_liquida/1000000000, 2)` BILHÕES de reais. Ou seja, a remuneração líquida está na MÉDIA de R$ `r round(remuneracao_total_liquida/nrow(data), 2)`, este valor já inclui todos os descontos como o imposto de renda, Plano de Seguridade Social do Servidor Público (PSSS), a reversão do teto constitucional e eventuais ausências.
+Ao consideramos o montante pago, ou seja, qual total de gastos do Senado nesse intervalo de tempo (`r ano_min`-`r ano_max`) com remuneração, observa-se o pagamento de R$ `r round(remuneracao_total_liquida/10^9, 2)` BILHÕES de reais. Ou seja, a remuneração líquida está na MÉDIA de R$ `r round(remuneracao_total_liquida/nrow(data), 2)` por servidor, esse valor já inclui todos os descontos como o imposto de renda, Plano de Seguridade Social do Servidor Público (PSSS), a reversão do teto constitucional e eventuais ausências.
 
 ```{r comentario_pib_distrito_federal, echo=FALSE}
 #De acordo com o IBGE
@@ -61,56 +61,72 @@ receita_aposentados_todos <- sum(aposentados_totais$remuneracao_total_liquida)
 receita_aposentados_recente <- sum(aposentados_recente$remuneracao_total_liquida)
 ```
 
-O Senado fornece dados para `r round(nrow(aposentados_totais)/1000, 0)` mil pagamentos referentes a aposentados entre os anos de `r ano_min` e `r ano_max`. No total, já foi pago `r round(receita_aposentados_todos/1000000000, 1)` BILHÃO de reais em pagamento para aposentados do Senado, sendo `r round(receita_aposentados_todos/remuneracao_total_liquida*100, 1)`% de todos os pagamentos.
+O Senado fornece dados para `r round(nrow(aposentados_totais)/10^3, 0)` mil pagamentos referentes a aposentados entre os anos de `r ano_min` e `r ano_max`. No total, já foi pago `r round(receita_aposentados_todos/10^9, 1)` BILHÃO de reais em pagamento para aposentados do Senado, o que significa `r round(receita_aposentados_todos/remuneracao_total_liquida*100, 1)`% de todos os pagamentos nesse intervalo de tempo.
 
-```{r aposentados_graficos,fig.align='center', echo=FALSE, fig.width=5,fig.height=3}
-library(ggplot2)
+Só no ano de `r ano_max`, o Senado efetuou `r round(nrow(aposentados_recente)/1000, 0)` mil pagamentos à servidores aposentados, uma relação de `r round(nrow(aposentados_recente)/nrow(senado_recente)*100, 1)`% da folha de pagamento em `r ano_max`. Em relação a proporção total na folha de pagamento no ano `r ano_max`, os aposentados correspondem à `r round(receita_aposentados_recente/1000000, 1)` MILHÕES de reais em remuneração, ou seja, `r round(receita_aposentados_recente/receita_total_recente*100, 1)`% do total da folha de pagamento é destinada aos aposentados.
+
+```{r aposentados_graficos,fig.align='center', warning=FALSE, error=FALSE, echo=FALSE, fig.width=5,fig.height=3}
+library("ggplot2")
+demais_servidores_total <- remuneracao_total_liquida-receita_aposentados_todos
+demais_servidores_recente <- receita_total_recente-receita_aposentados_recente
+
+ratio <- 10^9
 
 df2 <- data.frame(data=rep(c(ano_max, "Todos os Anos"), each=2),
                 situacao=rep(c("Aposentados", "Demais Servidores"),2),
-                remuneracao=c(receita_aposentados_recente/1000000000, receita_total_recente/1000000000, receita_aposentados_todos/1000000000, remuneracao_total_liquida/1000000000))
+                remuneracao=c(receita_aposentados_recente/ratio, demais_servidores_recente/ratio, receita_aposentados_todos/ratio, demais_servidores_total/ratio))
 
-ggplot(data=df2, aes(x=data, y=remuneracao, fill=situacao)) +
+g <- ggplot(data=df2, aes(x=data, y=remuneracao, fill=situacao)) +
 geom_bar(stat="identity", position=position_dodge(width=0.6), width=0.5) +
 theme_minimal() +
   labs(title="Remuneração dos Pensionistas", 
        x="Data de Referência", y = "Remuneração em Bilhões de Reais",
        fill = "Situação")
+
+library("plotly")
+ggplotly(g)
 ```
 
-Só no ano de `r ano_max`, o Senado efetuou `r round(nrow(aposentados_recente)/1000, 0)` mil pagamentos à servidores aposentados, uma relação de `r round(nrow(aposentados_recente)/nrow(senado_recente)*100, 1)`% da folha de pagamento em `r ano_max`. Em relação a proporção total na folha de pagamento no ano `r ano_max`, os aposentados correspondem à `r round(receita_aposentados_recente/1000000, 1)` MILHÕES de reais em remuneração, o que corresponde à `r round(receita_aposentados_recente/receita_total_recente*100, 1)`% do total da folha de pagamento destinado aos aposentados.
 
 #Arrecadação
 
 ```{r calculo_arrecadacao, echo=FALSE}
-deficit_total <- sum(aposentados_totais$remuneracao_total_liquida)+sum(data$imposto_de_renda)+sum(data$psss)
-deficit_recente <- sum(aposentados_recente$remuneracao_total_liquida)+sum(senado_recente$imposto_de_renda)+sum(senado_recente$psss)
+arrecadao_total <- sum(data$imposto_de_renda+data$psss+data$reversao)
+deficit_total <- sum(aposentados_totais$remuneracao_total_liquida)+arrecadao_total
+
+arrecadao_recente <- sum(senado_recente$imposto_de_renda+senado_recente$psss+senado_recente$reversao)
+deficit_recente <- sum(aposentados_recente$remuneracao_total_liquida)+arrecadao_recente
+
 ```
 
-O Senado arrecada alguns fundos do próprio servidor por meio de descontos do Imposto de renda e do Plano de Seguridade Social do Servidor Público (PSSS). Entre `r ano_min` e `r ano_max` foi arrecadado foi arrecado por meio do imposto de renda `r round(sum(data$imposto_de_renda/1000000)*(-1), 1)` MILHÕES de reais e `r round(sum(data$psss/1000000)*(-1), 1)` MILHÕES de reais por meio do PSSS, totalizando um montante de `r round(sum(data$imposto_de_renda+data$psss)/-1000000, 1)` MILHÕES de reais arrecadado dos servidores do Senado. Além disso, existe um outro desconto aplicados em altas remunerações é a reversão da remuneração de servidores que ultrapassam o limite constitucional, representando `r round(sum(data$reversao)/-1000000, 1)` MILHÕES de reais. Ou seja, nesse mesmo intervalo de tempo (`r ano_min`-`r ano_max`), o Senado efetuou o pagamento de `r round(sum(aposentados_totais$remuneracao_total_liquida)/1000000, 1)` MILHÕES de reais para aposentados conforme (seção anterior), o que significa um DÉFICIT de `r round(deficit_total/1000000,1)` MILHÕES de reais que estão sendo arrecadados por outros meios.
+O Senado arrecada alguns fundos do próprio servidor por meio de descontos do Imposto de renda e do Plano de Seguridade Social do Servidor Público (PSSS). Entre `r ano_min` e `r ano_max` foi arrecadado por meio do imposto de renda R$ `r round(sum(data$imposto_de_renda/10^6)*(-1), 1)` MILHÕES e por meio do PSSS cerca de R$ `r round(sum(data$psss/10^6)*(-1), 1)` MILHÕES, totalizando um montante de R$ `r round(sum(data$imposto_de_renda+data$psss)/-10^9, 1)` BILHÃO  arrecadado dos servidores do Senado. Além disso, existe um outro desconto aplicado em altas remunerações que é a reversão das remunerações que ultrapassam o limite constitucional, representando R$ `r round(sum(data$reversao)/-10^6, 1)` MILHÕES. Ou seja, nesse mesmo intervalo de tempo (`r ano_min`-`r ano_max`), o Senado efetuou o pagamento de R$ `r round(sum(aposentados_totais$remuneracao_total_liquida)/10^9, 1)` BILHÕES de reais para aposentados (conforme descrito na seção anterior), mas arrecadou dos próprios servidores somente R$ `r round(arrecadao_total/10^9, 1)*(-1)` BILHÃO, o que significa um DÉFICIT de R$ `r round(deficit_total/10^9, 1)` BILHÃO que estão sendo arrecadados por outros meios.
+
 
 ```{r arrecadao_graficos, fig.align='center', echo=FALSE, fig.width=5, fig.height=3}
 library(ggplot2)
 
-df2 <- data.frame(data=rep(c("Todos os Anos", ano_max), each=4),
-                situacao=rep(c("Aposentados","PSSS","Imposto de Renda", "Déficit"),2),
-                remuneracao=c(receita_aposentados_recente/-1000000, sum(data$psss)/-1000000, sum(data$imposto_de_renda)/-1000000, deficit_total/-1000000,
-                              receita_aposentados_recente/-1000000, sum(data$psss)/-1000000, sum(data$imposto_de_renda)/-1000000, deficit_recente/-1000000 ))
+ratio<-10^9
 
-ggplot(data=df2, aes(x=data, y=remuneracao, fill=situacao)) +
+df2 <- data.frame(data=rep(c("Todos os Anos", ano_max), each=5),
+                situacao=rep(c("Aposentados","PSSS","Imposto de Renda", "Déficit","Reversão"),2),
+                remuneracao=c(receita_aposentados_todos/-ratio, sum(data$psss)/-ratio, sum(data$imposto_de_renda)/-ratio, deficit_total/-ratio, sum(data$reversao)/-ratio,
+                              receita_aposentados_recente/-ratio, sum(senado_recente$psss)/-ratio, sum(senado_recente$imposto_de_renda)/-ratio, deficit_recente/-ratio, sum(senado_recente$reversao)/-ratio ))
+
+g <-ggplot(data=df2, aes(x=data, y=remuneracao, fill=situacao)) +
 geom_bar(stat="identity", position=position_dodge(width=0.6), width=0.5) +
 theme_minimal() +
-  labs(title="Arrecadação do Senado Aposentadoria", 
-       x="Data de Referência", y = "Milhões de Reais",
+  labs(title="Arrecadação do Senado e Aposentadoria", 
+       x="Data de Referência", y = "Bilhões de Reais",
        fill = "Gastos/Arrecadação")
+
+library("plotly")
+ggplotly(g)
 ```
 
 
 #Licença-Prêmio
 
 Outro tipo de pagamento efetuado pelo Senado chama-se Licença-Prêmio. Esse tipo de receita significa... EXPLICAR DEPOIS
-
-
 
 
 
