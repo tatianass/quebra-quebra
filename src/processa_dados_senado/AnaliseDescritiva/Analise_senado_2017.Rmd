@@ -21,6 +21,7 @@ data <- read.csv2(file=data_filename, sep=",", header=FALSE, stringsAsFactors=FA
 colnames(data) <-  c("id","nome","vinculo","situacao","ano_de_admissao","cargo","padrao","especialidade","mes","ano","remuneracao_basica","vantagens_pessoais","funcao_comissao","gratificacao_natalina","horas_extras","outras_remuneracoes","adicional_periculosidade","adicional_noturno","abono_permanencia","reversao","imposto_de_renda","psss","faltas","remuneracao_apos_descontos","diarias","auxilios","auxilio_alimentacao","vantagens_indenizatorias","adicional_ferias","ferias_indenizatorias","licenca_premio","remuneracao_basica_s","vantagens_pessoais_s","funcao_comissao_s","gratificacao_natalina_s","horas_extras_s","outras_remuneracoes_s","adicional_periculosidade_s","adicional_noturno_s","abono_permanencia_s","reversao_s","imposto_de_renda_s","psss_s","faltas_s","remuneracao_apos_descontos_s","diarias_s","auxilios_s","auxilio_alimentacao_s","vantagens_indenizatorias_s","adicional_ferias_s","ferias_indenizatorias_s","licenca_premio_s")
 
 library("dplyr")
+library("plotly")
 
 data <- mutate(data, remuneracao_total=remuneracao_basica + vantagens_pessoais + funcao_comissao + gratificacao_natalina + horas_extras + outras_remuneracoes + adicional_periculosidade + adicional_noturno + abono_permanencia + reversao + imposto_de_renda + psss + faltas + diarias + auxilios + auxilio_alimentacao + vantagens_indenizatorias + adicional_ferias + ferias_indenizatorias + licenca_premio)
 data <- mutate(data, remuneracao_total_s=remuneracao_basica_s + vantagens_pessoais_s + funcao_comissao_s + gratificacao_natalina_s + horas_extras_s + outras_remuneracoes_s + adicional_periculosidade_s + adicional_noturno_s + abono_permanencia_s + reversao_s + imposto_de_renda_s + psss_s + faltas_s + diarias_s + auxilios_s + auxilio_alimentacao_s + vantagens_indenizatorias_s + adicional_ferias_s + ferias_indenizatorias_s + licenca_premio_s)
@@ -65,25 +66,24 @@ O Senado fornece dados para `r round(nrow(aposentados_totais)/10^3, 0)` mil paga
 
 Só no ano de `r ano_max`, o Senado efetuou `r round(nrow(aposentados_recente)/1000, 0)` mil pagamentos à servidores aposentados, uma relação de `r round(nrow(aposentados_recente)/nrow(senado_recente)*100, 1)`% da folha de pagamento em `r ano_max`. Em relação a proporção total na folha de pagamento no ano `r ano_max`, os aposentados correspondem à `r round(receita_aposentados_recente/1000000, 1)` MILHÕES de reais em remuneração, ou seja, `r round(receita_aposentados_recente/receita_total_recente*100, 1)`% do total da folha de pagamento é destinada aos aposentados.
 
-```{r aposentados_graficos,fig.align='center', warning=FALSE, error=FALSE, echo=FALSE, fig.width=5,fig.height=3}
+```{r aposentados_graficos,fig.align='center', echo=FALSE, fig.width=5,fig.height=3}
 library("ggplot2")
 demais_servidores_total <- remuneracao_total_liquida-receita_aposentados_todos
 demais_servidores_recente <- receita_total_recente-receita_aposentados_recente
 
 ratio <- 10^9
 
-df2 <- data.frame(data=rep(c(ano_max, "Todos os Anos"), each=2),
-                situacao=rep(c("Aposentados", "Demais Servidores"),2),
-                remuneracao=c(receita_aposentados_recente/ratio, demais_servidores_recente/ratio, receita_aposentados_todos/ratio, demais_servidores_total/ratio))
+df2 <- data.frame(Data=rep(c(ano_max, "Todos os Anos"), each=2),
+                Situação=rep(c("Aposentados", "Demais Servidores"),2),
+                Remuneração=c(receita_aposentados_recente/ratio, demais_servidores_recente/ratio, receita_aposentados_todos/ratio, demais_servidores_total/ratio))
 
-g <- ggplot(data=df2, aes(x=data, y=remuneracao, fill=situacao)) +
+g <- ggplot(data=df2, aes(x=Data, y=Remuneração, fill=Situação)) +
 geom_bar(stat="identity", position=position_dodge(width=0.6), width=0.5) +
 theme_minimal() +
   labs(title="Remuneração dos Pensionistas", 
        x="Data de Referência", y = "Remuneração em Bilhões de Reais",
        fill = "Situação")
 
-library("plotly")
 ggplotly(g)
 ```
 
@@ -99,38 +99,104 @@ deficit_recente <- sum(aposentados_recente$remuneracao_total_liquida)+arrecadao_
 
 ```
 
-O Senado arrecada alguns fundos do próprio servidor por meio de descontos do Imposto de renda e do Plano de Seguridade Social do Servidor Público (PSSS). Entre `r ano_min` e `r ano_max` foi arrecadado por meio do imposto de renda R$ `r round(sum(data$imposto_de_renda/10^6)*(-1), 1)` MILHÕES e por meio do PSSS cerca de R$ `r round(sum(data$psss/10^6)*(-1), 1)` MILHÕES, totalizando um montante de R$ `r round(sum(data$imposto_de_renda+data$psss)/-10^9, 1)` BILHÃO  arrecadado dos servidores do Senado. Além disso, existe um outro desconto aplicado em altas remunerações que é a reversão das remunerações que ultrapassam o limite constitucional, representando R$ `r round(sum(data$reversao)/-10^6, 1)` MILHÕES. Ou seja, nesse mesmo intervalo de tempo (`r ano_min`-`r ano_max`), o Senado efetuou o pagamento de R$ `r round(sum(aposentados_totais$remuneracao_total_liquida)/10^9, 1)` BILHÕES de reais para aposentados (conforme descrito na seção anterior), mas arrecadou dos próprios servidores somente R$ `r round(arrecadao_total/10^9, 1)*(-1)` BILHÃO, o que significa um DÉFICIT de R$ `r round(deficit_total/10^9, 1)` BILHÃO que estão sendo arrecadados por outros meios.
-
+O Senado arrecada alguns fundos do próprio servidor por meio de descontos do Imposto de renda e do Plano de Seguridade Social do Servidor Público (PSSS). Entre `r ano_min` e `r ano_max` foi arrecadado por meio do imposto de renda R$ `r round(sum(data$imposto_de_renda/10^6)*(-1), 1)` MILHÕES e por meio do PSSS cerca de R$ `r round(sum(data$psss/10^6)*(-1), 1)` MILHÕES, totalizando um montante de R$ `r round(sum(data$imposto_de_renda+data$psss)/-10^9, 1)` BILHÃO  arrecadado dos servidores do Senado. Além disso, existe um outro desconto aplicado em altas remunerações que é a reversão das remunerações que ultrapassam o limite constitucional, representando R$ `r round(sum(data$reversao)/-10^6, 1)` MILHÕES. Ou seja, nesse mesmo intervalo de tempo (`r ano_min`-`r ano_max`), o Senado efetuou o pagamento de R$ `r round(sum(aposentados_totais$remuneracao_total_liquida)/10^9, 1)` BILHÕES de reais para aposentados (conforme descrito na seção anterior), mas arrecadou dos próprios servidores somente R$ `r round(arrecadao_total/10^9, 1)*(-1)` BILHÃO, o que significa um DÉFICIT de R$ `r round(deficit_total/10^9, 1)` BILHÃO que foram arrecadados por outros meios.
 
 ```{r arrecadao_graficos, fig.align='center', echo=FALSE, fig.width=5, fig.height=3}
 library(ggplot2)
 
 ratio<-10^9
 
-df2 <- data.frame(data=rep(c("Todos os Anos", ano_max), each=5),
-                situacao=rep(c("Aposentados","PSSS","Imposto de Renda", "Déficit","Reversão"),2),
-                remuneracao=c(receita_aposentados_todos/-ratio, sum(data$psss)/-ratio, sum(data$imposto_de_renda)/-ratio, deficit_total/-ratio, sum(data$reversao)/-ratio,
+df2 <- data.frame(Data=rep(c("Todos os Anos", ano_max), each=5),
+                Situação=rep(c("Aposentados","PSSS","Imposto de Renda", "Déficit","Reversão"),2),
+                Remuneração=c(receita_aposentados_todos/-ratio, sum(data$psss)/-ratio, sum(data$imposto_de_renda)/-ratio, deficit_total/-ratio, sum(data$reversao)/-ratio,
                               receita_aposentados_recente/-ratio, sum(senado_recente$psss)/-ratio, sum(senado_recente$imposto_de_renda)/-ratio, deficit_recente/-ratio, sum(senado_recente$reversao)/-ratio ))
 
-g <-ggplot(data=df2, aes(x=data, y=remuneracao, fill=situacao)) +
+g <-ggplot(data=df2, aes(x=Data, y=Remuneração, fill=Situação)) +
 geom_bar(stat="identity", position=position_dodge(width=0.6), width=0.5) +
 theme_minimal() +
   labs(title="Arrecadação do Senado e Aposentadoria", 
        x="Data de Referência", y = "Bilhões de Reais",
        fill = "Gastos/Arrecadação")
 
-library("plotly")
 ggplotly(g)
 ```
 
 
 #Licença-Prêmio
 
-Outro tipo de pagamento efetuado pelo Senado chama-se Licença-Prêmio. Esse tipo de receita significa... EXPLICAR DEPOIS
+* **O que é Licença-Prêmio?**
 
+Outro tipo de pagamento efetuado pelo Senado chama-se Licença-Prêmio. Esse pagamento era um direito previsto para os servidores na Lei n. 8.112/90 (derivada da licença especial prevista na Lei n. 1.711/52), que determinava que, a cada cinco anos ininterruptos de exercício, o servidor fazia jus a três meses de licença remunerada, a título de prêmio por assiduidade.
 
+Até o advento do Regime Jurídico Único (RJU), o servidor público federal tinha direito à Licença-Especial de 6 meses a cada 10 anos de exercício ininterrupto. Com o advento do RJU em 12/12/1990, o servidor passou a ter direito à Licença-Prêmio por Assiduidade; a cada 5 anos de exercício ininterrupto de trabalho, faria jus a 3 meses de licença.
 
+A Medida Provisória nº 1.522, posteriormente convertida na Lei nº 9.527/97, de 11/10/1996, extinguiu o instituto da Licença-Prêmio por Assiduidade e a transformou em Licença para Capacitação, ou seja, os servidores que ingressaram após o advento dessa lei, ou que não complementaram o quinquênio até a sua publicação, deixaram de contar com o direito à licença-prêmio e passaram a contar somente com a Licença para Capacitação.
 
+Todavia, restou assegurando o direito adquirido à licença-prêmio para o servidor que completou o tempo necessário até 15/10/1996, de acordo com o artigo 7º da Lei 9.527/97.
 
+Assim, o servidor que tenha complementado o quinquênio até 15/10/1996 poderá gozar os períodos de licença-prêmio ou convertê-los em dobro para a aposentadoria. Ainda, em caso de falecimento do servidor, restou assegurado o pagamento em pecúnia das licenças para os seus sucessores.
 
+(Fonte: https://sindjufe-go.jusbrasil.com.br/noticias/100639807/servidor-conheca-os-seus-direitos-sobre-licenca-premio, acessado em: 27 de julho de 2017)
+
+* **Quais são os gastos do Senado com Licença-Prêmio?**
+
+```{r licenca_premio, echo=FALSE, fig.width=5, fig.height=3}
+topSalariosFunc <- function(salariosAgregados, column_ref, title) {
+  topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:4],]
+  rownames(topSalarios) <- NULL
+  colnames(topSalarios) <- title
+  return(topSalarios)
+}
+
+ratio <- 10^6
+
+#LICENÇA PRÊMIO POR CARGO TODOS OS ANOS
+salariosAgregados <- aggregate(licenca_premio_s~cargo, FUN=sum, data)
+keeps <- c("cargo","remuneracao")
+top_licenca_cargo_todos <- topSalariosFunc(salariosAgregados, salariosAgregados$licenca_premio_s, keeps)
+top_licenca_cargo_todos$remuneracao <- top_licenca_cargo_todos$remuneracao/ratio
+top_licenca_cargo_todos <- mutate(top_licenca_cargo_todos, data="Todos os Anos")
+
+#LICENÇA PRÊMIO POR CARGO NO ANO DE REFERÊNCIA MAIS RECENTE
+salariosAgregados <- aggregate(licenca_premio_s~cargo, FUN=sum, senado_recente)
+keeps <- c("cargo","remuneracao")
+top_licenca_cargo_recente <- topSalariosFunc(salariosAgregados, salariosAgregados$licenca_premio_s, keeps)
+top_licenca_cargo_recente$remuneracao <- top_licenca_cargo_recente$remuneracao/ratio
+top_licenca_cargo_recente <- mutate(top_licenca_cargo_recente, data=ano_max)
+
+licenca_cargo_completo <- rbind(top_licenca_cargo_todos, top_licenca_cargo_recente)
+```
+
+No ano de `r ano_max`, o Senado pagou cerca de R$ `r round(sum(top_licenca_cargo_recente$remuneracao), 1)` MILHÕES de Licença-Prêmio. Sendo os cargos `r top_licenca_cargo_recente[1, ]$cargo` e `r top_licenca_cargo_recente[2, ]$cargo` que mais receberam Licença-Prêmio nesse ano, o que representa um total de R$ `r round(top_licenca_cargo_recente[1, ]$remuneracao, 1)` e R$ `r round(top_licenca_cargo_recente[2, ]$remuneracao, 1)` MILHÕES de reais, respectivamente. Entre os anos `r ano_min` e `r ano_max`, foi pago cerca de R$ `r round(sum(top_licenca_cargo_todos$remuneracao), 1)` MILHÕES de Licença-Prêmio.
+
+```{r plot_licenca_premio, echo=FALSE, fig.width=5, fig.height=3}
+g <-ggplot(data=licenca_cargo_completo, aes(x=data, y=remuneracao, fill=cargo)) +
+geom_bar(stat="identity", position=position_dodge(width=0.6), width=0.5) +
+theme_minimal() +
+  labs(title="Pagamento de Licença Prêmio", 
+       x="Período de Tempo", y = "Milhões de Reais",
+       fill="Cargo")
+ggplotly(g)
+```
+
+* **Quem são os servidores mais beneficiados com a Licença-Prêmio**?
+
+Na Tabela seguinte, mostra-se a lista de servidores que mais receberam Licença-Prêmio entre os anos `r ano_min` e `r ano_max`
+
+```{r top_licenca_premio, echo=FALSE, fig.width=5, fig.height=3}
+topSalarios <- function(salariosAgregados, column_ref, keeps) {
+  topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:10],]
+  rownames(topSalarios) <- NULL
+  colnames(topSalarios) <- keeps
+  return(topSalarios)
+}
+
+keeps <- c("Nome","Cargo","Especialidade","Situação","Mês","Ano","Ano de Admissão","Licença-Prêmio (R$)")
+salariosAgregados <- aggregate(licenca_premio_s~nome+cargo+especialidade+situacao+mes+ano+ano_de_admissao, FUN=sum, data)
+top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$licenca_premio_s, keeps)
+
+library("knitr")
+kable(top_servidores_licenca_premio)
+
+```
 

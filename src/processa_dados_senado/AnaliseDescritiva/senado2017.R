@@ -74,6 +74,19 @@ topSalarios # Tecnico, Analista e Consultor
 
 
 
+topSalarios <- function(salariosAgregados, column_ref, keeps) {
+  topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:10],]
+  rownames(topSalarios) <- NULL
+  colnames(topSalarios) <- keeps
+  return(topSalarios)
+}
+
+keeps <- c("Cargo", "Remuneração após desconto")
+salariosAgregados <- aggregate(remuneracao_total_liquida~nome+cargo+ano_de_admissao, FUN=sum, data)
+top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total_liquida, keeps)
+top_servidores_licenca_premio
+
+library("knitr")
 library("dplyr")
 
 data <- mutate(data, remuneracao_total=remuneracao_basica + vantagens_pessoais + funcao_comissao + gratificacao_natalina + horas_extras + outras_remuneracoes + adicional_periculosidade + adicional_noturno + abono_permanencia + reversao + imposto_de_renda + psss + faltas + diarias + auxilios + auxilio_alimentacao + vantagens_indenizatorias + adicional_ferias + ferias_indenizatorias + licenca_premio)
@@ -131,6 +144,10 @@ dolibrary(ggplot2)
 
 Sys.setenv("plotly_username"="italooliveira")
 Sys.setenv("plotly_api_key"="pJKE0nesUNVr1HveyY3i")
+
+
+
+
 
 #######################################################################################################
 #Plotar boxplot
