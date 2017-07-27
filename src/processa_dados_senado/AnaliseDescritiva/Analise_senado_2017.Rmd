@@ -23,8 +23,8 @@ colnames(data) <-  c("id","nome","vinculo","situacao","ano_de_admissao","cargo",
 library("dplyr")
 library("plotly")
 
-data <- mutate(data, remuneracao_total=remuneracao_basica + vantagens_pessoais + funcao_comissao + gratificacao_natalina + horas_extras + outras_remuneracoes + adicional_periculosidade + adicional_noturno + abono_permanencia + reversao + imposto_de_renda + psss + faltas + diarias + auxilios + auxilio_alimentacao + vantagens_indenizatorias + adicional_ferias + ferias_indenizatorias )
-data <- mutate(data, remuneracao_total_s=remuneracao_basica_s + vantagens_pessoais_s + funcao_comissao_s + gratificacao_natalina_s + horas_extras_s + outras_remuneracoes_s + adicional_periculosidade_s + adicional_noturno_s + abono_permanencia_s + reversao_s + imposto_de_renda_s + psss_s + faltas_s + diarias_s + auxilios_s + auxilio_alimentacao_s + vantagens_indenizatorias_s + adicional_ferias_s + ferias_indenizatorias_s)
+data <- mutate(data, remuneracao_total=remuneracao_basica + vantagens_pessoais + funcao_comissao + gratificacao_natalina + horas_extras + outras_remuneracoes + abono_permanencia + reversao + imposto_de_renda + psss + faltas + diarias + auxilios + vantagens_indenizatorias)
+data <- mutate(data, remuneracao_total_s=remuneracao_basica_s + vantagens_pessoais_s + funcao_comissao_s + gratificacao_natalina_s + horas_extras_s + outras_remuneracoes_s + abono_permanencia_s + reversao_s + imposto_de_renda_s + psss_s + faltas_s + diarias_s + auxilios_s + vantagens_indenizatorias_s)
 data <- mutate(data, remuneracao_total_liquida=remuneracao_total+remuneracao_total_s)
 
 sum(data$remuneracao_total, na.rm=T)        #520,648,967 = 520648967
@@ -52,7 +52,11 @@ Ao consideramos o montante pago, ou seja, qual total de gastos do Senado nesse i
 #Note that the `echo = FALSE` parameter.
 ```
 
+
+
+
 #Pensionistas
+
 ```{r aposentados, echo=FALSE}
 aposentados_recente <- senado_recente[senado_recente$situacao=="APOSENTADO",]
 aposentados_totais <- data[data$situacao=="APOSENTADO",]
@@ -120,7 +124,9 @@ theme_minimal() +
 ggplotly(g)
 ```
 
-* **Quais aposentados receberem?**
+* **Quais aposentados mais receberam?**
+
+Na tabela seguinte, mostra os meses em que os servidores na situação APOSENTADO mais foram remunerados entre os anos de `r ano_min` e `r ano_max`. Os valores de remuneração apresentados já possuem todos os descontos de acordo com o site do Senado.
 
 ```{r top_salarios_aposentados, echo=FALSE}
 topSalarios <- function(salariosAgregados, column_ref, keeps) {
@@ -130,15 +136,17 @@ topSalarios <- function(salariosAgregados, column_ref, keeps) {
   return(topSalarios)
 }
 
-#data_remuneracao_sem_licenca_premio <- mutate()
-
-keeps <- c("Nome","Cargo","Especialidade","Situação","Mês","Ano","Remuneração (R$)")
-salariosAgregados <- aggregate(remuneracao_total_liquida~nome+cargo+especialidade+situacao+mes+ano, FUN=sum, data)
+keeps <- c("Nome","Cargo","Especialidade","Mês","Ano","Remuneração com Desconto (R$)")
+salariosAgregados <- aggregate(remuneracao_total_liquida~nome+cargo+especialidade+mes+ano, FUN=sum, aposentados_totais)
 top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total_liquida, keeps)
 
 library("knitr")
 kable(top_servidores_licenca_premio)
 ```
+
+
+
+
 
 
 
@@ -212,11 +220,11 @@ Na Tabela seguinte, mostra-se a lista dos dez servidores que mais se beneficiara
 * **Licença-Prêmio (R$):** Valor de Licença-Prêmio pago pelo Senado ao servidor em reais.
 
 ```{r top_licenca_premio, echo=FALSE, fig.width=5, fig.height=3}
-keeps <- c("Nome","Cargo","Especialidade","Situação","Mês","Ano","Ano de Admissão","Licença-Prêmio (R$)")
+keeps <- c("Nome","Cargo","Especialidade","Situação","Mês","Ano","Ano de Admissão","Licença-Prêmio* (R$)")
 salariosAgregados <- aggregate(licenca_premio_s~nome+cargo+especialidade+situacao+mes+ano+ano_de_admissao, FUN=sum, data)
 top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$licenca_premio_s, keeps)
 
 library("knitr")
 kable(top_servidores_licenca_premio)
 ```
-
+*Valor bruto de Licença-Prêmio (sem descontos).
