@@ -23,8 +23,8 @@ colnames(data) <-  c("id","nome","vinculo","situacao","ano_de_admissao","cargo",
 library("dplyr")
 library("plotly")
 
-data <- mutate(data, remuneracao_total=remuneracao_basica + vantagens_pessoais + funcao_comissao + gratificacao_natalina + horas_extras + outras_remuneracoes + adicional_periculosidade + adicional_noturno + abono_permanencia + reversao + imposto_de_renda + psss + faltas + diarias + auxilios + auxilio_alimentacao + vantagens_indenizatorias + adicional_ferias + ferias_indenizatorias + licenca_premio)
-data <- mutate(data, remuneracao_total_s=remuneracao_basica_s + vantagens_pessoais_s + funcao_comissao_s + gratificacao_natalina_s + horas_extras_s + outras_remuneracoes_s + adicional_periculosidade_s + adicional_noturno_s + abono_permanencia_s + reversao_s + imposto_de_renda_s + psss_s + faltas_s + diarias_s + auxilios_s + auxilio_alimentacao_s + vantagens_indenizatorias_s + adicional_ferias_s + ferias_indenizatorias_s + licenca_premio_s)
+data <- mutate(data, remuneracao_total=remuneracao_basica + vantagens_pessoais + funcao_comissao + gratificacao_natalina + horas_extras + outras_remuneracoes + adicional_periculosidade + adicional_noturno + abono_permanencia + reversao + imposto_de_renda + psss + faltas + diarias + auxilios + auxilio_alimentacao + vantagens_indenizatorias + adicional_ferias + ferias_indenizatorias )
+data <- mutate(data, remuneracao_total_s=remuneracao_basica_s + vantagens_pessoais_s + funcao_comissao_s + gratificacao_natalina_s + horas_extras_s + outras_remuneracoes_s + adicional_periculosidade_s + adicional_noturno_s + abono_permanencia_s + reversao_s + imposto_de_renda_s + psss_s + faltas_s + diarias_s + auxilios_s + auxilio_alimentacao_s + vantagens_indenizatorias_s + adicional_ferias_s + ferias_indenizatorias_s)
 data <- mutate(data, remuneracao_total_liquida=remuneracao_total+remuneracao_total_s)
 
 sum(data$remuneracao_total, na.rm=T)        #520,648,967 = 520648967
@@ -87,8 +87,7 @@ theme_minimal() +
 ggplotly(g)
 ```
 
-
-#Arrecadação
+* **Qual a relação do que é arrecado com o quanto que é pago aos aposentados?**
 
 ```{r calculo_arrecadacao, echo=FALSE}
 arrecadao_total <- sum(data$imposto_de_renda+data$psss+data$reversao)
@@ -120,6 +119,27 @@ theme_minimal() +
 
 ggplotly(g)
 ```
+
+* **Quais aposentados receberem?**
+
+```{r top_salarios_aposentados, echo=FALSE}
+topSalarios <- function(salariosAgregados, column_ref, keeps) {
+  topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:10],]
+  rownames(topSalarios) <- NULL
+  colnames(topSalarios) <- keeps
+  return(topSalarios)
+}
+
+#data_remuneracao_sem_licenca_premio <- mutate()
+
+keeps <- c("Nome","Cargo","Especialidade","Situação","Mês","Ano","Remuneração (R$)")
+salariosAgregados <- aggregate(remuneracao_total_liquida~nome+cargo+especialidade+situacao+mes+ano, FUN=sum, data)
+top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total_liquida, keeps)
+
+library("knitr")
+kable(top_servidores_licenca_premio)
+```
+
 
 
 #Licença-Prêmio
@@ -179,24 +199,24 @@ theme_minimal() +
 ggplotly(g)
 ```
 
-* **Quem são os servidores mais beneficiados com a Licença-Prêmio**?
+* **Quem são os servidores mais beneficiados com a Licença-Prêmio?**
 
-Na Tabela seguinte, mostra-se a lista de servidores que mais receberam Licença-Prêmio entre os anos `r ano_min` e `r ano_max`
+Na Tabela seguinte, mostra-se a lista dos dez servidores que mais se beneficiaram com a Licença-Prêmio entre os anos `r ano_min` e `r ano_max` de acordo com os dados disponíveis pelo Senado. A tabela exibe os seguintes campos: 
+
+* **Nome:** Nome completo do servidor beneficiado.
+* **Cargo:** Qual cargo o servidor está associado.
+* **Especialidade:** Área de concentração do trabalho do servidor.
+* **Situação:** Aposentado ou não (ativo).
+* **Mês e Ano:** Mês de referência do pagamento da Licença-Prêmio.
+* **Ano de Admissão:** Ano em que o servidor foi contrato pelo Senado.
+* **Licença-Prêmio (R$):** Valor de Licença-Prêmio pago pelo Senado ao servidor em reais.
 
 ```{r top_licenca_premio, echo=FALSE, fig.width=5, fig.height=3}
-topSalarios <- function(salariosAgregados, column_ref, keeps) {
-  topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:10],]
-  rownames(topSalarios) <- NULL
-  colnames(topSalarios) <- keeps
-  return(topSalarios)
-}
-
 keeps <- c("Nome","Cargo","Especialidade","Situação","Mês","Ano","Ano de Admissão","Licença-Prêmio (R$)")
 salariosAgregados <- aggregate(licenca_premio_s~nome+cargo+especialidade+situacao+mes+ano+ano_de_admissao, FUN=sum, data)
 top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$licenca_premio_s, keeps)
 
 library("knitr")
 kable(top_servidores_licenca_premio)
-
 ```
 
