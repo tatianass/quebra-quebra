@@ -7,8 +7,20 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+library(dplyr)
+library(devtools)
+library(DT)
+library(flexdashboard)
+library(knitr)
+library(ggplot2)
+library(rCharts)
+library(reshape2)
+require(scales)
+library(shiny)
+library(plotly)
+
 #######################################################################################################
-#Autor: Ítalo de Pontes Oliveira                                                                      #
+#Autor: Ítalo de Pontes Oliveira e Leandro Balby Marinho                                              #
 #Os CSV's são gerados mensalmente, assim, para cada arquivo de dados, uma nova variável é atribuida   #
 #######################################################################################################
 data_filename = "~/workspace/quebra-quebra/senado_federal/dados/dados_senado.csv"
@@ -18,9 +30,6 @@ data_filename = "~/workspace/quebra-quebra/senado_federal/dados/dados_senado.csv
 #######################################################################################################
 data <- read.csv2(file=data_filename, sep=",", header=FALSE, stringsAsFactors=FALSE, na.strings="unknown", dec=".")
 colnames(data) <-  c("id","nome","vinculo","situacao","ano_de_admissao","cargo","padrao","especialidade","mes","ano","remuneracao_basica","vantagens_pessoais","funcao_comissao","gratificacao_natalina","horas_extras","outras_remuneracoes","adicional_periculosidade","adicional_noturno","abono_permanencia","reversao","imposto_de_renda","psss","faltas","remuneracao_apos_descontos","diarias","auxilios","auxilio_alimentacao","vantagens_indenizatorias","adicional_ferias","ferias_indenizatorias","licenca_premio","remuneracao_basica_s","vantagens_pessoais_s","funcao_comissao_s","gratificacao_natalina_s","horas_extras_s","outras_remuneracoes_s","adicional_periculosidade_s","adicional_noturno_s","abono_permanencia_s","reversao_s","imposto_de_renda_s","psss_s","faltas_s","remuneracao_apos_descontos_s","diarias_s","auxilios_s","auxilio_alimentacao_s","vantagens_indenizatorias_s","adicional_ferias_s","ferias_indenizatorias_s","licenca_premio_s")
-
-library("dplyr")
-library("plotly")
 
 data <- mutate(data, remuneracao_total=remuneracao_basica + vantagens_pessoais + funcao_comissao + gratificacao_natalina + horas_extras + outras_remuneracoes + abono_permanencia + reversao + imposto_de_renda + psss + faltas + diarias + auxilios + vantagens_indenizatorias)
 data <- mutate(data, remuneracao_total_s=remuneracao_basica_s + vantagens_pessoais_s + funcao_comissao_s + gratificacao_natalina_s + horas_extras_s + outras_remuneracoes_s + abono_permanencia_s + reversao_s + imposto_de_renda_s + psss_s + faltas_s + diarias_s + auxilios_s + vantagens_indenizatorias_s)
@@ -38,10 +47,19 @@ senado_recente <- data[data$ano==ano_max,]
 
 remuneracao_total_liquida <- sum(data$remuneracao_total_liquida, na.rm=T)
 
+#filtrando dados para 2016
+senado_2016 <- data[data$ano==2016,]
+
+# recuperando as especialidades possiveis no Senado
+especialidade = select(senado_2016,especialidade) %>%
+  unique.data.frame() %>% as.vector()
+especialidade=especialidade[[1]][-2] #retirando um valor NaN na segunda posição
+
 ```
 ## Análise do Senado {.tabset .tabset-fade}
 
-### Gastos do Senado com Remuneração
+### Gastos do Senado
+
 O sistema desenvolvido pela equipe Quebra-Quebra, conseguiu obter a folha de pagamento para um total de `r round(nrow(data)/10^3, 0)` mil empenhos de pagamento, entre os anos de `r ano_min` e `r ano_max`. Deste total, só em `r ano_max` foram: `r round(nrow(senado_recente)/10^3, 0)` mil pagamentos. Ou seja, de todos os dados fornecidos pelo Senado, cerca de `r  round(nrow(senado_recente)/nrow(data)*100,1)`% dos pagamentos é relativo ao ano de `r ano_max`.
 
 Ao consideramos o montante pago, ou seja, qual total de gastos do Senado nesse intervalo de tempo (`r ano_min`-`r ano_max`) com remuneração, observa-se o pagamento de R$ `r round(remuneracao_total_liquida/10^9, 2)` BILHÕES de reais. Ou seja, a remuneração líquida está na MÉDIA de R$ `r round(remuneracao_total_liquida/nrow(data), 2)` por servidor, esse valor já inclui todos os descontos como o imposto de renda, Plano de Seguridade Social do Servidor Público (PSSS), a reversão do teto constitucional e eventuais ausências.
@@ -72,11 +90,9 @@ Para entender o que nos referimos como remuneração, precisa-se entender como a
 
 
 
-
-
 ### Pensionistas
 
-```{r aposentados, echo=FALSE}
+```{r calculo_aposentados, echo=FALSE}
 aposentados_recente <- senado_recente[senado_recente$situacao=="APOSENTADO",]
 aposentados_totais <- data[data$situacao=="APOSENTADO",]
 
@@ -253,34 +269,64 @@ kable(top_servidores_licenca_premio)
 *Valor bruto de Licença-Prêmio (sem descontos).
 
 
-### Maiores Remunerações por Especialidade
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Row
 -----------------------------------------------------------------------
 
-### Articles per Day
+Somente nesse ano, o pagamento de Remunerações eventuais ao servidores, somando à
 
-```{r articles_per_day}
-library(DT)
-library(shiny)
-library(flexdashboard)
-articles <- 245
-valueBox(articles, icon = "fa-pencil")
+### Custo de uma Ambulância
+
+```{r custo_de_uma_ambulancia}
+articles <- 125
+valueBox(articles, icon = "fa-car", color="primary")
 ```
 
-### Comments per Day
+### Meses de bolsa CAPES de doutorado 
 
-```{r comments_per_day}
-comments <- 152
-valueBox(comments, icon = "fa-comments")
+```{r bolsa_capes_doutorado}
+articles <- 123
+valueBox(articles, icon = "fa-pencil", color="#2a6592")
 ```
 
-### Spam per Day
+### Meses de tratamento do Câncer
 
-```{r spam_per_day}
-spam <- 7
-valueBox(spam, 
-         icon = "fa-trash",
-         color = ifelse(spam > 10, "warning", "primary"))
+```{r tratamento_cancer}
+articles <- 12
+valueBox(articles, icon = "fa-medkit", color="primary")
+```
+
+### Meses de merenda escolar
+
+```{r meses_merenda_escolar}
+articles <- 56
+valueBox(articles, icon = "fa-cutlery", color="#2a6592")
+```
+
+### Domésticas contribuindo para o INSS
+
+```{r domestica_aposentadoria}
+articles <- 543
+valueBox(articles, icon = "fa-home", color="primary", href="https://www.domesticalegal.com.br/utilidades/tabela-de-inss/")
+```
+
+### Kilomêtros de rodovias asfaltadas
+
+```{r asfaltar_rodovias}
+comments <- 21515
+valueBox(comments, icon = "fa-road", color="#2a6592")
 ```

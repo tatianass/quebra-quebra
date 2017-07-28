@@ -2,7 +2,10 @@
 title: "Comparação Folha Senado com Setor Privado"
 author: "Leandro"
 date: "26/07/2017"
-output: html_document
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
 ---
 ```{r setup, include=FALSE}
 library(ggplot2)
@@ -12,7 +15,7 @@ library(reshape2)
 library(knitr)
 require(scales)
 
-data_filename = "~/Documents/quebra-quebra/senado_federal/dados/dados_senado.csv"
+data_filename = "~/workspace/quebra-quebra/senado_federal/dados/dados_senado.csv"
 data <- read.csv2(file=data_filename, sep=",", header=FALSE, stringsAsFactors=FALSE, na.strings="unknown", dec=".")
 colnames(data) <-  c("id","nome","vinculo","situacao","ano_de_admissao","cargo","padrao","especialidade","mes","ano","remuneracao_basica","vantagens_pessoais","funcao_comissao","gratificacao_natalina","horas_extras","outras_remuneracoes","adicional_periculosidade","adicional_noturno","abono_permanencia","reversao","imposto_de_renda","psss","faltas","remuneracao_apos_descontos","diarias","auxilios","auxilio_alimentacao","vantagens_indenizatorias","adicional_ferias","ferias_indenizatorias","licenca_premio","remuneracao_basica_s","vantagens_pessoais_s","funcao_comissao_s","gratificacao_natalina_s","horas_extras_s","outras_remuneracoes_s","adicional_periculosidade_s","adicional_noturno_s","abono_permanencia_s","reversao_s","imposto_de_renda_s","psss_s","faltas_s","remuneracao_apos_descontos_s","diarias_s","auxilios_s","auxilio_alimentacao_s","vantagens_indenizatorias_s","adicional_ferias_s","ferias_indenizatorias_s","licenca_premio_s")
 
@@ -74,7 +77,7 @@ options(RCHART_WIDTH = 950, RCHART_HEIGHT = 400)
 ```{r, echo=FALSE, cache=F, results='asis', comment=NA}
 p1 = mPlot(x = 'categorias', y = list('valores'), data = df, type = 'Bar')
 p1$set(hideHover = "auto")
-p1$print('chart1',include_assets = T)
+p1$print('chart1', include_assets = TRUE)
 
 ```
 &nbsp;
@@ -120,7 +123,7 @@ new_data=arrange(new_data,Especialidade)
 ```{r, echo=FALSE, cache=F, results='asis', comment=NA}
 n1 = nPlot(value ~ Especialidade,group="variable", data=new_data, type="multiBarChart")
 n1$chart(showControls = F)
-n1$print('chart2',include_assets = T)
+n1$print('chart2', include_assets = TRUE)
 ```
 
 
@@ -134,7 +137,7 @@ No gráfico abaixo vemos quantas vezes mais cada especialidade no Senado ganhou 
 ```{r, echo=FALSE, cache=F, results='asis', comment=NA}
 y1 = mPlot(x = 'Especialidade', y = list('diferença'), data = diferenca, type = 'Bar')
 y1$set(hideHover = "auto")
-y1$print('chart3',include_assets = T)
+y1$print('chart3', include_assets = TRUE)
 ```
 
 Fontes:
