@@ -1,97 +1,48 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-/* set the CSS */
+<html lang="pt-BR" ng-app="app">
 
-.line {
-    fill: none;
-    stroke: steelblue;
-    stroke-width: 2px;
-}
-</style>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bubble.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/legenda.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!-- AngularJS -->
+    <script src="assets/js/angular.min.js"></script>
+    <script src="assets/js/angular-locale_pt-br.js"></script>
+    <!-- Model -->
+    <script type="text/javascript" src="angular/model/app.js"></script>
+    <script type="text/javascript" src="angular/constants.js"></script>
+    <!-- Service -->
+    <script type="text/javascript" src="angular/service/d3Service.js"></script>
+    <!-- Directive -->
+    <script type="text/javascript" src="angular/directive/d3Chart.js"></script>
+    <script type="text/javascript" src="angular/directive/d3BubbleChart.js"></script>
+    <!-- Controller -->
+    <script type="text/javascript" src="angular/controller/d3Controller.js"></script>
+</head>
 
 <body>
-    <!-- load the d3.js library -->
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script>
-    // set the dimensions and margins of the graph
-    var margin = { top: 20, right: 20, bottom: 30, left: 50 },
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
-
-    // parse the date / time
-    var parseTime = d3.timeParse("%Y");
-
-    // set the ranges
-    var x = d3.scaleTime().range([0, width]);
-    var y = d3.scaleLinear().range([height, 0]);
-
-    // define the line
-    var valueline = d3.line()
-        .x(function(d) { return x(d.Date); })
-        .y(function(d) { return y(d.Imports); });
-    // define the line
-    var valueline2 = d3.line()
-        .x(function(d) { return x(d.Date); })
-        .y(function(d) { return y(d.Exports); });
-
-    // append the svg obgect to the body of the page
-    // appends a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
-    var svg = d3.select("body").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
-
-    function draw(data, country) {
-
-        var data = data[country];
-
-        // format the data
-        data.forEach(function(d) {
-            d.Date = parseTime(d.Date);
-            d.Imports = +d.Imports;
-            d.Exports = +d.Exports;
-        });
-
-        // sort years ascending
-        data.sort(function(a, b) {
-            return a["Date"] - b["Date"];
-        })
-
-        // Scale the range of the data
-        x.domain(d3.extent(data, function(d) { return d.Date; }));
-        y.domain([0, d3.max(data, function(d) {
-            return Math.max(d.Imports, d.Exports);
-        })]);
-
-        // Add the valueline path.
-        svg.append("path")
-            .data([data])
-            .attr("class", "line")
-            .attr("d", valueline);
-        // Add the valueline path.
-        svg.append("path")
-            .data([data])
-            .attr("class", "line")
-            .attr("d", valueline2);
-        // Add the X Axis
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
-
-        // Add the Y Axis
-        svg.append("g")
-            .call(d3.axisLeft(y));
-    }
-    // Get the data
-    d3.json("assets/dados/data.json", function(error, data) {
-        if (error) throw error;
-
-        // trigger render
-        draw(data, "Afghanistan");
-    });
-    </script>
+    <div class="container" data-ng-controller="d3Controller as d3Ctrl">
+        <div class="row">
+            <div class="col-sm-10" id="charts">
+                <d3-chart dados="d3Ctrl.dadosMultiline"></d3-chart>
+                <div id="chart" class="chart"></div>
+            </div>
+            <div class="col-sm-2">
+                <div>
+                    <input type="text" id="filterOn" />
+                    <button id="search">search</button>
+                </div>
+                <div id="filteredList"></div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/d3.min.js"></script>
 </body>
+
+</html>
