@@ -72,8 +72,11 @@ topSalarios # Tecnico, Analista e Consultor
 #Comparar com salários médios no setor privado
 #######################################################################################################
 
-
-
+install.packages("DT")
+library("DT")
+install.packages("shiny")
+install.packages("flexdashboard")
+library(flexdashboard)
 topSalarios <- function(salariosAgregados, column_ref, keeps) {
   topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:10],]
   rownames(topSalarios) <- NULL

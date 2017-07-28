@@ -1,10 +1,9 @@
 ---
 title: "Análise do Senado"
-author: "Ítalo de Pontes Oliveira"
-date: "24 de julho de 2017"
-output:
-  html_document: default
-  word_document: default
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
 ---
 
 ```{r setup, include=FALSE}
@@ -40,10 +39,24 @@ senado_recente <- data[data$ano==ano_max,]
 remuneracao_total_liquida <- sum(data$remuneracao_total_liquida, na.rm=T)
 
 ```
+## Análise do Senado {.tabset .tabset-fade}
 
+### Gastos do Senado com Remuneração
 O sistema desenvolvido pela equipe Quebra-Quebra, conseguiu obter a folha de pagamento para um total de `r round(nrow(data)/10^3, 0)` mil empenhos de pagamento, entre os anos de `r ano_min` e `r ano_max`. Deste total, só em `r ano_max` foram: `r round(nrow(senado_recente)/10^3, 0)` mil pagamentos. Ou seja, de todos os dados fornecidos pelo Senado, cerca de `r  round(nrow(senado_recente)/nrow(data)*100,1)`% dos pagamentos é relativo ao ano de `r ano_max`.
 
 Ao consideramos o montante pago, ou seja, qual total de gastos do Senado nesse intervalo de tempo (`r ano_min`-`r ano_max`) com remuneração, observa-se o pagamento de R$ `r round(remuneracao_total_liquida/10^9, 2)` BILHÕES de reais. Ou seja, a remuneração líquida está na MÉDIA de R$ `r round(remuneracao_total_liquida/nrow(data), 2)` por servidor, esse valor já inclui todos os descontos como o imposto de renda, Plano de Seguridade Social do Servidor Público (PSSS), a reversão do teto constitucional e eventuais ausências.
+
+* **Como é calculada a remuneração dos servidores?**
+
+Para entender o que nos referimos como remuneração, precisa-se entender como a remuneração é calculada. Primeiro de tudo, cada servidor (ou a maioria deles) possuem duas folhas de pagamento: a *normal* e a *suplementar*. Para cada folha de pagamento existem os seguintes campos de pagamento:
+
+- **Estrutura Remuneratória Básica**
+- **Vantagens Pessoais**
+- **Vantagens Eventuais**: Função Comissionada, Antecipação e Gratificação Natalina, Horas Extras e Outras Remunerações Eventuais/Provisórias.
+- **Abono de Permanência**
+- **Descontos Obrigatórios**: Reversão do Teto Constitucional, Imposto de Renda, PSSS e Faltas.
+- **Remuneração Após Descontos Obrigatórios**: Remuneração obtida pelo servidor ao somar a Remuneração básica, com as vantagens pessoais e eventuais, com o abono de permanência menos os descontos obrigatórios.
+- **Vantagens Indenizatórias e Compensatórias**: Diárias, Auxílios (Auxílio-Alimentação) e Outras Vantagens Indenizatórias (Férias Indenizadas (proporcionais), Licença-prêmio convertida em pecúnia - aposentado, Adicional de Férias Proporcionais Indenizadas e Férias Indenizadas).
 
 ```{r comentario_pib_distrito_federal, echo=FALSE}
 #De acordo com o IBGE
@@ -55,7 +68,13 @@ Ao consideramos o montante pago, ou seja, qual total de gastos do Senado nesse i
 
 
 
-#Pensionistas
+
+
+
+
+
+
+### Pensionistas
 
 ```{r aposentados, echo=FALSE}
 aposentados_recente <- senado_recente[senado_recente$situacao=="APOSENTADO",]
@@ -70,7 +89,7 @@ O Senado fornece dados para `r round(nrow(aposentados_totais)/10^3, 0)` mil paga
 
 Só no ano de `r ano_max`, o Senado efetuou `r round(nrow(aposentados_recente)/1000, 0)` mil pagamentos à servidores aposentados, uma relação de `r round(nrow(aposentados_recente)/nrow(senado_recente)*100, 1)`% da folha de pagamento em `r ano_max`. Em relação a proporção total na folha de pagamento no ano `r ano_max`, os aposentados correspondem à `r round(receita_aposentados_recente/1000000, 1)` MILHÕES de reais em remuneração, ou seja, `r round(receita_aposentados_recente/receita_total_recente*100, 1)`% do total da folha de pagamento é destinada aos aposentados.
 
-```{r aposentados_graficos,fig.align='center', echo=FALSE, fig.width=5,fig.height=3}
+```{r aposentados_graficos,fig.align='center', echo=FALSE, fig.width=3,fig.height=1}
 library("ggplot2")
 demais_servidores_total <- remuneracao_total_liquida-receita_aposentados_todos
 demais_servidores_recente <- receita_total_recente-receita_aposentados_recente
@@ -150,7 +169,9 @@ kable(top_servidores_licenca_premio)
 
 
 
-#Licença-Prêmio
+  
+
+### Licença-Prêmio
 
 * **O que é Licença-Prêmio?**
 
@@ -164,7 +185,9 @@ Todavia, restou assegurando o direito adquirido à licença-prêmio para o servi
 
 Assim, o servidor que tenha complementado o quinquênio até 15/10/1996 poderá gozar os períodos de licença-prêmio ou convertê-los em dobro para a aposentadoria. Ainda, em caso de falecimento do servidor, restou assegurado o pagamento em pecúnia das licenças para os seus sucessores.
 
-(Fonte: https://sindjufe-go.jusbrasil.com.br/noticias/100639807/servidor-conheca-os-seus-direitos-sobre-licenca-premio, acessado em: 27 de julho de 2017)
+Fonte:
+
+[Servidor: Conheça os seus direitos sobre licença-prêmio (acessado em 27 de julho de 2017)](https://sindjufe-go.jusbrasil.com.br/noticias/100639807/servidor-conheca-os-seus-direitos-sobre-licenca-premio)
 
 * **Quais são os gastos do Senado com Licença-Prêmio?**
 
@@ -228,3 +251,36 @@ library("knitr")
 kable(top_servidores_licenca_premio)
 ```
 *Valor bruto de Licença-Prêmio (sem descontos).
+
+
+### Maiores Remunerações por Especialidade
+
+
+Row
+-----------------------------------------------------------------------
+
+### Articles per Day
+
+```{r articles_per_day}
+library(DT)
+library(shiny)
+library(flexdashboard)
+articles <- 245
+valueBox(articles, icon = "fa-pencil")
+```
+
+### Comments per Day
+
+```{r comments_per_day}
+comments <- 152
+valueBox(comments, icon = "fa-comments")
+```
+
+### Spam per Day
+
+```{r spam_per_day}
+spam <- 7
+valueBox(spam, 
+         icon = "fa-trash",
+         color = ifelse(spam > 10, "warning", "primary"))
+```
