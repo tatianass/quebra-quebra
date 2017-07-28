@@ -110,10 +110,6 @@
 
                             var columns = ["New York", "San Francisco"];
 
-                            data.forEach(function(d) {
-                                d.date = parserDatas(d.date);
-                            });
-
                             var funcionarios = [];
                             columns.forEach(function(c) {
                                 var i = { "id": "", "values": [] }
@@ -147,7 +143,9 @@
                             addTextoLegenda(legenda, funcionarios);
 
                             onFilter(funcionarios);
-
+                            d3.select('#filterOn').on('change', function() {
+                                onFilter(funcionarios);
+                            });
                             d3.select('#search').on('click', function() {
                                 onFilter(funcionarios);
                             });
