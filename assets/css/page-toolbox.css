@@ -1,0 +1,76 @@
+.ip_logged{color:#999;border-top:1px dotted #999;float:right;min-width:225px;margin-right:15px;padding-top:3px;margin-top:6px;text-align:left;}
+.toolbox-popup{display:none;position:absolute;background-color:#fff;z-index:999;font-size:12px!important;box-shadow:5px 5px 8px #666;}
+li:hover .toolbox-popup,.toolbox-popup:hover{display:block;}
+.toolbox-popup div.send-inner{background:#fff;border:1px solid #ccc;float:left;padding-bottom:10px;width:442px;z-index:999;}
+.toolbox-popup h3{border:0;float:left;width:200px;margin:5px 0 7px 10px;font-size:18px;}
+.toolbox-popup .share-top{float:left;margin-bottom:10px;background-color:#ededed;width:442px;min-height:47px;}
+.share-top span{display:none;}
+.share-top .close-toolbox{float:right;margin:10px 10px 0 0;font-size:1.0em;text-align:right;font-weight:bold;color:#333;}
+.share-top .close-toolbox:focus,.share-top .close-toolbox:hover,.share-top .close-toolbox:active{background-color:#005689;}
+.toolbox-popup ul li{list-style-type:none;}
+.toolbox-popup div.col{float:left;margin-left:10px;margin-right:10px;width:201px;}
+.toolbox-popup div.col li{border-top:1px dotted #999;font-weight:bold;padding-bottom:5px;padding-top:5px;}
+.toolbox-popup div.col li a,.toolbox-popup div.col li span{font-weight:normal;}
+.toolbox-popup div.col li ul{padding-left:0;}
+.toolbox-popup div.col li ul li{border-top:0;padding-bottom:0;padding-top:0;}
+#send-share-box div.col li ul{padding-left:0;}
+#send-share-box .send-inner ul li{float:left;width:206px;margin-left:10px;}
+#send-share-box ul li{border-top:1px dotted #999;padding-top:5px;margin-bottom:5px;}
+.spr-16.stumbleupon{background-position:0 0;}
+.spr-16.reddit{background-position:-16px 0;}
+.spr-16.tumblr{background-position:-32px 0;}
+.spr-16.digg{background-position:-48px 0;}
+.spr-16.linkedin{background-position:-64px 0;}
+.spr-16.google-bookmarks{background-position:-80px 0;}
+.spr-16.delicious{background-position:-96px 0;}
+.spr-16.livejournal{background-position:-112px 0;}
+.spr-16.facebook{background-position:-128px 0;}
+.spr-16.twitter{background-position:-144px 0;}
+.toolbox-popup .shortlink{padding:5px 10px;}
+.toolbox-popup fieldset{padding-bottom:10px;clear:both;margin-left:0;margin-right:0;padding-left:0;padding-right:0;}
+.toolbox-popup fieldset div{float:left;width:190px;text-align:right;margin-right:10px;}
+.toolbox-popup label{width:190px;}
+.toolbox-popup div.inputrow{clear:left;margin-left:200px;}
+.toolbox-popup input[type=text],.toolbox-popup textarea{width:220px;}
+.toolbox-popup .validation-error{color:#d61d00;float:right;margin-right:20px;}
+#related{position:relative;z-index:50;}
+.hide-on-popup{position:relative;z-index:1;}
+.history{float:left;width:100%;margin-bottom:26px;}
+#historylink{display:none;}
+#history .section,#history-link-box .section{margin:0 5px 0 5px;}
+ul#article-toolbox li a,ul#article-toolbox-side li a{cursor:pointer;}
+ul#article-toolbox .trail-icon,ul#article-toolbox-side .trail-icon{margin-right:6px;vertical-align:middle;}
+ul#article-toolbox{border-top-width:1px;border-top-style:dotted;border-bottom-width:1px;border-bottom-style:dotted;clear:both;margin-bottom:30px;margin-top:10px;padding-top:7px;padding-bottom:5px;width:100%;position:relative;}
+ul#article-toolbox li{display:inline;padding-left:0;padding-bottom:5px;position:relative;}
+ul#article-toolbox li a{padding-bottom:3px;padding-left:5px;}
+ul#article-toolbox-side{border-top-width:1px;border-top-style:solid;background-image:none;padding-left:0;padding-top:6px;min-width:140px;float:left;text-align:left;width:auto;}
+ul#article-toolbox-side.right{float:right;}
+.twelve-col ul#article-toolbox-side{min-height:53px;}
+#article-toolbox-side li{display:inline;}
+ul#article-toolbox-side li.last{margin-right:0;}
+ul#article-toolbox-side li a{padding-left:0;text-decoration:none;}
+#article-toolbox-side a.rollover:hover{background:#fff;}
+#article-toolbox-side a.rollover:focus{background:#fff;height:auto;}
+ul#article-toolbox-side li a.rollover span,ul#article-toolbox-side li span{position:absolute;left:-4px;top:-34px;display:none;width:6.2em;text-align:center;color:#fff;}
+ul#article-toolbox-side li a.rollover{position:relative;z-index:1;display:block;width:auto;float:left;}
+ul#article-toolbox-side li a.rollover:hover span{display:block;background-color:#333;background-image:url([absolute.path]images/triangle-rollover.png);background-position:bottom left;z-index:999;height:21px;width:74px;padding:3px 0;}
+#send-email-box.toolbox-popup{display:none;}
+#content div#audio-player ul#article-toolbox{background-color:transparent;border-top:1px solid #E2E2E2;clear:left;float:none;margin:10px 10px 0;padding:3px 0;text-align:left;width:auto;}
+div#audio-player ul#article-toolbox li,div#audio-player ul#article-toolbox li p.bullet a{padding-left:0;}
+li#main-audio #send-share-box,li#main-audio #send-email-box,li#main-audio #contact-link-box{clear:left;margin-top:0;}
+#video-player ul#article-toolbox,#video-player ul#toolbox-pop-up ul{margin-bottom:10px;}
+.video li.settings{position:absolute;margin-right:2px;right:0;}
+#settings-link-box p,#embed-link-box p,#embed-link-box textarea{margin-left:10px;margin-right:10px;margin-top:2px;margin-bottom:9px;}
+#embed-link-box textarea{height:100px;width:415px;resize:vertical;font-size:11px;}
+#settings-link-box p.more{border-top:1px dotted #999 border-top-color:#999;padding-top:2px;margin-bottom:0;}
+#settings-link-box .cookied span{cursor:pointer;color:#005689;}
+#settings-link-box .cookied span:hover{text-decoration:underline;}
+body.cartoon .navigation #article-toolbox-side{float:none;margin-bottom:20px;}
+body.cartoon .main-picture #article-toolbox-side{border-top:none;float:right;padding-bottom:10px;}
+body.poll div#contact-link-box div.first ul,body.competition div#contact-link-box div.first ul{float:left;}
+body.competition div#contact-link-box ul.trail li.first{width:201px;}
+body.competition div#related div.toolbox-popup h3,body.poll div#related div.toolbox-popup h3,body.quiz div#related div.toolbox-popup h3{border-top:none;}
+body#interactive-front ul#article-toolbox-side{width:140px;}
+body#interactive-front #contact-link-box div.first ul{clear:left;}
+#warning{color:#C82F2F;clear:left;font-style:italic;}
+.warning{padding-left:20px;background:url(images/icon_message.gif) left top no-repeat;}

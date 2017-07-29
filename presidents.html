@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" itemtype="http://schema.org/NewsArticle" itemscope>
+
+<head>
+    <title> The state of our union is … dumber: How the linguistic standard of the presidential address has declined | US news | theguardian.com </title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <link rel="stylesheet" type="text/css" href="assets/css/content-wide.css" media="all">
+    <link rel="stylesheet" type="text/css" href="assets/css/zone-accent.css" media="screen" class="contrast">
+    <link rel="stylesheet" type="text/css" href="assets/css/base-typography.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="assets/css/top-navigation.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/tag-badging.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/sprites.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/series-component.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/page-toolbox.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/header-local-info.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/content-actions.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/badge.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/shame.css">
+</head>
+
+<body class="interactive content-wide">
+    <script src="assets/js/jquery.js"></script>
+    <script>
+    var jQ = jQuery.noConflict();
+    jQ.ajaxSetup({
+        cache: true
+    });
+    </script>
+    <div id="wrapper">
+        <div id="box">
+            <div id="content">
+                <div id="interactive-content">
+                    <div id="interactive" class="flash">
+                        <div id="gia-header">
+                            <div id="social-tools-container">
+                                <!--this is where your social buttons will show up-->
+                            </div>
+                            <div id="gia-standin">
+                                <!--this is where your headline and chatter will show up-->
+                                <h1>The state of our union is … dumber:</h1>
+                                <div style="font-family:Georgia; text-align:center; margin-top:-10px; margin-bottom:6px; font-size: 20px;">
+                                    How the linguistic standard of the presidential address has declined
+                                </div>
+                                <p style="color: #666">Using the <a href="//en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_test">Flesch-Kincaid readability test</a> the Guardian has tracked the reading level of every State of the Union
+                                    <br>
+                                    <br>
+                                </p>
+                            </div>
+                        </div>
+                        <script type="text/underscore" id="gia-sotu-presidentTemplate">
+                            <h3>
+                                <span>
+                                <%= ranking %>.
+                                </span>
+                                <%= president.name %>
+                            </h3>
+                            <div class="gia-sotu-note-text">Avg. reading level</div>
+                            <div class="gia-sotu-president-kincaid">
+                                <%= president.avg_kincaid %>
+                            </div>
+                            <div class="gia-sotu-speech-years">
+                            </div>
+                        </script>
+                        <script type="text/underscore" id="gia-sotu-popupTemplate">
+                            <h3><%= speech.president.name %></h3>
+                            <div class="gia-sotu-popup-date">
+                                <%= helpers.formatDate(speech.date) %>
+                            </div>
+                            <div class="gia-sotu-popup-kincaid">
+                                <%= helpers.formatKincaid(speech.kincaid) %>
+                                    <div class="gia-sotu-popup-kincaid-text">
+                                        Average education level
+                                    </div>
+                            </div>
+                        </script>
+                        <div id="gia-sotu"></div>
+                        <link rel="stylesheet" type="text/css" href="assets/css/main.css">
+                        <script src="assets/js/jquery.js"></script>
+                        <script src="assets/js/d3_president.js"></script>
+                        <script src="assets/js/underscore-min.js"></script>
+                        <script src="assets/js/main.js"></script>
+                    </div>
+                    <script>
+                    (function() {
+                        var interactive = jQ('#interactive iframe');
+                        if (interactive.length > 0) {
+                            var qs = window.location.search;
+                            interactive[0].src = interactive[0].src + qs;
+                        }
+                    })();
+                    </script>
+                </div>
+            </div>
+            <div id="wide-comment-wrapper">
+                <span class="trackable-component component-wrapper eight-col" data-component="Interactive:content-wide promo Google ads for content wide template:Advertiser links for article page">
+                    <div id="advertiser-container">
+                        <div id="google-ads-container" class="eight-col edge component advertiser-links" style="display: none;">
+                            
+                        </div>
+                    </div> 
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
