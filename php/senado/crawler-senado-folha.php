@@ -12,7 +12,7 @@ function mountDecimal($value) {
         return 0;
     }
 
-    return (float)preg_replace('/^(-?\d*)(\d{2})$/', '$1.$2', $value);
+    return abs((float)preg_replace('/^(-?\d*)(\d{2})$/', '$1.$2', $value));
 }
 
 chdir('./csv');
@@ -53,7 +53,7 @@ foreach ($arquivos as $arquivo) {
         $outrasVantagensIndenizatorias = mountDecimal($registro[27]);
         $licencaPremio = mountDecimal($registro[28]);
 
-        $sql = "INSERT INTO senado_folha (tipo, ano, mes, servidor, ano_admissao, "
+        $sql = "INSERT INTO folha_senado (tipo, ano, mes, servidor, ano_admissao, "
             . "vinculo, cargo, padrao, especialidade, situacao, "
             . "remuneracao_basica, vantagens_pessoais, funcao_cargo_comissao, gratificacao_natalina, "
             . "horas_extras, outras_remuneracoes_eventuais, "
