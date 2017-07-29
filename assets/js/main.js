@@ -5,14 +5,13 @@
         maxBubbleRadius: 20,
         dateDomainPadding: 5, // years
         kincaidDomainPadding: .1,
-        xAxisLabel: 'Year of address',
-        yAxisLabel: 'Flesch–Kincaid Reading Level',
-        keyCircleLabel: 'Number of words',
+        xAxisLabel: 'Anos',
+        yAxisLabel: 'Valor médio de remuneração',
         noneSelectedOpacity: .3,
         selectedOpacity: 1,
         unselectedOpacity: .07,
         row_cells: 4,
-        headingText: 'Presidents in order of reading level'
+        headingText: 'Cargos em ordem de valor médio de remuneração'
     };
 
     var presidents, speeches, selectedSpeech, points;
