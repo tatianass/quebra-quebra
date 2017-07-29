@@ -53,7 +53,11 @@ Gera arquivos SQL com comandos INSERT INTO data/outros_inserts_${ANO}${MES} que 
 
 ### servidores_lotacao.sh
 
-Gera uma lista de nomes de servidores que trabalham numa especifica lotação da camera.
+Gera uma lista de nomes de servidores que trabalham numa especifica lotação da câmara.
+
+### sqls_txt.py
+
+Converte todos os dados baixados para um txt, que será usado na análise dos dados da câmara.
 
 ## Tutorial para dados do Senado
 
