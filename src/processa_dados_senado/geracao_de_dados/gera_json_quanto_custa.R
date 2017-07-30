@@ -41,7 +41,7 @@ geraJson <- function(coluna){
   #convertendo para json
   #data para string
   avg_coluna$d <- as.character(avg_coluna$d)
-  avg_coluna$d <- paste(avg_coluna$d,"12-31", sep = "-")
+  avg_coluna$d <- paste(avg_coluna$d,"01-01", sep = "-")
   
   #Passo 1: criar dataframe com as variáveis externas ao array
   df1 <- avg_coluna %>%
