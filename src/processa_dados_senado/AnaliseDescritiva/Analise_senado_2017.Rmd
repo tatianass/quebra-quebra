@@ -2,9 +2,21 @@
 title: "Análise do Senado"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
     vertical_layout: fill
 ---
+
+<style>
+
+body {
+  padding-top:0px
+}
+
+.navbar{
+  visibility: hidden
+}
+
+</style>
 
 ```{r setup, include=FALSE}
 library(dplyr)
@@ -23,7 +35,7 @@ library(plotly)
 #Autor: Ítalo de Pontes Oliveira e Leandro Balby Marinho                                              #
 #Os CSV's são gerados mensalmente, assim, para cada arquivo de dados, uma nova variável é atribuida   #
 #######################################################################################################
-data_filename = "~/workspace/quebra-quebra/senado_federal/dados/dados_senado.csv"
+data_filename = "~/workspace/dados_senado.csv"
 
 #######################################################################################################
 #Por convensão, decidiu-se utilizar o formato de arquivo CSV, logo o separador sempre será a vírgula  #
@@ -35,9 +47,6 @@ data <- mutate(data, remuneracao_total=remuneracao_basica + vantagens_pessoais +
 data <- mutate(data, remuneracao_total_s=remuneracao_basica_s + vantagens_pessoais_s + funcao_comissao_s + gratificacao_natalina_s + horas_extras_s + outras_remuneracoes_s + abono_permanencia_s + reversao_s + imposto_de_renda_s + psss_s + faltas_s + diarias_s + auxilios_s + vantagens_indenizatorias_s)
 data <- mutate(data, remuneracao_total_liquida=remuneracao_total+remuneracao_total_s)
 
-sum(data$remuneracao_total, na.rm=T)        #520,648,967 = 520648967
-sum(data$remuneracao_total_s, na.rm=T)      #31,284,518 = 31284518
-
 ano_max <- max(data$ano)
 ano_min <- min(data$ano)
 
@@ -47,15 +56,76 @@ senado_recente <- data[data$ano==ano_max,]
 
 remuneracao_total_liquida <- sum(data$remuneracao_total_liquida, na.rm=T)
 
-#filtrando dados para 2016
-senado_2016 <- data[data$ano==2016,]
 
-# recuperando as especialidades possiveis no Senado
-especialidade = select(senado_2016,especialidade) %>%
-  unique.data.frame() %>% as.vector()
-especialidade=especialidade[[1]][-2] #retirando um valor NaN na segunda posição
+topSalarios <- function(salariosAgregados, column_ref, keeps) {
+  topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:10],]
+  rownames(topSalarios) <- NULL
+  colnames(topSalarios) <- keeps
+  return(topSalarios)
+}
+
+keeps <- c("Nome","Cargo","Especialidade","Situação","Mês","Ano","Ano de Admissão","Licença-Prêmio* (R$)")
+salariosAgregados <- aggregate(licenca_premio_s~nome+cargo+especialidade+situacao+mes+ano+ano_de_admissao, FUN=sum, data)
+top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$licenca_premio_s, keeps)
+
+gasto_de_referencia <- sum(top_servidores_licenca_premio$`Licença-Prêmio* (R$)`)
 
 ```
+
+**Para se ter ideia dos gastos do Senado com folha de pagamento dos servidores, só em `r ano_max`, o que foi pago em Licença-Prêmio para apenas dez servidores seria equivalente à:**
+
+Row
+-----------------------------------------------------------------------
+
+### ambulancia
+
+```{r custo_de_uma_ambulancia}
+valor_de_uma_ambulancia <- 150600
+value <- round(gasto_de_referencia/valor_de_uma_ambulancia, 0)
+valueBox(value, caption="Ambulâncias novas", icon = "fa-car", color="primary", href="http://www.otempo.com.br/cidades/dezenove-ambul%C3%A2ncias-do-samu-est%C3%A3o-paradas-em-galp%C3%A3o-1.1436254")
+```
+
+### bolsas doutorado
+
+```{r bolsa_capes_doutorado}
+bolsa_doutorado <- 2200
+value <- round(gasto_de_referencia/(bolsa_doutorado*48), 0)
+valueBox(value, caption="Alunos de doutorado com Bolsa CAPES por 4 anos", icon = "fa-pencil", color="#2a6592", href="http://www.capes.gov.br/bolsas/valores-de-bolsas")
+```
+
+### tratamento cancer
+
+```{r tratamento_cancer}
+paciente_cancer <- 10476
+value <- round(gasto_de_referencia/paciente_cancer, 0)
+valueBox(value, caption="Atendimentos à pacientes com Câncer", icon = "fa-medkit", color="primary", href="http://www2.inca.gov.br/wps/wcm/connect/agencianoticias/site/home/noticias/2016/ministro-da-saude-anuncia-prioridades-para-a-oncologia")
+```
+
+### merenda escolar
+
+```{r meses_merenda_escolar}
+valor_merenda <- 11.34
+value <- paste(round(gasto_de_referencia/(valor_merenda*10^3), 1), " Mil")
+valueBox(value, caption="Crianças beneficiadas com merenda escolar", icon = "fa-cutlery", color="#2a6592", href="http://agenciabrasil.ebc.com.br/politica/noticia/2017-02/governo-anuncia-reajustes-para-merenda-escolar")
+```
+
+### domestica aposentadoria
+
+```{r domestica_aposentadoria}
+domestica_inss <- 120
+value <- paste(round(gasto_de_referencia/(domestica_inss*10^3), 1), "Mil")
+valueBox(value, caption="Domésticas contribuindo para o INSS", icon = "fa-home", color="primary", href="https://www.domesticalegal.com.br/utilidades/tabela-de-inss/")
+```
+
+### asfaltar rodovias
+
+```{r asfaltar_rodovias}
+rodovia_quilometro <- 3468000
+value <- round(gasto_de_referencia/rodovia_quilometro, 1)
+valueBox(value, caption="Quilomêtros de rodovias asfaltadas", icon = "fa-road", color="#2a6592", href="https://189.9.128.64/download/servicos/custo-medio-gerencial/custos-medios-ger.novembro-14.pdf")
+```
+
+
 ## Análise do Senado {.tabset .tabset-fade}
 
 ### Gastos do Senado
@@ -76,12 +146,63 @@ Para entender o que nos referimos como remuneração, precisa-se entender como a
 - **Remuneração Após Descontos Obrigatórios**: Remuneração obtida pelo servidor ao somar a Remuneração básica, com as vantagens pessoais e eventuais, com o abono de permanência menos os descontos obrigatórios.
 - **Vantagens Indenizatórias e Compensatórias**: Diárias, Auxílios (Auxílio-Alimentação) e Outras Vantagens Indenizatórias (Férias Indenizadas (proporcionais), Licença-prêmio convertida em pecúnia - aposentado, Adicional de Férias Proporcionais Indenizadas e Férias Indenizadas).
 
-```{r comentario_pib_distrito_federal, echo=FALSE}
-#De acordo com o IBGE
-#http://saladeimprensa.ibge.gov.br/noticias?view=noticia&id=1&busca=1&idnoticia=3315 
-#De acordo com o IBGE, o Distrito Federal tem 3,4% de represetatividade no PIB nacional (sétimo maior), embora possua o PIB per capita mais elevado do país (R$ 69.216).
-#Note that the `echo = FALSE` parameter.
-```
+-----------------------------------------------------------------------
+
+* **O que gastamos com Licença-Prêmio daria para adquirir:**
+
+Para se ter uma ideia dos elevados gastos do Senado com remuneração dos servidores, resolvemos destacar o que seria possível investir utilizando o pagamento de licença-prêmio convertida em pecúnia, que foi feita aos dez servidores do Senado que mais receberam em 2017, totalizando R$ `r round(gasto_de_referencia/10^6, 0)` MILHÕES:
+
+**Ambulâncias do SAMU**
+
+Em 2017, o valor de uma ambulância da SAMU em um dos modelos mais equipados custa em média R$ 150 mil. Assim, usamos esse valor de referência como o custo de uma ambulância.
+
+Fonte:
+
+[Dezenove ambulâncias do Samu estão paradas em galpão](http://www.otempo.com.br/cidades/dezenove-ambul%C3%A2ncias-do-samu-est%C3%A3o-paradas-em-galp%C3%A3o-1.1436254)
+
+**Bolsas CAPES de doutorado**
+
+Consideramos o valor da bolsa CAPES na modalidade de doutorado, o que equivale à R$ 2.200,00 por mês por aluno.
+
+Fonte:
+
+[Valores das bolsas da Capes no país](http://www.capes.gov.br/bolsas/valores-de-bolsas)
+
+**Tratamento do Câncer**
+
+De acordo com o Instituto Nacional de Câncer (INCA), o Sistema Único de Saúde (SUS) investiu R$ 3,5 bilhões no tratamento de 393 mil pacientes no ano de 2015. O montante foi investido em tratamento (cirurgias, radioterapias e quimioterapias). Assim, temos o gasto médio de R$ 8.905 por paciente, considerando a inflação acumulada dos anos de 2015 e 2016 (10,67\% e 6,29\%, respectivamente), teriamos um gasto médio de R$ 10.476 por paciente em 2017.
+
+Fonte:
+
+[Ministro da Saúde anuncia prioridades para a oncologia](http://www2.inca.gov.br/wps/wcm/connect/agencianoticias/site/home/noticias/2016/ministro-da-saude-anuncia-prioridades-para-a-oncologia)
+
+[Inflação oficial fecha 2016 em 6,29%, diz IBGE](http://g1.globo.com/economia/noticia/inflacao-oficial-fecha-2016-em-629-diz-ibge.ghtml)
+
+[Inflação oficial fica em 10,67% em 2015, a maior desde 2002](http://g1.globo.com/economia/noticia/2016/01/inflacao-oficial-fica-em-1067-em-2015.html)
+
+**Merenda Escolar**
+
+O Governo por meio do Programa Nacional de Alimentação Escolar (Pnae), anunciou o investimento de R$ 465 milhões a mais para beneficiar 41 milhões de estudantes de todo o país, o que dá em média R$ 11,34 por estudante.
+
+Fonte:
+
+[Governo anuncia reajustes para a merenda escolar](http://agenciabrasil.ebc.com.br/politica/noticia/2017-02/governo-anuncia-reajustes-para-merenda-escolar)
+
+**Contribuição Doméstica ao INSS**
+
+Para se aposentar, uma empregada doméstica que recebe R$ 1.500,00 deverá contribuir ao INSS com 8\% do seu salário, o que corresponde à R$ 120 ao mês.
+
+Fonte:
+
+[Percentuais da contribuição previdenciária (INSS) de patrões e empregados domésticos](https://www.domesticalegal.com.br/utilidades/tabela-de-inss/)
+
+**Pavimentação em Asfalto**
+
+De acordo com o Departamento Nacional de Infraest de Transportes (DNIT), o custo médio para construção de uma pista simples é de R$ 2.948 por metro de rodovia construída em 2014. Considerando a inflação dos anos de 2015 e 2016 (10,67\% e 6,29\%, respectivamente), teríamos um custo médio de 3.468 por metro de rodovia construída em 2017.
+
+Fonte:
+
+[Custos Médios Gerenciais](https://189.9.128.64/download/servicos/custo-medio-gerencial/custos-medios-ger.novembro-14.pdf)
 
 
 
@@ -90,7 +211,10 @@ Para entender o que nos referimos como remuneração, precisa-se entender como a
 
 
 
-### Pensionistas
+
+### Aposentados
+
+* **Quanto que o Senado paga aos Aposentados?**
 
 ```{r calculo_aposentados, echo=FALSE}
 aposentados_recente <- senado_recente[senado_recente$situacao=="APOSENTADO",]
@@ -101,9 +225,15 @@ receita_aposentados_todos <- sum(aposentados_totais$remuneracao_total_liquida)
 receita_aposentados_recente <- sum(aposentados_recente$remuneracao_total_liquida)
 ```
 
-O Senado fornece dados para `r round(nrow(aposentados_totais)/10^3, 0)` mil pagamentos referentes a aposentados entre os anos de `r ano_min` e `r ano_max`. No total, já foi pago `r round(receita_aposentados_todos/10^9, 1)` BILHÃO de reais em pagamento para aposentados do Senado, o que significa `r round(receita_aposentados_todos/remuneracao_total_liquida*100, 1)`% de todos os pagamentos nesse intervalo de tempo.
+O Senado fornece dados para `r round(nrow(aposentados_totais)/10^3, 0)` mil pagamentos referentes a aposentados entre os anos de `r ano_min` e `r ano_max`. No total, já foi pago `r round(receita_aposentados_todos/10^9, 1)` BILHÕES de reais em pagamento para aposentados do Senado, o que significa `r round(receita_aposentados_todos/remuneracao_total_liquida*100, 1)`% de todos os pagamentos nesse intervalo de tempo.
 
 Só no ano de `r ano_max`, o Senado efetuou `r round(nrow(aposentados_recente)/1000, 0)` mil pagamentos à servidores aposentados, uma relação de `r round(nrow(aposentados_recente)/nrow(senado_recente)*100, 1)`% da folha de pagamento em `r ano_max`. Em relação a proporção total na folha de pagamento no ano `r ano_max`, os aposentados correspondem à `r round(receita_aposentados_recente/1000000, 1)` MILHÕES de reais em remuneração, ou seja, `r round(receita_aposentados_recente/receita_total_recente*100, 1)`% do total da folha de pagamento é destinada aos aposentados.
+
+Essa remuneração foi calculada da seguinte maneira:
+
+**Remuneração Líquida do Servidor = Remuneração Básica + Vantagens Pessoais + Função Comissão + Gratificação Natalina + Horas Extras + Outras Remunerações + Abono Permanência - Reversão ao Teto Constitucional - Imposto de Renda - PSSS - Faltas + Diárias + Auxílios + Vantagens Indenizatórias**
+
+Considerando ambas as folhas de pagamento (Normal e Suplementar).
 
 ```{r aposentados_graficos,fig.align='center', echo=FALSE, fig.width=3,fig.height=1}
 library("ggplot2")
@@ -126,6 +256,8 @@ theme_minimal() +
 ggplotly(g)
 ```
 
+-----------------------------------------------------------------------
+
 * **Qual a relação do que é arrecado com o quanto que é pago aos aposentados?**
 
 ```{r calculo_arrecadacao, echo=FALSE}
@@ -135,9 +267,13 @@ deficit_total <- sum(aposentados_totais$remuneracao_total_liquida)+arrecadao_tot
 arrecadao_recente <- sum(senado_recente$imposto_de_renda+senado_recente$psss+senado_recente$reversao)
 deficit_recente <- sum(aposentados_recente$remuneracao_total_liquida)+arrecadao_recente
 
+arrecadao_inss_e_psss <- sum(data$imposto_de_renda+data$psss)
+quantidade_pagamentos <- nrow(data)
 ```
 
-O Senado arrecada alguns fundos do próprio servidor por meio de descontos do Imposto de renda e do Plano de Seguridade Social do Servidor Público (PSSS). Entre `r ano_min` e `r ano_max` foi arrecadado por meio do imposto de renda R$ `r round(sum(data$imposto_de_renda/10^6)*(-1), 1)` MILHÕES e por meio do PSSS cerca de R$ `r round(sum(data$psss/10^6)*(-1), 1)` MILHÕES, totalizando um montante de R$ `r round(sum(data$imposto_de_renda+data$psss)/-10^9, 1)` BILHÃO  arrecadado dos servidores do Senado. Além disso, existe um outro desconto aplicado em altas remunerações que é a reversão das remunerações que ultrapassam o limite constitucional, representando R$ `r round(sum(data$reversao)/-10^6, 1)` MILHÕES. Ou seja, nesse mesmo intervalo de tempo (`r ano_min`-`r ano_max`), o Senado efetuou o pagamento de R$ `r round(sum(aposentados_totais$remuneracao_total_liquida)/10^9, 1)` BILHÕES de reais para aposentados (conforme descrito na seção anterior), mas arrecadou dos próprios servidores somente R$ `r round(arrecadao_total/10^9, 1)*(-1)` BILHÃO, o que significa um DÉFICIT de R$ `r round(deficit_total/10^9, 1)` BILHÃO que foram arrecadados por outros meios.
+O Senado arrecada alguns fundos do próprio servidor por meio de descontos do Imposto de renda e do Plano de Seguridade Social do Servidor Público (PSSS). Entre `r ano_min` e `r ano_max` foi arrecadado por meio do imposto de renda R$ `r round(sum(data$imposto_de_renda)/-10^6, 1)` MILHÕES e por meio do PSSS cerca de R$ `r round(sum(data$psss)/-10^6, 1)` MILHÕES, totalizando um montante de R$ `r round(arrecadao_inss_e_psss/-10^9, 1)` BILHÕES arrecadados dos servidores do Senado. Em que, nesse mesmo intervalo de tempo, foi efetuado `r round(quantidade_pagamentos/10^3, 0)` mil pagamentos pelo Senado, ou seja, é descontado (em média) R$ `r round((arrecadao_inss_e_psss/quantidade_pagamentos)*(-1), 0)` por servidor.
+
+Além disso, existe um outro desconto aplicado em altas remunerações que é a reversão do teto constitucional, representando R$ `r round(sum(data$reversao)/-10^6, 1)` MILHÕES. Ou seja, nesse mesmo intervalo de tempo (`r ano_min`-`r ano_max`), o Senado efetuou o pagamento de R$ `r round(sum(aposentados_totais$remuneracao_total_liquida)/10^9, 1)` BILHÕES de reais para aposentados (conforme descrito na seção anterior), mas arrecadou dos próprios servidores somente R$ `r round(arrecadao_total/10^9, 1)*(-1)` BILHÕES, o que significa um DÉFICIT de R$ `r round(deficit_total/10^9, 1)` BILHÃO que foram arrecadados por outros meios.
 
 ```{r arrecadao_graficos, fig.align='center', echo=FALSE, fig.width=5, fig.height=3}
 library(ggplot2)
@@ -159,18 +295,21 @@ theme_minimal() +
 ggplotly(g)
 ```
 
+Em que, considerando ambas folhas de pagamento (normal e suplementar), temos:
+
+- **Aposentados**: Corresponde a Remuneração Líquida de todos os Aposentados.
+- **PSSS**: Plano de Seguridade Social do Servidor Público (PSSS) arrecadado pelo Senado descontado por todos os servidores de ambas as folhas de pagamento.
+- **INSS**: Arrecadação do Senado descontado de todos os servidores de ambas as folhas de pagamento.
+- **Reversão**: Corresponde ao desconto dado pelo Senado a todos os servidores que ultrapassaram o teto constitucional. 
+- **Déficit**: Quanto que o Senado precisaria arrecadar para equilibrar as contas: PSSS + INSS + Reversão - Aposentados.
+
+-----------------------------------------------------------------------
+
 * **Quais aposentados mais receberam?**
 
-Na tabela seguinte, mostra os meses em que os servidores na situação APOSENTADO mais foram remunerados entre os anos de `r ano_min` e `r ano_max`. Os valores de remuneração apresentados já possuem todos os descontos de acordo com o site do Senado.
+Na tabela seguinte, mostra os meses em que os servidores na situação APOSENTADO mais foram remunerados entre os anos de `r ano_min` e `r ano_max`. Os valores de remuneração apresentados corresponde à Remuneração Líquida (previamente explicada), ou seja, já possuem todos os descontos de acordo com o site do Senado. Observe que, ao mostrarmos os nomes dos servidores com remunerações mais elevadas, não é que acreditamos que há irregularidades, nós somente exemplificando como tornamos o acesso a essas informações mais transparentes.
 
 ```{r top_salarios_aposentados, echo=FALSE}
-topSalarios <- function(salariosAgregados, column_ref, keeps) {
-  topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:10],]
-  rownames(topSalarios) <- NULL
-  colnames(topSalarios) <- keeps
-  return(topSalarios)
-}
-
 keeps <- c("Nome","Cargo","Especialidade","Mês","Ano","Remuneração com Desconto (R$)")
 salariosAgregados <- aggregate(remuneracao_total_liquida~nome+cargo+especialidade+mes+ano, FUN=sum, aposentados_totais)
 top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total_liquida, keeps)
@@ -232,9 +371,11 @@ top_licenca_cargo_recente$remuneracao <- top_licenca_cargo_recente$remuneracao/r
 top_licenca_cargo_recente <- mutate(top_licenca_cargo_recente, data=ano_max)
 
 licenca_cargo_completo <- rbind(top_licenca_cargo_todos, top_licenca_cargo_recente)
+
+beneficiados_licenca_premio <- data[data$licenca_premio_s>0,]
 ```
 
-No ano de `r ano_max`, o Senado pagou cerca de R$ `r round(sum(top_licenca_cargo_recente$remuneracao), 1)` MILHÕES de Licença-Prêmio. Sendo os cargos `r top_licenca_cargo_recente[1, ]$cargo` e `r top_licenca_cargo_recente[2, ]$cargo` que mais receberam Licença-Prêmio nesse ano, o que representa um total de R$ `r round(top_licenca_cargo_recente[1, ]$remuneracao, 1)` e R$ `r round(top_licenca_cargo_recente[2, ]$remuneracao, 1)` MILHÕES de reais, respectivamente. Entre os anos `r ano_min` e `r ano_max`, foi pago cerca de R$ `r round(sum(top_licenca_cargo_todos$remuneracao), 1)` MILHÕES de Licença-Prêmio.
+No ano de `r ano_max`, o Senado pagou cerca de R$ `r round(sum(top_licenca_cargo_recente$remuneracao), 1)` MILHÕES de Licença-Prêmio. Sendo os cargos `r top_licenca_cargo_recente[1, ]$cargo` e `r top_licenca_cargo_recente[2, ]$cargo` que mais receberam Licença-Prêmio nesse ano, o que representa um total de R$ `r round(top_licenca_cargo_recente[1, ]$remuneracao, 1)` e R$ `r round(top_licenca_cargo_recente[2, ]$remuneracao, 1)` MILHÕES de reais, respectivamente. Entre os anos `r ano_min` e `r ano_max`, foi pago cerca de R$ `r round(sum(top_licenca_cargo_todos$remuneracao), 1)` MILHÕES de Licença-Prêmio (valor bruto, ou seja, sem descontos) para `r round(nrow(beneficiados_licenca_premio)/10^3, 0)` mil servidores, o que dá (em média), R$ `r round( (sum(top_licenca_cargo_todos$remuneracao)/nrow(beneficiados_licenca_premio))/10^3, 0)` mil por servidor.
 
 ```{r plot_licenca_premio, echo=FALSE, fig.width=5, fig.height=3}
 g <-ggplot(data=licenca_cargo_completo, aes(x=data, y=remuneracao, fill=cargo)) +
@@ -259,74 +400,9 @@ Na Tabela seguinte, mostra-se a lista dos dez servidores que mais se beneficiara
 * **Licença-Prêmio (R$):** Valor de Licença-Prêmio pago pelo Senado ao servidor em reais.
 
 ```{r top_licenca_premio, echo=FALSE, fig.width=5, fig.height=3}
-keeps <- c("Nome","Cargo","Especialidade","Situação","Mês","Ano","Ano de Admissão","Licença-Prêmio* (R$)")
-salariosAgregados <- aggregate(licenca_premio_s~nome+cargo+especialidade+situacao+mes+ano+ano_de_admissao, FUN=sum, data)
-top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$licenca_premio_s, keeps)
-
-library("knitr")
 kable(top_servidores_licenca_premio)
 ```
 *Valor bruto de Licença-Prêmio (sem descontos).
 
+Observe que, ao mostrarmos os nomes dos servidores, não é que acreditamos que há irregularidades, nós somente exemplificando como tornamos o acesso a essas informações mais transparentes.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Row
------------------------------------------------------------------------
-
-Somente nesse ano, o pagamento de Remunerações eventuais ao servidores, somando à
-
-### Custo de uma Ambulância
-
-```{r custo_de_uma_ambulancia}
-articles <- 125
-valueBox(articles, icon = "fa-car", color="primary")
-```
-
-### Meses de bolsa CAPES de doutorado 
-
-```{r bolsa_capes_doutorado}
-articles <- 123
-valueBox(articles, icon = "fa-pencil", color="#2a6592")
-```
-
-### Meses de tratamento do Câncer
-
-```{r tratamento_cancer}
-articles <- 12
-valueBox(articles, icon = "fa-medkit", color="primary")
-```
-
-### Meses de merenda escolar
-
-```{r meses_merenda_escolar}
-articles <- 56
-valueBox(articles, icon = "fa-cutlery", color="#2a6592")
-```
-
-### Domésticas contribuindo para o INSS
-
-```{r domestica_aposentadoria}
-articles <- 543
-valueBox(articles, icon = "fa-home", color="primary", href="https://www.domesticalegal.com.br/utilidades/tabela-de-inss/")
-```
-
-### Kilomêtros de rodovias asfaltadas
-
-```{r asfaltar_rodovias}
-comments <- 21515
-valueBox(comments, icon = "fa-road", color="#2a6592")
-```
