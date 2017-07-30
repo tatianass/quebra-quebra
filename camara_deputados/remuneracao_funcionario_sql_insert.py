@@ -35,6 +35,8 @@ meses = {'Jan': 1, 'Fev': 2, 'Mar': 3, 'Abr': 4, 'Mai': '5', 'Jun': 6, 'Jul': 7,
 mes = meses[soup.find_all('legend')[0].find('span').text.split('-')[0].strip().split('/')[0]]
 ano = soup.find_all('legend')[0].find('span').text.split('-')[0].strip().split('/')[1]
 nome = soup.find('h3').text
+nome = unidecode(nome)
+nome = nome.encode("ascii")
 
 (
     remuneracao_fixa,
