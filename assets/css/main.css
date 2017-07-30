@@ -153,8 +153,6 @@ circle.speech {
     width: 200px;
     height: 90px;
     padding: 0 0 0 100px;
-    background: rgba(255, 255, 255, .7);
-    background: rgba(255, 255, 255, 1);
 }
 
 #gia-sotu-popup h3 {
@@ -191,7 +189,7 @@ circle.speech {
 
 .gia-sotu-popup-kincaid {
     font-family: "Georgia", serif;
-    font-size: 48px;
+    font-size: 24px;
 }
 
 .gia-sotu-popup-kincaid-text {

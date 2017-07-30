@@ -6,7 +6,7 @@
         dateDomainPadding: 5, // years
         kincaidDomainPadding: .1,
         xAxisLabel: 'Anos',
-        yAxisLabel: 'Valor médio de remuneração',
+        yAxisLabel: 'Valor médio de remuneração (em milhões)',
         noneSelectedOpacity: .3,
         selectedOpacity: 1,
         unselectedOpacity: .07,
@@ -95,7 +95,7 @@
 
     var keyCircle = scaleKeyCircle()
         .scale(wordCountScale)
-        .tickValues([5, 20]);
+        .tickValues([0.9, 400]);
 
     svg.append('g')
         .attr('class', 'x axis')
@@ -272,7 +272,7 @@
                 left -= leftPadding - 40;
             }
             left += margin.left;
-
+            left -= 100
             elPopup
                 .html(popupTemplate({ speech: selectedSpeech, helpers: helpers }))
                 .style('top', top + 'px')
