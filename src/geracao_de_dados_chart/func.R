@@ -74,6 +74,11 @@ geraJsonMR <- function(coluna, tipo){
   #renomeando para ser usado no gráfico
   colnames(rem_coluna) <- c("area", "value")
   
+  if(coluna == "nome"){
+    rem_coluna <- arrange(rem_coluna,desc(value))
+    rem_coluna <- head(rem_coluna,10)
+  }
+  
   #transformação
   json_data <- toJSON(rem_coluna, pretty = T)
   
