@@ -1,22 +1,10 @@
 ---
-title: "Análise do Senado"
+title: "Quem são os mais ricos (parte 2)?"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
     vertical_layout: fill
 ---
-
-<style>
-
-body {
-  padding-top:0px
-}
-
-.navbar{
-  visibility: hidden
-}
-
-</style>
 
 ```{r setup, include=FALSE}
 library(dplyr)
