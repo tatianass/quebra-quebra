@@ -46,7 +46,7 @@ geraJson <- function(coluna){
   #Passo 1: criar dataframe com as variáveis externas ao array
   df1 <- avg_coluna %>%
     select(name, avg_kincaid) %>%
-    distinct(name)
+    distinct(name, avg_kincaid)
   
   #Passo 2: criar dataframe com variávies internas ao array +
   #uma variável em comum com o primeiro dataframe

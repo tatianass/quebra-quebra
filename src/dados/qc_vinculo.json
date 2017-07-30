@@ -1,6 +1,7 @@
 [
   {
     "name": "COMISSIONADO",
+    "avg_kincaid": 0.0002,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -26,6 +27,7 @@
   },
   {
     "name": "EFETIVO",
+    "avg_kincaid": 0.0014,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -51,6 +53,7 @@
   },
   {
     "name": "NaN",
+    "avg_kincaid": 3.7872e-007,
     "speeches": [
       {
         "d": "2013-12-31",
