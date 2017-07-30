@@ -25,7 +25,7 @@ library(tidyverse)
 #Autor: Ítalo de Pontes Oliveira e Leandro Balby Marinho                                              #
 #Os CSV's são gerados mensalmente, assim, para cada arquivo de dados, uma nova variável é atribuida   #
 #######################################################################################################
-data_filename = "~/Documents/quebra-quebra/senado_federal/dados/dados_senado.csv"
+data_filename = "/home/italo/workspace/dados_senado.csv"
 
 #######################################################################################################
 #Por convensão, decidiu-se utilizar o formato de arquivo CSV, logo o separador sempre será a vírgula  #
@@ -137,7 +137,8 @@ Para entender a remuneração dos servidores da folha do Senado é importante ob
 - **Remuneração Após Descontos Obrigatórios**: Corresponde à remuneração líquida do servidor que corresponde a remuneração básica mais as complementares menos os descontos. De forma mais precisa:
 **Remuneração Líquia = Remuneração Básica + Vantagens Pessoais + Função Comissão + Gratificação Natalina + Horas Extras + Outras Remunerações + Abono Permanência - Reversão ao Teto Constitucional - Imposto de Renda - PSSS - Faltas + Diárias + Auxílios + Vantagens Indenizatórias**
 
-Na marioria das análises que fizemos usamos a remuneração líquida do servidor.
+Na maioria das análises que fizemos usamos a remuneração líquida do servidor.
+
 -----------------------------------------------------------------------
 
 * **O que gastamos com Licença-Prêmio daria para adquirir:**
@@ -397,7 +398,7 @@ Além de salários e benefícios generosos, nossos senadores ainda contam com um
 #p1 = mPlot(x = 'SENADOR', y = list('TOTAL'), data = qtde_assessores, type = 'Bar')
 #p1$set(hideHover = "auto")
 #p1$print('chart1', include_assets = TRUE)
-qtde_assessores <- readr::read_csv(file="~/Documents/quebra-quebra/src/processa_dados_senado/AnaliseDescritiva/qtde_assessores.csv")
+qtde_assessores <- readr::read_csv(file="../../dados//qtde_assessores.csv")
 qtde_assessores =  arrange(qtde_assessores,desc(TOTAL))
 
 g <-ggplot(data=qtde_assessores, aes(x=SENADOR, y=TOTAL)) +
@@ -407,17 +408,16 @@ theme_minimal() + theme(axis.text.x = element_text(angle = 90)) +
 ggplotly(g)
 
 ```
-&nbsp;&nbsp;&nbsp;
 
 Na tabela abaixo mostramos o custo em 2016 dos top-3 senadores com maior número de assessores considerando somente: comissionados, efetivos e escritório de apoio. O custo total somado desses três senadores em 2016 só em assessores foi de quase R$ 12 milhões de reais!! 
 
 
 ```{r,echo=FALSE, include=FALSE}
-qtde_assessores <- readr::read_csv(file="~/Documents/quebra-quebra/src/processa_dados_senado/AnaliseDescritiva/qtde_assessores.csv")
+qtde_assessores <- readr::read_csv(file="../../dados//qtde_assessores.csv")
 top3_senadores = qtde_assessores[c(1,2,3),c(1,2,3,6)]
 
 ####################### Assessores João Alberto #######################
-assessores_ja <- readr::read_csv(file="~/Documents/quebra-quebra/src/processa_dados_senado/AnaliseDescritiva/assessores_joao_alberto.csv")
+assessores_ja <- readr::read_csv(file="../../dados//assessores_joao_alberto.csv")
 assessores_ja = assessores_ja[[2]] 
 num_assessores_ja = length(assessores_ja)
 num_assessores_ja
@@ -426,7 +426,7 @@ assessores_ja = filter(senado_2016, nome %in% assessores_ja) %>%
 soma_sal_ja = format(sum(assessores_ja$remuneracao_total_liquida),big.mark = '.')
 dist_sal_ja = summary(assessores_ja$remuneracao_total_liquida)
 ####################### Assessores João Alberto #######################
-assessores_col <- readr::read_csv(file="~/Documents/quebra-quebra/src/processa_dados_senado/AnaliseDescritiva/assessores_collor.csv")
+assessores_col <- readr::read_csv(file="../../dados//assessores_collor.csv")
 assessores_col = assessores_col[[2]] 
 num_assessores_col = length(assessores_col)
 num_assessores_col
@@ -435,7 +435,7 @@ assessores_col = filter(senado_2016, nome %in% assessores_col) %>%
 soma_sal_col = format(sum(assessores_col$remuneracao_total_liquida),big.mark = '.')
 dist_sal_col = summary(assessores_col$remuneracao_total_liquida)
 ####################### Assessores Hélio José #######################
-assessores_he <- readr::read_csv(file="~/Documents/quebra-quebra/src/processa_dados_senado/AnaliseDescritiva/assessores_helio_jose.csv")
+assessores_he <- readr::read_csv(file="../../dados//assessores_helio_jose.csv")
 assessores_he = assessores_he[[2]] 
 num_assessores_he = length(assessores_he)
 num_assessores_he
