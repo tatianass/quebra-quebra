@@ -35,7 +35,7 @@ geraJson <- function(coluna){
   #transformando em milhao
   avg_coluna <- rem_coluna %>%
     group_by(name) %>%
-    mutate(avg_kincaid = mean(kincaid)/1000000) %>%
+    mutate(avg_kincaid = mean(kincaid)) %>%
     ungroup()
   
   #convertendo para json

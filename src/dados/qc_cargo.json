@@ -1,7 +1,7 @@
 [
   {
     "name": "ADVOGADO",
-    "avg_kincaid": 8.4345e-006,
+    "avg_kincaid": 8.4345,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -27,7 +27,7 @@
   },
   {
     "name": "ANALISTA LEGISLATIVO",
-    "avg_kincaid": 0.0007,
+    "avg_kincaid": 666.1265,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -53,7 +53,7 @@
   },
   {
     "name": "AUXILIAR LEGISLATIVO",
-    "avg_kincaid": 0,
+    "avg_kincaid": 15.4519,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -79,7 +79,7 @@
   },
   {
     "name": "CARGO EM COMISSÃO",
-    "avg_kincaid": 0.0002,
+    "avg_kincaid": 154.7349,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -105,7 +105,7 @@
   },
   {
     "name": "CARGO ISOLADO",
-    "avg_kincaid": 1.3725e-006,
+    "avg_kincaid": 1.3725,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -131,7 +131,7 @@
   },
   {
     "name": "CONSULTOR LEGISLATIVO",
-    "avg_kincaid": 0.0001,
+    "avg_kincaid": 102.2171,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -157,7 +157,7 @@
   },
   {
     "name": "IPC ",
-    "avg_kincaid": 2.4957e-006,
+    "avg_kincaid": 2.4957,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -183,7 +183,7 @@
   },
   {
     "name": "NaN",
-    "avg_kincaid": 3.7872e-007,
+    "avg_kincaid": 0.3787,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -209,7 +209,7 @@
   },
   {
     "name": "SECRETÁRIO PARLAMENTAR",
-    "avg_kincaid": 1.4214e-006,
+    "avg_kincaid": 1.4214,
     "speeches": [
       {
         "d": "2013-12-31",
@@ -235,7 +235,7 @@
   },
   {
     "name": "TECNICO LEGISLATIVO",
-    "avg_kincaid": 0.0006,
+    "avg_kincaid": 623.8386,
     "speeches": [
       {
         "d": "2013-12-31",
