@@ -23,17 +23,19 @@ geraJson <- function(coluna){
   colnames(data_chart) <- c("name", "ano", "remuneracao_total_liquida")
   
   #gerando remuneração por coluna e por ano
+  #transformando em milhao
   rem_coluna <- data_chart %>%
     group_by(ano, name) %>%
-    summarize(remuneracao = sum(remuneracao_total_liquida))
+    summarize(remuneracao = sum(remuneracao_total_liquida)/1000000)
   
   #renomeando para ser usado no gráfico
   colnames(rem_coluna) <- c("d", "name", "kincaid")
   
   #gerando remuneração média
+  #transformando em milhao
   avg_coluna <- rem_coluna %>%
     group_by(name) %>%
-    mutate(avg_kincaid = mean(kincaid)) %>%
+    mutate(avg_kincaid = mean(kincaid)/1000000) %>%
     ungroup()
   
   #convertendo para json
