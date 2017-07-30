@@ -45,8 +45,8 @@ senado_recente <- data[data$ano==ano_max,]
 remuneracao_total_liquida <- sum(data$remuneracao_total_liquida, na.rm=T)
 
 
-topSalarios <- function(salariosAgregados, column_ref, keeps) {
-  topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:10],]
+topSalarios <- function(salariosAgregados, column_ref, keeps, size) {
+  topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:size],]
   rownames(topSalarios) <- NULL
   colnames(topSalarios) <- keeps
   return(topSalarios)
@@ -54,7 +54,7 @@ topSalarios <- function(salariosAgregados, column_ref, keeps) {
 
 keeps <- c("Nome","Cargo","Especialidade","Situação","Mês","Ano","Ano de Admissão","Licença-Prêmio* (R$)")
 salariosAgregados <- aggregate(licenca_premio_s~nome+cargo+especialidade+situacao+mes+ano+ano_de_admissao, FUN=sum, data)
-top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$licenca_premio_s, keeps)
+top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$licenca_premio_s, keeps, 10)
 
 gasto_de_referencia <- sum(top_servidores_licenca_premio$`Licença-Prêmio* (R$)`)
 
@@ -300,7 +300,7 @@ Na tabela seguinte, mostra os meses em que os servidores na situação APOSENTAD
 ```{r top_salarios_aposentados, echo=FALSE}
 keeps <- c("Nome","Cargo","Especialidade","Mês","Ano","Remuneração com Desconto (R$)")
 salariosAgregados <- aggregate(remuneracao_total_liquida~nome+cargo+especialidade+mes+ano, FUN=sum, aposentados_totais)
-top_servidores_aposentados <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total_liquida, keeps)
+top_servidores_aposentados <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total_liquida, keeps, 10)
 kable(top_servidores_aposentados)
 ```
 
@@ -333,26 +333,19 @@ Fonte:
 * **Quais são os gastos do Senado com Licença-Prêmio?**
 
 ```{r licenca_premio, echo=FALSE, fig.width=5, fig.height=3}
-topSalariosFunc <- function(salariosAgregados, column_ref, title) {
-  topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:4],]
-  rownames(topSalarios) <- NULL
-  colnames(topSalarios) <- title
-  return(topSalarios)
-}
-
 ratio <- 10^6
 
 #LICENÇA PRÊMIO POR CARGO TODOS OS ANOS
 salariosAgregados <- aggregate(licenca_premio_s~cargo, FUN=sum, data)
 keeps <- c("cargo","remuneracao")
-top_licenca_cargo_todos <- topSalariosFunc(salariosAgregados, salariosAgregados$licenca_premio_s, keeps)
+top_licenca_cargo_todos <- topSalarios(salariosAgregados, salariosAgregados$licenca_premio_s, keeps, 4)
 top_licenca_cargo_todos$remuneracao <- top_licenca_cargo_todos$remuneracao/ratio
 top_licenca_cargo_todos <- mutate(top_licenca_cargo_todos, data="Todos os Anos")
 
 #LICENÇA PRÊMIO POR CARGO NO ANO DE REFERÊNCIA MAIS RECENTE
 salariosAgregados <- aggregate(licenca_premio_s~cargo, FUN=sum, senado_recente)
 keeps <- c("cargo","remuneracao")
-top_licenca_cargo_recente <- topSalariosFunc(salariosAgregados, salariosAgregados$licenca_premio_s, keeps)
+top_licenca_cargo_recente <- topSalarios(salariosAgregados, salariosAgregados$licenca_premio_s, keeps, 4)
 top_licenca_cargo_recente$remuneracao <- top_licenca_cargo_recente$remuneracao/ratio
 top_licenca_cargo_recente <- mutate(top_licenca_cargo_recente, data=ano_max)
 
@@ -387,8 +380,8 @@ Na Tabela seguinte, mostra-se a lista dos dez servidores que mais se beneficiara
 
 ```{r top_licenca_premio, echo=FALSE, fig.width=5, fig.height=3}
 keeps <- c("Nome","Cargo","Especialidade","Mês","Ano","Ano de Admissão","Licença-Prêmio* (R$)")
-salariosAgregados <- aggregate(licenca_premio_s~nome+cargo+especialidade+mes+ano+ano_de_admissao, FUN=sum, aposentados_totais)
-top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total_liquida, keeps)
+salariosAgregados <- aggregate(licenca_premio_s~nome+cargo+especialidade+mes+ano+ano_de_admissao, FUN=sum, data)
+top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$licenca_premio_s, keeps, 10)
 
 kable(top_servidores_licenca_premio)
 ```
