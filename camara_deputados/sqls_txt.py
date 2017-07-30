@@ -1,7 +1,7 @@
 import glob
 
 def getDados(line):
-	return line[200:-3]
+	return line[207:-3]
 
 with open("data/camara_dados.txt", "w", encoding="utf-8") as txtfile:
 	for filename in glob.glob('data/*.sql'):
