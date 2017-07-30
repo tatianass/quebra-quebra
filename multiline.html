@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR" ng-app="app">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bubble.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/legenda.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!-- AngularJS -->
+    <script src="assets/js/angular.min.js"></script>
+    <script src="assets/js/angular-locale_pt-br.js"></script>
+    <!-- Model -->
+    <script type="text/javascript" src="angular/model/app.js"></script>
+    <script type="text/javascript" src="angular/constants.js"></script>
+    <!-- Service -->
+    <script type="text/javascript" src="angular/service/d3Service.js"></script>
+    <!-- Directive -->
+    <script type="text/javascript" src="angular/directive/d3Chart.js"></script>
+    <script type="text/javascript" src="angular/directive/d3BubbleChart.js"></script>
+    <!-- Controller -->
+    <script type="text/javascript" src="angular/controller/d3Controller.js"></script>
+</head>
+
+<body>
+    <div class="container" data-ng-controller="d3Controller as d3Ctrl">
+        <div class="row">
+            <div class="col-sm-10" id="charts">
+                <d3-chart dados="d3Ctrl.dadosMultiline"></d3-chart>
+                <div id="chart" class="chart"></div>
+            </div>
+            <div class="col-sm-2">
+                <div>
+                    <input type="text" id="filterOn" />
+                    <button id="search">search</button>
+                </div>
+                <div id="filteredList"></div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/d3.min.js"></script>
+</body>
+
+</html>

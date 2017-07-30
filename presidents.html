@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <link rel="stylesheet" type="text/css" href="assets/css/content-wide.css" media="all">
+    <link rel="stylesheet" type="text/css" href="assets/css/zone-accent.css" media="screen" class="contrast">
+    <link rel="stylesheet" type="text/css" href="assets/css/base-typography.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="assets/css/top-navigation.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/tag-badging.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/sprites.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/series-component.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/page-toolbox.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/header-local-info.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/content-actions.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/badge.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/shame.css">
+</head>
+
+<body class="interactive content-wide">
+    <script src="assets/js/jquery.js"></script>
+    <script>
+    var jQ = jQuery.noConflict();
+    jQ.ajaxSetup({
+        cache: true
+    });
+    </script>
+    <div id="wrapper">
+        <div id="box">
+            <div id="content">
+                <div id="interactive-content">
+                    <div id="interactive" class="flash">
+                        <script type="text/underscore" id="gia-sotu-presidentTemplate">
+                            <h3>
+                                <span>
+                                <%= ranking %>.
+                                </span>
+                                <%= president.name %>
+                            </h3>
+                            <div class="gia-sotu-note-text">Média de remuneração</div>
+                            <div class="gia-sotu-president-kincaid">
+                                <%= president.avg_kincaid %>
+                            </div>
+                            <div class="gia-sotu-speech-years">
+                            </div>
+                        </script>
+                        <script type="text/underscore" id="gia-sotu-popupTemplate">
+                            <h3><%= speech.president.name %></h3>
+                            <div class="gia-sotu-popup-date">
+                                <%= helpers.formatDate(speech.date) %>
+                            </div>
+                            <div class="gia-sotu-popup-kincaid">
+                                <%= helpers.formatKincaid(speech.kincaid) %>
+                                    <div class="gia-sotu-popup-kincaid-text">
+                                        Média da remuneração
+                                    </div>
+                            </div>
+                        </script>
+                        <div id="gia-sotu"></div>
+                        <link rel="stylesheet" type="text/css" href="assets/css/main.css">
+                        <script src="assets/js/jquery.js"></script>
+                        <script src="assets/js/d3_president.js"></script>
+                        <script src="assets/js/underscore-min.js"></script>
+                        <script src="assets/js/main.js"></script>
+                    </div>
+                    <script>
+                    (function() {
+                        var interactive = jQ('#interactive iframe');
+                        if (interactive.length > 0) {
+                            var qs = window.location.search;
+                            interactive[0].src = interactive[0].src + qs;
+                        }
+                    })();
+                    </script>
+                </div>
+            </div>
+            <div id="wide-comment-wrapper">
+                <span class="trackable-component component-wrapper eight-col" data-component="Interactive:content-wide promo Google ads for content wide template:Advertiser links for article page">
+                    <div id="advertiser-container">
+                        <div id="google-ads-container" class="eight-col edge component advertiser-links" style="display: none;">
+                            
+                        </div>
+                    </div> 
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+{
+    "columns": [
+    {
+        "date": 20111001,
+        "New York": 63.4,
+        "San Francisco": 62.7
+    },
+    {
+        "date": 20111002,
+        "New York": 58.0,
+        "San Francisco": 59.9
+    },
+    {
+        "date": 20111003,
+        "New York": 53.3,
+        "San Francisco": 59.1
+    },
+    {
+        "date": 20111004,
+        "New York": 55.7,
+        "San Francisco": 58.8
+    },
+    {
+        "date": 20111005,
+        "New York": 64.2,
+        "San Francisco": 58.7
+    },
+    {
+        "date": 20111006,
+        "New York": 58.8,
+        "San Francisco": 57.0
+    },
+    {
+        "date": 20111007,
+        "New York": 57.9,
+        "San Francisco": 56.7
+    },
+    {
+        "date": 20111008,
+        "New York": 61.8,
+        "San Francisco": 56.8
+    },
+    {
+        "date": 20111009,
+        "New York": 69.3,
+        "San Francisco": 56.7
+    },
+    {
+        "date": 20111010,
+        "New York": 71.2,
+        "San Francisco": 60.1
+    },
+    {
+        "date": 20111011,
+        "New York": 68.7,
+        "San Francisco": 61.1
+    },
+    {
+        "date": 20111012,
+        "New York": 61.8,
+        "San Francisco": 61.5
+    }]
+}

@@ -1,0 +1,7 @@
+.series-navigation{overflow:hidden;}
+.relative-series-navigation{float:right;}
+.series-navigation{padding-bottom:9px;margin-bottom:5px;border-bottom-style:solid;border-bottom-width:1px;margin-top:2px;}
+.series-navigation h4{float:left;font-weight:normal;}
+.more-in-series .bd{background:#FFF url([absolute.path]images/simplesite-inner-bg.gif) repeat-y;overflow:hidden;zoom:1;margin-bottom:10px;}
+.more-in-series .ft{border-top-style:solid;}
+.more-in-series .subscribe-feeds{margin-top:5px;}

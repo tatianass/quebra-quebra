@@ -1,0 +1,28 @@
+.share-links{float:right;width:140px;margin-top:5px;overflow:hidden;list-style:none;}
+.share-links.facebook-quiz{float:left;padding-bottom:15px;}
+.share-links .tweet-link{background-image:url(images/icon_twitter.gif);background-repeat:no-repeat;padding-left:20px;}
+.share-links .share-count{display:inline-block;padding-right:3px;padding-top:1px;vertical-align:top;vertical-align:bottom;}
+.full-line{margin-bottom:5px!important;}
+.share-links .facebook-share{display:block;}
+#article-toolbox .facebook-share{display:none;}
+.facebook-share{overflow:hidden;font-size:.88em;font-family:arial,sans-serif;}
+.facebook-share-btn,.facebook-share-count{float:left;}
+.facebook-share-btn,.facebook-share-btn:active{background-color:#edeef4;border-width:1px;border-style:solid;border-color:#cdd5e5;color:#3b4d7b;border-radius:3px;padding:2px 4px;height:14px;cursor:pointer;position:relative;}
+.facebook-share-btn:hover{text-decoration:none;background-color:#edeef4;border-color:#9dacce;}
+.facebook-share-icon{background-image:url([absolute.path]images/btn_facebook_12x12.png);background-repeat:no-repeat;background-position:0 1px;display:inline;width:13px;height:13px;float:left;margin:0 2px 1px 1px;}
+.facebook-share-label{line-height:1.3;color:#3b5998;}
+.facebook-share-btn:hover .facebook-share-label{text-decoration:none!important;}
+.facebook-share-count{background-color:#fff;border-width:1px;border-style:solid;border-color:#cdd5e5;margin-left:6px;margin-top:1px;padding:1px 2px;position:relative;height:14px;}
+.facebook-share-count i,.facebook-share-count u{border:solid transparent;border-right-color:#D7D7D7;top:4px;left:-5px;display:block;position:absolute;height:1px;border-width:4px 5px 4px 0;}
+.facebook-share-count i{left:-3px;z-index:5;border-right-color:white;}
+.share-links .email{background-image:url([absolute.path]images/bg-email.png);background-repeat:repeat-x;border:1px solid #ccc;border-radius:3px;width:60px;height:18px;}
+.share-links .email .send-email{color:#333;line-height:1.5;width:60px;float:left;}
+.share-links .email:hover{border:1px solid #a3a3a3;text-decoration:underline;}
+.email:active{color:#fff;}
+.email .trail-icon{margin:0 3px -2px 4px;}
+.google-plus{margin-top:-2px!important;margin-bottom:2px!important;}
+.full-line a:focus,.full-line a:active{color:#fff!important;}
+#content-actions .linked-in .IN-widget .IN-right{color:#333!important;font-weight:normal!important;}
+.social-cta-overlay-content{padding:10px;border:solid 2px #EDEDED;}
+.social-cta-iframe{height:280px;border:none;}
+.social-cta-hide-forever{display:inline-block;margin-right:10px;}

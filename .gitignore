@@ -1,6 +1,0 @@
-.DS_Store
-camara_deputados/data/*.sql
-camara_deputados/data/outros_inserts*.txt
-camara_deputados/data/camara_dados.txt
-html2csv/output
-senado_federal/dados/html/remuneracao*

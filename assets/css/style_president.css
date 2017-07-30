@@ -1,0 +1,137 @@
+#gia-header div,
+#gia-header h1,
+#gia-header p,
+#gia-header ul,
+#gia-header li {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+body {
+    line-height: 1;
+    font-family: Arial, sans-serif;
+}
+
+#article-header {
+    display: none;
+}
+
+#gia-header {
+    width: 780px;
+    margin: 0 auto;
+}
+
+#gia-header .clearfix {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+#gia-header #social-tools-container {
+    display: block;
+    width: 420px;
+    min-height: 20px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+#gia-header #social-tools-container ul#content-actions {
+    float: none;
+    width: 420px;
+}
+
+#gia-header #social-tools-container ul#content-actions li {
+    display: block;
+    float: left;
+    width: 100px;
+    margin: 0 20px;
+}
+
+#gia-header h1 {
+    margin-bottom: 8px;
+    font-family: Georgia, Times, serif;
+    font-size: 36px;
+    line-height: 1.1em;
+    text-align: center;
+}
+
+#gia-header p {
+    font-size: 15px;
+    line-height: 1.4em;
+    text-align: center;
+}
+
+div.user-comment-trail div.trail-text:before {
+    content: '';
+    padding-right: 0px;
+}
+
+[data-component="ngw-optin"] {
+    display: none !important;
+}
+
+.launch-message {
+    display: none !important;
+    background-color: #005689;
+    color: #ffffff;
+    padding-left: 10px;
+    font-size: 16px;
+    height: 50px;
+    font-family: georgia, serif;
+    margin-bottom: 6px
+}
+
+.launch-message-logo {
+    display: none;
+    float: left;
+    height: 50px;
+    margin-right: 10px;
+    margin-left: -4px;
+}
+
+.launch-message-text {
+    display: inline-block;
+    padding-top: 16px;
+}
+
+.launch-message a {
+    color: #ffffff;
+}
+
+.launch-message .launch-arrow {
+    height: 21px;
+    margin-top: -5px;
+    margin-left: 6px;
+    float: right;
+}
+
+.launch-message .launch-button {
+    border: 0.1rem solid rgba(255, 255, 255, 0.3);
+    border-top-color: rgba(255, 255, 255, 0.298039);
+    border-top-style: solid;
+    border-top-width: 0.1rem;
+    border-right-color: rgba(255, 255, 255, 0.298039);
+    border-right-style: solid;
+    border-right-width: 0.1rem;
+    border-bottom-color: rgba(255, 255, 255, 0.298039);
+    border-bottom-style: solid;
+    border-bottom-width: 0.1rem;
+    border-left-color: rgba(255, 255, 255, 0.298039);
+    border-left-style: solid;
+    border-left-width: 0.1rem;
+    -webkit-border-radius: 100rem;
+    border-radius: 100rem;
+    padding: 8px 8px 4px 14px;
+    display: inline-block;
+    margin-top: 7px;
+    margin-left: 10px;
+    font-size: 12px;
+    font-family: arial, sans-serif;
+}
