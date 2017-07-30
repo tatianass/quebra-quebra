@@ -1,9 +1,9 @@
-geraJson <- function(coluna, tipo){
+geraJsonQC <- function(coluna, tipo){
   data_chart_cols <- c(coluna, "ano", "remuneracao_total_liquida")
-  data_chart_cols <- match(data_chart_cols,names(data))
+  data_chart_cols <- match(data_chart_cols,names(qc))
   
   #selecionando colunas a se trabalhar
-  data_chart <- data %>%
+  data_chart <- qc %>%
     select(data_chart_cols)
   
   #renomeando pra fazer o group_by
@@ -49,5 +49,35 @@ geraJson <- function(coluna, tipo){
   
   #qc = quanto custa
   write(json_data, paste(paste("../dados/qc/qc_", paste(tipo,coluna,sep = "_"), sep = ""), ".json", sep = ""))                         
+  
+}
+
+geraJsonMR <- function(coluna, tipo){
+  data_chart_cols <- c(coluna, "ano", "remuneracao_total_liquida")
+  data_chart_cols <- match(data_chart_cols,names(mr))
+  
+  #selecionando colunas a se trabalhar
+  data_chart <- mr %>%
+    select(data_chart_cols)
+  
+  #renomeando pra fazer o group_by
+  colnames(data_chart) <- c("name", "ano", "remuneracao_total_liquida")
+  
+  #gerando remuneração por coluna e por ano
+  #transformando em milhao
+  rem_coluna <- data_chart %>%
+    group_by(name) %>%
+    summarize(remuneracao = sum(remuneracao_total_liquida)/1000000) %>%
+    ungroup() %>%
+    select(name, remuneracao)
+  
+  #renomeando para ser usado no gráfico
+  colnames(rem_coluna) <- c("area", "value")
+  
+  #transformação
+  json_data <- toJSON(rem_coluna, pretty = T)
+  
+  #mr = mais rico
+  write(json_data, paste(paste("../dados/mr/mr_", paste(tipo,coluna,sep = "_"), sep = ""), ".json", sep = ""))                         
   
 }
