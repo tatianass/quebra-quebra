@@ -300,10 +300,8 @@ Na tabela seguinte, mostra os meses em que os servidores na situação APOSENTAD
 ```{r top_salarios_aposentados, echo=FALSE}
 keeps <- c("Nome","Cargo","Especialidade","Mês","Ano","Remuneração com Desconto (R$)")
 salariosAgregados <- aggregate(remuneracao_total_liquida~nome+cargo+especialidade+mes+ano, FUN=sum, aposentados_totais)
-top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total_liquida, keeps)
-
-library("knitr")
-kable(top_servidores_licenca_premio)
+top_servidores_aposentados <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total_liquida, keeps)
+kable(top_servidores_aposentados)
 ```
 
 
@@ -388,6 +386,10 @@ Na Tabela seguinte, mostra-se a lista dos dez servidores que mais se beneficiara
 * **Licença-Prêmio (R$):** Valor de Licença-Prêmio pago pelo Senado ao servidor em reais.
 
 ```{r top_licenca_premio, echo=FALSE, fig.width=5, fig.height=3}
+keeps <- c("Nome","Cargo","Especialidade","Mês","Ano","Ano de Admissão","Licença-Prêmio* (R$)")
+salariosAgregados <- aggregate(licenca_premio_s~nome+cargo+especialidade+mes+ano+ano_de_admissao, FUN=sum, aposentados_totais)
+top_servidores_licenca_premio <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total_liquida, keeps)
+
 kable(top_servidores_licenca_premio)
 ```
 *Valor bruto de Licença-Prêmio (sem descontos).
