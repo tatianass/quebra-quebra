@@ -25,6 +25,8 @@ if soup.find('table') is None:
     exit()
 
 vinculo = soup.find('table').find_all('td')[0].text.strip().split(':')[1]
+vinculo = unidecode(vinculo)
+vinculo = vinculo.encode("ascii")
 cargo = soup.find('table').find_all('td')[2].text.strip().split(':')[1]
 cargo = unidecode(cargo)
 cargo = cargo.encode("ascii")
@@ -67,4 +69,4 @@ atributos = {
     'outros_vantagens': outros_vantagens
 }
 
-print("INSERT INTO folha (mes, ano, cargo, vinculo, nome, remuneracao_fixa, vantagens_pessoais, remuneracao_eventual, abono_permanencia, descontos, outros_diarias, outros_auxilios, outros_vantagens) VALUES (%(mes)s, %(ano)s, \"%(cargo)s\", \"%(vinculo)s\", \"%(nome)s\", %(remuneracao_fixa)s, %(vantagens_pessoal)s, %(remuneracao_eventual)s, %(abono_permanencia)s, %(descontos)s, %(outros_diarias)s, %(outros_auxilios)s, %(outros_vantagens)s);" % atributos)
+print("INSERT INTO folha_camara (mes, ano, cargo, vinculo, nome, remuneracao_fixa, vantagens_pessoais, remuneracao_eventual, abono_permanencia, descontos, outros_diarias, outros_auxilios, outros_vantagens) VALUES (%(mes)s, %(ano)s, \"%(cargo)s\", \"%(vinculo)s\", \"%(nome)s\", %(remuneracao_fixa)s, %(vantagens_pessoal)s, %(remuneracao_eventual)s, %(abono_permanencia)s, %(descontos)s, %(outros_diarias)s, %(outros_auxilios)s, %(outros_vantagens)s);" % atributos)
