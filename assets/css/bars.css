@@ -23,4 +23,9 @@
     border: 1px solid #6F257F;
     padding: 14px;
     text-align: center;
+    font-size: 10px;
+}
+
+.tick {
+    font-size: 8px;
 }

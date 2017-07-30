@@ -1,5 +1,5 @@
 var svg = d3.select("svg"),
-    margin = { top: 20, right: 20, bottom: 30, left: 200 },
+    margin = { top: 20, right: 20, bottom: 30, left: 260 },
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -11,7 +11,7 @@ var y = d3.scaleBand().range([height, 0]);
 var g = svg.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("assets/data/bars.json", function(error, data) {
+d3.json("assets/dados/bars.json", function(error, data) {
     if (error) throw error;
 
     data.sort(function(a, b) { return a.value - b.value; });
@@ -42,7 +42,7 @@ d3.json("assets/data/bars.json", function(error, data) {
                 .style("left", d3.event.pageX - 50 + "px")
                 .style("top", d3.event.pageY - 70 + "px")
                 .style("display", "inline-block")
-                .html((d.area) + "<br>" + (d.value));
+                .html((d.area) + "<br>" + (d.value) + " Milhões");
         })
         .on("mouseout", function(d) { tooltip.style("display", "none"); });
 });
