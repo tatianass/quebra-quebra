@@ -1,5 +1,5 @@
 ---
-title: "Quem são os mais ricos (parte 2)?"
+title: "Análise da Folha de Pagamento da Câmara"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -36,11 +36,10 @@ data <- mutate(data, remuneracao_total=remuneracao_fixa+vantagens_pessoais+remun
 ano_max <- max(data$ano)
 ano_min <- min(data$ano)
 
+#cor_do_site = "#2c3e50"
+cor_do_site = "primary"
+
 options(scipen=999, OutDec= ",")
-
-camara_recente <- data[data$ano==ano_max,]
-
-remuneracao_total_liquida <- sum(data$remuneracao_total, na.rm=T)
 
 topSalarios <- function(salariosAgregados, column_ref, keeps, size) {
   topSalarios <- salariosAgregados[order(column_ref, decreasing=TRUE)[1:size],]
@@ -65,9 +64,6 @@ remuneracao_recente <- sum(todos_servidores_recente$remuneracao_total)
 remuneracao_deputados <- sum(todos_deputados$remuneracao_total)
 remuneracao_deputados_recente <- sum(todos_deputados_recente$remuneracao_total)
 
-deputados_acima_teto <- todos_deputados[todos_deputados$remuneracao_total>37476.93,]
-deputados_acima_teto_recente <- todos_deputados_recente[todos_deputados_recente$remuneracao_total>37476.93,]
-
 keeps <- c("Nome","Mês","Ano","Remuneração Total (R$)")
 salariosAgregados <- aggregate(remuneracao_total~nome+mes+ano, FUN=sum, todos_deputados)
 top_deputados_todos <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total, keeps, 10)
@@ -87,7 +83,7 @@ Row
 ```{r custo_de_uma_ambulancia}
 valor_de_uma_ambulancia <- 150600
 value <- round(gasto_de_referencia/valor_de_uma_ambulancia, 0)
-valueBox(value, caption="Ambulâncias novas", icon = "fa-car", color="primary", href="http://www.otempo.com.br/cidades/dezenove-ambul%C3%A2ncias-do-samu-est%C3%A3o-paradas-em-galp%C3%A3o-1.1436254")
+valueBox(value, caption="Ambulâncias novas", icon = "fa-ambulance", color=cor_do_site, href="http://www.otempo.com.br/cidades/dezenove-ambul%C3%A2ncias-do-samu-est%C3%A3o-paradas-em-galp%C3%A3o-1.1436254")
 ```
 
 ### bolsas doutorado
@@ -95,7 +91,7 @@ valueBox(value, caption="Ambulâncias novas", icon = "fa-car", color="primary", 
 ```{r bolsa_capes_doutorado}
 bolsa_doutorado <- 2200
 value <- round(gasto_de_referencia/(bolsa_doutorado*48), 0)
-valueBox(value, caption="Alunos de doutorado com Bolsa CAPES por 4 anos", icon = "fa-pencil", color="#2a6592", href="http://www.capes.gov.br/bolsas/valores-de-bolsas")
+valueBox(value, caption="Alunos de doutorado com Bolsa CAPES por 4 anos", icon = "fa-pencil", color=cor_do_site, href="http://www.capes.gov.br/bolsas/valores-de-bolsas")
 ```
 
 ### tratamento cancer
@@ -103,7 +99,7 @@ valueBox(value, caption="Alunos de doutorado com Bolsa CAPES por 4 anos", icon =
 ```{r tratamento_cancer}
 paciente_cancer <- 10476
 value <- round(gasto_de_referencia/paciente_cancer, 0)
-valueBox(value, caption="Atendimentos à pacientes com Câncer", icon = "fa-medkit", color="primary", href="http://www2.inca.gov.br/wps/wcm/connect/agencianoticias/site/home/noticias/2016/ministro-da-saude-anuncia-prioridades-para-a-oncologia")
+valueBox(value, caption="Atendimentos à pacientes com Câncer", icon = "fa-medkit", color=cor_do_site, href="http://www2.inca.gov.br/wps/wcm/connect/agencianoticias/site/home/noticias/2016/ministro-da-saude-anuncia-prioridades-para-a-oncologia")
 ```
 
 ### merenda escolar
@@ -111,7 +107,7 @@ valueBox(value, caption="Atendimentos à pacientes com Câncer", icon = "fa-medk
 ```{r meses_merenda_escolar}
 valor_merenda <- 11.34
 value <- paste(round(gasto_de_referencia/(valor_merenda*10^3), 1), " Mil")
-valueBox(value, caption="Crianças beneficiadas com merenda escolar", icon = "fa-cutlery", color="#2a6592", href="http://agenciabrasil.ebc.com.br/politica/noticia/2017-02/governo-anuncia-reajustes-para-merenda-escolar")
+valueBox(value, caption="Crianças beneficiadas com merenda escolar", icon = "fa-cutlery", color=cor_do_site, href="http://agenciabrasil.ebc.com.br/politica/noticia/2017-02/governo-anuncia-reajustes-para-merenda-escolar")
 ```
 
 ### domestica aposentadoria
@@ -119,7 +115,7 @@ valueBox(value, caption="Crianças beneficiadas com merenda escolar", icon = "fa
 ```{r domestica_aposentadoria}
 domestica_inss <- 120
 value <- paste(round(gasto_de_referencia/(domestica_inss*10^3), 1), "Mil")
-valueBox(value, caption="Domésticas contribuindo para o INSS", icon = "fa-home", color="primary", href="https://www.domesticalegal.com.br/utilidades/tabela-de-inss/")
+valueBox(value, caption="Domésticas contribuindo para o INSS", icon = "fa-home", color=cor_do_site, href="https://www.domesticalegal.com.br/utilidades/tabela-de-inss/")
 ```
 
 ### cestas básicas
@@ -127,7 +123,7 @@ valueBox(value, caption="Domésticas contribuindo para o INSS", icon = "fa-home"
 ```{r cesta_basica}
 cesta_basica <- 432.65
 value <- paste(round(gasto_de_referencia/(cesta_basica*(10^3)), 1), "Mil")
-valueBox(value, caption="Cestas básicas", icon = "fa-shopping-cart", color="#2a6592", href="https://www.dieese.org.br/cesta/")
+valueBox(value, caption="Cestas básicas", icon = "fa-shopping-cart", color=cor_do_site, href="https://www.dieese.org.br/cesta/")
 ```
 
 ## Análise da Camara {.tabset .tabset-fade}
@@ -145,8 +141,6 @@ Os dez servidores que receberam as mais elevadas remunerações, no período de 
 ```{r top_servidores_todos, echo=FALSE}
 kable(top_servidores_todos)
 ```
-
-
 
 
 -----------------------------------------------------------------------
@@ -220,17 +214,8 @@ Fonte:
 
 
 
-
-
-
-
-
-
-
-
-
 ### Deputados mais Remunerados
-```{r}
+```{r, echo=FALSE}
 remuneracao_top_deputados <- sum(top_deputados_todos$`Remuneração Total (R$)`)
 remuneracao_top_deputados_recentes <- sum(top_deputados_recente$`Remuneração Total (R$)`)
 ```
@@ -250,5 +235,85 @@ Seguindo o mesmo cálculo da remuneração total, apresentamos quais dez deputad
 ```{r top_deputados_recente, echo=FALSE}
 kable(top_deputados_recente)
 ```
+
+
+
+
+
+### Teto Constitucional
+```{r prepara_dados_teto_constitucional, echo=FALSE}
+cor_do_site = "#2c3e50"
+teto_constitucional <- 37476.93
+deputados_acima_teto <- todos_deputados[todos_deputados$remuneracao_total > teto_constitucional, ]
+deputados_acima_teto_recente <- todos_deputados_recente[todos_deputados_recente$remuneracao_total > teto_constitucional, ]
+
+servidores_acima_teto <- data[data$remuneracao_total > teto_constitucional, ]
+servidores_acima_teto_recente <- todos_servidores_recente[todos_servidores_recente$remuneracao_total > teto_constitucional, ]
+```
+
+* **Média salarial por cargo e vínculo**
+
+
+```{r plot_media_salarial_por_cargo, echo=FALSE}
+title <- "Média salarial por cargo"
+dados_grafico <- aggregate(remuneracao_total~cargo+vinculo, mean, data=data)
+
+g <- ggplot(dados_grafico, aes(cargo, remuneracao_total, fill=vinculo)) +
+    geom_bar(position = "dodge", stat = "identity") + coord_flip() +
+    labs(y="Remuneração Total (R$)", x="Cargo", title=title) +
+    theme_light()
+
+ggplotly(g)
+```
+
+### Teto 2
+
+* **Quem são os deputados que mais ultrapassaram o teto?**
+
+O teto constitucional definido pelo STF é de R$ `r teto_constitucional`, entretanto, existem `r nrow(deputados_acima_teto)` servidores que já receberam acima desse valor, em `r ano_max` foram `r nrow(deputados_acima_teto_recente)` servidores. O gráfico seguinte mostra quantas vezes os deputados que ultrapassaram o teto, receberam acima disso em `r ano_max` considerando a remuneração total líquida, ou seja, após os descontos dos impostos.
+
+```{r plot_deputados_acima_teto, echo=FALSE}
+title <- paste("Deputados que Ultrapassaram o Teto em ", ano_max)
+dados_grafico <- deputados_acima_teto_recente[,c("nome","remuneracao_total")]
+dados_grafico$remuneracao_total <- 1
+dados_grafico <- aggregate(remuneracao_total~nome, sum, data=dados_grafico)
+dados_grafico <- dados_grafico[order(dados_grafico$remuneracao_total, decreasing=TRUE),]
+
+g <- ggplot(dados_grafico, aes(x=nome, remuneracao_total)) +
+  geom_bar(stat = "identity", fill=cor_do_site) + coord_flip() +
+  labs(y="Quantidade de vezes", x="nome", title=title) +
+  theme_light()
+
+ggplotly(g)
+```
+
+### Teto 3
+
+* **Quem são os servidores que mais ultrapassaram o teto?**
+
+Entretanto, existem servidores que receberam ainda mais vezes acima do teto constitucional. No gráfico seguinte, mostra-se os dez servidores que mais receberam acima do teto constitucional entre os anos `r ano_min` e `r ano_max`.
+
+```{r plot_servidores_acima_teto, echo=FALSE}
+title <- paste("Servidores que mais Ultrapassaram o Teto entre", ano_min, "e", ano_max)
+dados_grafico <- servidores_acima_teto[,c("nome","remuneracao_total", "cargo")]
+dados_grafico$remuneracao_total <- 1
+dados_grafico <- aggregate(remuneracao_total~nome+cargo, sum, data=dados_grafico)
+dados_grafico <- dados_grafico[order(dados_grafico$remuneracao_total, decreasing=TRUE)[1:10],]
+
+g <- ggplot(dados_grafico, aes(x=nome, remuneracao_total, fill=cargo)) +
+  geom_bar(stat = "identity") + coord_flip() +
+  labs(y="Quantidade de vezes", x="", title=title) +
+  theme_light()
+ggplotly(g)
+```
+
+
+
+
+Fonte:
+
+[Para STF, servidores podem superar teto com acúmulo de cargo](http://www1.folha.uol.com.br/poder/2017/04/1879189-para-stf-servidores-podem-superar-teto-com-acumulo-de-cargo.shtml)
+
+
 
 
