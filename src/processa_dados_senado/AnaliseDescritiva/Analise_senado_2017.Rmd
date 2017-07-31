@@ -25,7 +25,7 @@ library(tidyverse)
 #Autor: Ítalo de Pontes Oliveira e Leandro Balby Marinho                                              #
 #Os CSV's são gerados mensalmente, assim, para cada arquivo de dados, uma nova variável é atribuida   #
 #######################################################################################################
-data_filename = "/home/italo/workspace/dados_senado.csv"
+data_filename = "~/Documents/quebra-quebra/senado_federal/dados/dados_senado.csv"
 
 #######################################################################################################
 #Por convensão, decidiu-se utilizar o formato de arquivo CSV, logo o separador sempre será a vírgula  #
@@ -391,7 +391,7 @@ senado_2016 <- data[data$ano==2016,]
 
 ```
 
-Além de salários e benefícios generosos, nossos senadores ainda contam com uma equipe de assessores. Até aí tudo bem, afinal é importante que haja auxílio administrativo para que nossos parlamentares possam se concentrar em tarefas mais importantes. O problema é quando o número de assessores é grande e desafia o bom senso. Abaixo mostramos o número de assessores por Senador. Como assessores consideramos: efetivos, comissionados, terceirizados, estagiários e escritório de apoio. Em todos os casos o maior número de assessores é de comissionados.
+Além de salários e benefícios generosos, nossos senadores ainda podem contar com uma equipe de assessores. Até aí tudo bem, afinal é importante que haja auxílio administrativo para que nossos parlamentares possam se concentrar nas tarefas mais importantes. O problema é quando o número de assessores é grande e desafia o bom senso. Abaixo mostramos o número de assessores por Senador. Como assessores consideramos: efetivos, comissionados, terceirizados, estagiários e escritório de apoio. Em todos os casos o maior número de assessores é de comissionados.
 
 
 ```{r assessores, echo=FALSE, cache=FALSE}
@@ -409,8 +409,6 @@ ggplotly(g)
 
 ```
 
-Na tabela abaixo mostramos o custo em 2016 dos top-3 senadores com maior número de assessores considerando somente: comissionados, efetivos e escritório de apoio. O custo total somado desses três senadores em 2016 só em assessores foi de quase R$ 12 milhões de reais!! 
-
 
 ```{r,echo=FALSE, include=FALSE}
 qtde_assessores <- readr::read_csv(file="../../dados/assessores/qtde_assessores.csv")
@@ -419,11 +417,9 @@ top3_senadores = qtde_assessores[c(1,2,3),c(1,2,3,6)]
 ####################### Assessores João Alberto #######################
 assessores_ja <- readr::read_csv(file="../../dados/assessores/assessores_joao_alberto.csv")
 assessores_ja = assessores_ja[[2]] 
-num_assessores_ja = length(assessores_ja)
-num_assessores_ja
 assessores_ja = filter(senado_2016, nome %in% assessores_ja) %>%
   arrange(desc(remuneracao_total_liquida))
-soma_sal_ja = format(sum(assessores_ja$remuneracao_total_liquida),big.mark = '.')
+soma_sal_ja = sum(assessores_ja$remuneracao_total_liquida)
 dist_sal_ja = summary(assessores_ja$remuneracao_total_liquida)
 ####################### Assessores João Alberto #######################
 assessores_col <- readr::read_csv(file="../../dados/assessores/assessores_collor.csv")
@@ -432,37 +428,36 @@ num_assessores_col = length(assessores_col)
 num_assessores_col
 assessores_col = filter(senado_2016, nome %in% assessores_col) %>%
   arrange(desc(remuneracao_total_liquida))
-soma_sal_col = format(sum(assessores_col$remuneracao_total_liquida),big.mark = '.')
+soma_sal_col = sum(assessores_col$remuneracao_total_liquida)
 dist_sal_col = summary(assessores_col$remuneracao_total_liquida)
 ####################### Assessores Hélio José #######################
 assessores_he <- readr::read_csv(file="../../dados/assessores/assessores_helio_jose.csv")
 assessores_he = assessores_he[[2]] 
-num_assessores_he = length(assessores_he)
-num_assessores_he
-assessores_he = filter(senado_2016, nome %in% assessores_he) %>%
-  arrange(desc(remuneracao_total_liquida))
-soma_sal_he = format(sum(assessores_he$remuneracao_total_liquida),big.mark = '.')
+assessores_he = filter(senado_2016, nome %in% assessores_he) %>%  arrange(desc(remuneracao_total_liquida))
+soma_sal_he = sum(assessores_he$remuneracao_total_liquida)
 dist_sal_he = summary(assessores_he$remuneracao_total_liquida)
-
-custo_assessores_2016 = c(soma_sal_ja,soma_sal_col,soma_sal_he)
+custo_total = soma_sal_ja + soma_sal_col + soma_sal_he
+custo_assessores_2016 = c(soma_sal_ja,soma_sal_col,soma_sal_he) %>% format(big.mark='.')
 media_assessores_2016 = c(dist_sal_ja[4],dist_sal_col[4],dist_sal_he[4])
 top3_senadores = mutate(top3_senadores,Custo=custo_assessores_2016)
 colnames(top3_senadores) = c("Senador", "Efetivos", "Comissionados", "Esc. Apoio", "Custo (R$)")
 
 ```
 
+Na tabela abaixo mostramos o custo em 2016 dos top-3 senadores com maior número de assessores considerando somente: comissionados, efetivos e escritório de apoio. O custo total somado desses três senadores em 2016 só em assessores foi de quase R$ `r round(custo_total/10^6, 1)` milhões. 
+
 ```{r,echo=FALSE}
 kable(top3_senadores)
 ```
 
-Na tabela abaixo mostramos os top-1 assessores em termos de remuneração líquida para cada um dos senadores na tabela acima.
+Na tabela abaixo mostramos as maiores remunerações recebidas  em um certo mês para assessores de cada um dos senadores na tabela acima.
 
 ```{r,echo=FALSE}
 top1_ja = assessores_ja[1,c(2,3,55)]
 top1_col = assessores_col[1,c(2,3,55)]
 top1_he = assessores_he[1,c(2,3,55)]
-top3_assessores = rbind(top1_ja,top1_col) %>% 
-  rbind(top1_he) 
+top3_assessores = rbind(top1_ja,top1_col) 
+top3_assessores = rbind(top3_assessores,top1_he) 
 top3_assessores = cbind(top3_senadores[1],top3_assessores)
 top3_assessores[,4] = format(top3_assessores[,4],big.mark = '.',decimal.mark = ',')
 colnames(top3_assessores) = c("Senador","Assessor","Vínculo","Remuneração (R$)")
