@@ -49,27 +49,35 @@ topSalarios <- function(salariosAgregados, column_ref, keeps, size) {
   return(topSalarios)
 }
 
-keeps <- c("Nome","Cargo","Vnculo","Mês","Ano","Remuneraço Total (R$)")
+keeps <- c("Nome","Cargo","Vnculo","Mês","Ano","Remuneração Total (R$)")
 salariosAgregados <- aggregate(remuneracao_total~nome+cargo+vinculo+mes+ano, FUN=sum, data)
 top_servidores_todos <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total, keeps, 10)
 
-gasto_de_referencia <- sum(top_servidores_todos$`Remuneraço Total (R$)`)
+todos_servidores_recente <- data[data$ano==ano_max,]
+
+gasto_de_referencia <- sum(top_servidores_todos$`Remuneração Total (R$)`)
 
 todos_deputados <- filter(data, grepl("DEPUTADO", cargo))
 todos_deputados_recente <- todos_deputados[todos_deputados$ano==ano_max,]
 
+remuneracao_total <- sum(data$remuneracao_total)
+remuneracao_recente <- sum(todos_servidores_recente$remuneracao_total)
+remuneracao_deputados <- sum(todos_deputados$remuneracao_total)
+remuneracao_deputados_recente <- sum(todos_deputados_recente$remuneracao_total)
+
 deputados_acima_teto <- todos_deputados[todos_deputados$remuneracao_total>37476.93,]
 deputados_acima_teto_recente <- todos_deputados_recente[todos_deputados_recente$remuneracao_total>37476.93,]
 
-salariosAgregados <- aggregate(remuneracao_total~nome+cargo+vinculo+mes+ano, FUN=sum, todos_deputados)
+keeps <- c("Nome","Mês","Ano","Remuneração Total (R$)")
+salariosAgregados <- aggregate(remuneracao_total~nome+mes+ano, FUN=sum, todos_deputados)
 top_deputados_todos <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total, keeps, 10)
 
-salariosAgregados <- aggregate(remuneracao_total~nome+cargo+vinculo+mes+ano, FUN=sum, todos_deputados_recente)
+salariosAgregados <- aggregate(remuneracao_total~nome+mes+ano, FUN=sum, todos_deputados_recente)
 top_deputados_recente <- topSalarios(salariosAgregados, salariosAgregados$remuneracao_total, keeps, 10)
 
 ```
 
-**Para se ter ideia dos gastos da Cmara com folha de pagamento dos servidores, só em `r ano_max`, o que foi pago em Licença-Prêmio para apenas dez servidores seria equivalente à:**
+**Para se ter ideia dos gastos da Câmara com folha de pagamento dos servidores, só em `r ano_max`, o que foi pago aos dez deputados que mais receberam em só mês nesse ano, seria o equivalente à investir em:**
 
 Row
 -----------------------------------------------------------------------
@@ -114,13 +122,133 @@ value <- paste(round(gasto_de_referencia/(domestica_inss*10^3), 1), "Mil")
 valueBox(value, caption="Domésticas contribuindo para o INSS", icon = "fa-home", color="primary", href="https://www.domesticalegal.com.br/utilidades/tabela-de-inss/")
 ```
 
-### asfaltar rodovias
+### cestas básicas
 
-```{r asfaltar_rodovias}
-rodovia_quilometro <- 3468000
-value <- round(gasto_de_referencia/rodovia_quilometro, 1)
-valueBox(value, caption="Quilomêtros de rodovias asfaltadas", icon = "fa-road", color="#2a6592", href="https://189.9.128.64/download/servicos/custo-medio-gerencial/custos-medios-ger.novembro-14.pdf")
+```{r cesta_basica}
+cesta_basica <- 432.65
+value <- paste(round(gasto_de_referencia/(cesta_basica*(10^3)), 1), "Mil")
+valueBox(value, caption="Cestas básicas", icon = "fa-shopping-cart", color="#2a6592", href="https://www.dieese.org.br/cesta/")
+```
+
+## Análise da Camara {.tabset .tabset-fade}
+
+### Gastos da Câmara
+
+* **Gastos da Câmara com remuneração dos servidores**
+
+Considerando todos os servidores da Câmara, no período de `r ano_min` a `r ano_max`, o site da transparência disponibiliza o pagamento para `r round(nrow(data)/10^3, 0)` mil servidores, o equivalente à R$ `r round(sum(data$remuneracao_total)/(10^9), 1)` BILHÕES. Só deputados são `r round(nrow(todos_deputados)/10^3, 0)` mil na folha de pagamento, correspondendo à `r round(nrow(todos_deputados)/nrow(data)*100, 1)`% do total nesse intervalo de tempo. Mas, ao observarmos o momentante pago aos deputados, percebe-se que eles corresponde à R$ `r round(remuneracao_deputados/(10^6), 0)` MILHÕES em pagamentos, ou seja, `r round(remuneracao_deputados/remuneracao_total*100, 1)`% do total. Só em `r ano_max`, `r round(nrow(todos_servidores_recente)/10^3, 1)` mil servidores já foram pagos pela Câmara, sendo `r round(nrow(todos_deputados_recente)/10^3, 1)` mil desputados, ou `r round(nrow(todos_deputados_recente)/nrow(todos_servidores_recente)*100, 1)`% do total. Em outras palavras, foi pago R$ `r round(remuneracao_deputados_recente/10^6, 1)` MILHÕES em remuneração dos servidores, sendo R$ `r round(remuneracao_deputados_recente/10^6, 1)` MILHÕES destinados aos deputados (`r round(remuneracao_deputados_recente/remuneracao_recente*100, 1)`% do total).
+
+* **Maiores remunerações da Câmara**
+
+Os dez servidores que receberam as mais elevadas remunerações, no período de `r ano_min` e `r ano_max`, são apresentados na tabela seguinte. Totalizando R$ `r round(gasto_de_referencia/10^3, 0)` mil, entende-se por remuneração total a soma da remuneração fixa, mais vantagens pessoais, mais remuneração eventual, mais abono permanência, menos descontos, mais diárias, mais outros auxílios e vantagens. Na tabela, é apresentado o nome completo do servidor, o seu respectivo cargo, o seu vínculo, o mês e o ano de referência do pagamento, assim como a remuneração total.
+
+```{r top_servidores_todos, echo=FALSE}
+kable(top_servidores_todos)
 ```
 
 
-## Análise da Camara {.tabset .tabset-fade}
+
+
+-----------------------------------------------------------------------
+
+* **O que a Câmara gastou com a remuneração de dez servidores daria para adquirir:**
+
+Para se ter uma ideia dos elevados gastos da Câmara com remuneração dos servidores, resolvemos destacar o que seria possível investir utilizando o pagamento de dez deputados que mais receberam em um certo mês do ano `r ano_max`, totalizando R$ `r round(gasto_de_referencia/10^3, 0)` mil:
+
+**Ambulâncias do SAMU**
+
+Em 2017, o valor de uma ambulância da SAMU em um dos modelos mais equipados custa em média R$ 150 mil. Assim, usamos esse valor de referência como o custo de uma ambulância.
+
+Fonte:
+
+[Dezenove ambulâncias do Samu estão paradas em galpão](http://www.otempo.com.br/cidades/dezenove-ambul%C3%A2ncias-do-samu-est%C3%A3o-paradas-em-galp%C3%A3o-1.1436254)
+
+**Bolsas CAPES de doutorado**
+
+Consideramos o valor da bolsa CAPES na modalidade de doutorado, o que equivale à R$ 2.200,00 por mês por aluno.
+
+Fonte:
+
+[Valores das bolsas da Capes no país](http://www.capes.gov.br/bolsas/valores-de-bolsas)
+
+**Tratamento do Câncer**
+
+De acordo com o Instituto Nacional de Câncer (INCA), o Sistema Único de Saúde (SUS) investiu R$ 3,5 bilhões no tratamento de 393 mil pacientes no ano de 2015. O montante foi investido em tratamento (cirurgias, radioterapias e quimioterapias). Assim, temos o gasto médio de R$ 8.905 por paciente, considerando a inflação acumulada dos anos de 2015 e 2016 (10,67\% e 6,29\%, respectivamente), teriamos um gasto médio de R$ 10.476 por paciente em 2017.
+
+Fonte:
+
+[Ministro da Saúde anuncia prioridades para a oncologia](http://www2.inca.gov.br/wps/wcm/connect/agencianoticias/site/home/noticias/2016/ministro-da-saude-anuncia-prioridades-para-a-oncologia)
+
+[Inflação oficial fecha 2016 em 6,29%, diz IBGE](http://g1.globo.com/economia/noticia/inflacao-oficial-fecha-2016-em-629-diz-ibge.ghtml)
+
+[Inflação oficial fica em 10,67% em 2015, a maior desde 2002](http://g1.globo.com/economia/noticia/2016/01/inflacao-oficial-fica-em-1067-em-2015.html)
+
+**Merenda Escolar**
+
+O Governo por meio do Programa Nacional de Alimentação Escolar (Pnae), anunciou o investimento de R$ 465 milhões a mais para beneficiar 41 milhões de estudantes de todo o país, o que dá em média R$ 11,34 por estudante.
+
+Fonte:
+
+[Governo anuncia reajustes para a merenda escolar](http://agenciabrasil.ebc.com.br/politica/noticia/2017-02/governo-anuncia-reajustes-para-merenda-escolar)
+
+**Contribuição Doméstica ao INSS**
+
+Para se aposentar, uma empregada doméstica que recebe R$ 1.500,00 deverá contribuir ao INSS com 8\% do seu salário, o que corresponde à R$ 120 ao mês.
+
+Fonte:
+
+[Percentuais da contribuição previdenciária (INSS) de patrões e empregados domésticos](https://www.domesticalegal.com.br/utilidades/tabela-de-inss/)
+
+**Aquisição de cestas básicas**
+
+De acordo com o Departamento Intersindical de Estatística e Estudos Socioeconômicos, por meio da Pesquisa Nacional da Cesta Básica de Alimentos (PNCBA), o preço médio da cesta básica em Brasília variou entre R$ 404,88 e R$ 432,65 no ano de 2017. Na nossa comparação, consideramos o valor de referência mais elevado, nesse caso, R$ 432,65.
+
+Fonte:
+
+[Pesquisa Nacional da Cesta Básica de Alimentos](https://www.dieese.org.br/cesta/)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Deputados mais Remunerados
+```{r}
+remuneracao_top_deputados <- sum(top_deputados_todos$`Remuneração Total (R$)`)
+remuneracao_top_deputados_recentes <- sum(top_deputados_recente$`Remuneração Total (R$)`)
+```
+
+* **Quais deputados mais remunerados em um só mês?**
+
+Entre os anos de `r ano_min` e `r ano_max`, `r round(nrow(todos_deputados)/10^3, 1)` mil deputados foram pagos. Na tabela seguinte, nós destacamos quais dez deputados mais remunerados nesse período, que receberam `r round(remuneracao_top_deputados/10^3, 1)` mil. A remuneração Total corresponde a soma da remuneração fixa, mais vantagens pessoais, mais remuneração eventual, mais abono permanência, menos descontos, mais diárias, mais outros auxílios e vantagens.
+
+```{r top_deputados_todos, echo=FALSE}
+kable(top_deputados_todos)
+```
+
+* **Quais deputados mais remunerados em um só mês de 2017?**
+
+Seguindo o mesmo cálculo da remuneração total, apresentamos quais dez deputados mais receberam em `r ano_max`, correspondendo à R$ `r round(remuneracao_top_deputados_recentes/10^3, 1)` mil no total. Nesse mesmo ano, `r round(nrow(todos_deputados_recente)/10^3, 1)` mil deputados foram pagos, sendo um total R$ `r round(remuneracao_deputados_recente/10^6, 1)` MILHÕES
+
+```{r top_deputados_recente, echo=FALSE}
+kable(top_deputados_recente)
+```
+
+
