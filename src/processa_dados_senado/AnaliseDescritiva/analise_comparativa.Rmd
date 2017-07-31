@@ -12,7 +12,7 @@ library(reshape2)
 library(knitr)
 require(scales)
 
-data_filename = "/home/italo/workspace/dados_senado.csv"
+data_filename = "~/Documents/quebra-quebra/senado_federal/dados/dados_senado.csv"
 data <- read.csv2(file=data_filename, sep=",", header=FALSE, stringsAsFactors=FALSE, na.strings="unknown", dec=".")
 colnames(data) <-  c("id","nome","vinculo","situacao","ano_de_admissao","cargo","padrao","especialidade","mes","ano","remuneracao_basica","vantagens_pessoais","funcao_comissao","gratificacao_natalina","horas_extras","outras_remuneracoes","adicional_periculosidade","adicional_noturno","abono_permanencia","reversao","imposto_de_renda","psss","faltas","remuneracao_apos_descontos","diarias","auxilios","auxilio_alimentacao","vantagens_indenizatorias","adicional_ferias","ferias_indenizatorias","licenca_premio","remuneracao_basica_s","vantagens_pessoais_s","funcao_comissao_s","gratificacao_natalina_s","horas_extras_s","outras_remuneracoes_s","adicional_periculosidade_s","adicional_noturno_s","abono_permanencia_s","reversao_s","imposto_de_renda_s","psss_s","faltas_s","remuneracao_apos_descontos_s","diarias_s","auxilios_s","auxilio_alimentacao_s","vantagens_indenizatorias_s","adicional_ferias_s","ferias_indenizatorias_s","licenca_premio_s")
 
@@ -40,10 +40,13 @@ Além de um salário básico de R$ 33.763,00 ao mês, nossos deputados recebem p
 
 Senadores também recebem R$ 33.763 de salário, mais auxílios, verbas, cotas, diárias de viagem. Cada um deles custa, em média R$ 160 mil por mês, ou R$ 155,5 milhões por ano se multiplicarmos pelos 81 senadores. 
 
+Fonte (acessada em 30/07/2017):
+
+[Matéria do Estadão comparando os salários do funcionalismo público e provado](http://economia.estadao.com.br/noticias/geral,em-13-anos-salario-do-servico-publico-subiu-tres-vezes-mais-que-o-privado,10000079369)
 
 ## Senado vs Brasil
 
-O Senado é de fato um país diferente. O gráfico abaixo compara a remuneração de várias especialidades de servidores do Senado com o resto do Brasil em 2016. Aqui consideramos somente os servidores ativos. A diferença é bastante grande em todos os casos. Enquanto um profissional de enfermagem com 6 a 8 anos de experiência ganha em média R$ 3.940 no resto do Brasil, por exemplo, no Senado sua remuneração média em 2016 foi de R$ 19,619. 
+O Senado é de fato um país diferente. O gráfico abaixo compara a remuneração de várias especialidades de servidores do Senado com o resto do Brasil em 2016. Aqui consideramos somente os servidores ativos. A diferença é bastante grande em todos os casos. Enquanto um profissional de enfermagem com 6 a 8 anos de experiência ganha em média R$ 3.940 no resto do Brasil, por exemplo, no Senado sua remuneração (básica) média em 2016 foi de R$ 19.619. 
 
 ```{r comparacao, echo=FALSE, include=FALSE}
 media_especialidade = function(x) {
@@ -70,9 +73,13 @@ publico_privado = mutate(publico_privado, salario_brasil=c(3940, 1305,2678.59,23
 colnames(publico_privado) = c("Especialidade","Senado","Brasil")
 publico_privado[,1] = sapply(publico_privado[,1],as.character)
 publico_privado[3,1] = "SECRETÁRIO"
+diferenca = mutate(publico_privado, diferença = floor(Senado/Brasil))
+#publico_privado[,2] = format(publico_privado[,2], decimal.mark = ',')
+#publico_privado[,3] =format(publico_privado[,3], decimal.mark = ',')
+
 new_data = melt(publico_privado,id.vars=c("Especialidade"))
 new_data=arrange(new_data,Especialidade)
-#new_data[,3] = sapply(new_data[,3],as.numeric)
+#new_data[,3] = format(new_data[,3],small.mark = '.',decimal.mark = ',')
 #new_data[,3] = sapply(new_data[,3],round,0)
 
 
@@ -89,9 +96,6 @@ n1$print('chart1', include_assets = TRUE)
 ```
 
 
-```{r, echo=FALSE}
-diferenca = mutate(publico_privado, diferença = floor(Senado/Brasil))
-```
 
 No gráfico abaixo vemos quantas vezes mais cada especialidade no Senado ganhou em relação ao salário médio de cada especialidade no resto do Brasil. Veja que um Segurança no Senado ganhou, por exemplo, 16 vezes mais que o salário médio de profissionais de Segurança no resto do Brasil em 2016.
 
@@ -103,8 +107,6 @@ y1$print('chart2', include_assets = TRUE)
 ```
 
 Fontes (todas as fontes foram acessadas em 30/07/2017):
-
-[Matéria do Estadão comparando os salários do funcionalismo público e provado](http://economia.estadao.com.br/noticias/geral,em-13-anos-salario-do-servico-publico-subiu-tres-vezes-mais-que-o-privado,10000079369)
 
 [Sobre o salário médio de profissionais de Segurança (adotamos R$ 1.305)](http://www.guiadacarreira.com.br/salarios/quanto-ganha-um-seguranca/)
 
@@ -122,7 +124,7 @@ Fontes (todas as fontes foram acessadas em 30/07/2017):
 
 ## Aposentadoria
 
-Em 2016 foram pagas 3.611 aposentadorias para servidores do Senado com um valor médio mensal de R$ 19.940. O gráfico abaixo mostra a diferença entre esse valor, o valor médio de aposentadoria de ex-senadores que é R$ 14.100 (levando em conta os que se aposentam proporcionalmente) e à média do INSS que foi de R$ 1.862 em 2016. 
+Em 2016 foram pagas 3.611 aposentadorias para servidores do Senado com um valor médio mensal de R$ 19.940. O gráfico abaixo mostra a diferença entre esse valor, o valor médio de aposentadoria de ex-senadores que é R$ 14.100 (já levando em conta os que se aposentam proporcionalmente) e a média do INSS que foi de R$ 1.862 em 2016. 
 
 ```{r aposentados, cache=F, echo=FALSE}
 
@@ -131,7 +133,9 @@ media_aposentados_2016 <- mean(aposentados_2016$remuneracao_basica)
 valores = c(media_aposentados_2016,14100,1862)
 categorias = c("Ex-Servidores","Ex-Senadores","INSS")
 df = data.frame(categorias, valores)
-df[,2] = sapply(df[,2],round,2) 
+df[,2] = sapply(df[,2],round,2)
+df[,2] = format(df[,2],big.mark = '.',decimal.mark = ',')
+
 
 
 #ggplot(data=df, aes(x=categorias, y=valores,fill=categorias)) +
