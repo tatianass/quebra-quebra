@@ -110,9 +110,9 @@ valueBox(value, caption="Domésticas contribuindo para o INSS", icon = "fa-home"
 ### asfaltar rodovias
 
 ```{r asfaltar_rodovias}
-rodovia_quilometro <- 3468000
+rodovia_quilometro <- 3356000
 value <- round(gasto_de_referencia/rodovia_quilometro, 1)
-valueBox(value, caption="Quilomêtros de rodovias asfaltadas", icon = "fa-road", color="#2a6592", href="https://189.9.128.64/download/servicos/custo-medio-gerencial/custos-medios-ger.novembro-14.pdf")
+valueBox(value, caption="Quilomêtros de rodovias asfaltadas", icon = "fa-road", color="#2a6592", href="http://www.dnit.gov.br/custos-e-pagamentos/custo-medio-gerencial/ANEXOIXCUSTOMDIOGERENCIALMARO2016N11.pdf")
 ```
 
 
@@ -191,7 +191,7 @@ Fonte:
 
 **Pavimentação em Asfalto**
 
-De acordo com o Departamento Nacional de Infraest de Transportes (DNIT), o custo médio para construção de uma pista simples é de R$ 2.948 por metro de rodovia construída em 2014. Considerando a inflação dos anos de 2015 e 2016 (10,67\% e 6,29\%, respectivamente), teríamos um custo médio de 3.468 por metro de rodovia construída em 2017.
+De acordo com o Departamento Nacional de Infraest de Transportes (DNIT), o custo médio para construção de uma pista simples é de R$ 3.158 por metro de rodovia construída em 2016. Considerando a inflação de 6,29\% no ano de 2016, teríamos um custo médio de R$ 3.356 por metro de rodovia construída em 2017.
 
 Fonte:
 

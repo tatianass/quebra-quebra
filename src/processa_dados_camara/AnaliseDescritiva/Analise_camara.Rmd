@@ -29,9 +29,9 @@ data_filename = "camara_dados.txt"
 #Por convensão, decidiu-se utilizar o formato de arquivo CSV, logo o separador sempre será a vírgula  #
 #######################################################################################################
 data <- read.csv2(file=data_filename, sep=",", header=FALSE, stringsAsFactors=FALSE, na.strings="unknown", dec=".", encoding = "UTF-8")
-colnames(data) <-  c("mes","ano","cargo","vinculo","nome","remuneracao_fixa","vantagens_pessoais","remuneracao_eventual","abono_permanencia","descontos","outros_diarias","outros_auxilios","outros_vantagens")
+colnames(data) <-  c("mes","ano","cargo","vinculo","nome","remuneracao_fixa","vantagens_pessoais","remuneracao_eventual","abono_permanencia","descontos","diarias","outros_auxilios","outras_vantagens")
 
-data <- mutate(data, remuneracao_total=remuneracao_fixa+vantagens_pessoais+remuneracao_eventual+abono_permanencia-descontos+outros_diarias+outros_auxilios+outros_vantagens)
+data <- mutate(data, remuneracao_total=remuneracao_fixa+vantagens_pessoais+remuneracao_eventual+abono_permanencia-descontos+diarias+outros_auxilios+outras_vantagens)
 
 ano_max <- max(data$ano)
 ano_min <- min(data$ano)
@@ -123,4 +123,4 @@ valueBox(value, caption="Quilomêtros de rodovias asfaltadas", icon = "fa-road",
 ```
 
 
-## Análise do Camara {.tabset .tabset-fade}
+## Análise da Camara {.tabset .tabset-fade}
