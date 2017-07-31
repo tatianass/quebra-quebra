@@ -134,7 +134,7 @@ valores = c(media_aposentados_2016,14100,1862)
 categorias = c("Ex-Servidores","Ex-Senadores","INSS")
 df = data.frame(categorias, valores)
 df[,2] = sapply(df[,2],round,2)
-df[,2] = format(df[,2],big.mark = '.',decimal.mark = ',')
+df[,2] = format(df[,2],small.mark = '.',decimal.mark = ',')
 
 
 
